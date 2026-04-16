@@ -228,7 +228,7 @@ partial = data;
   const resetScan = () => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setPage('scan'); };
 
   const Header = ({ title, back = true }: { title?: string; back?: boolean }) => (
-    <div className="sticky top-0 bg-white border-b border-gray-100 z-10">
+    <div className="sticky top-0 bg-white border-b border-black z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
           ? <button onClick={() => setPage('home')} className="text-blue-600 font-medium">{t('back')}</button>
@@ -247,7 +247,7 @@ partial = data;
         <div className="space-y-2 mb-6">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
-              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-black">
+              className="w-full py-3 px-4 rounded-xl border-2 border-black hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-black">
               {l.label}
             </button>
           ))}
@@ -275,7 +275,7 @@ partial = data;
             {t('historyBtn')}
           </button>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-100 text-sm text-black">{t('premiumSoon')}</div>
+        <div className="bg-white rounded-xl p-4 border border-black text-sm text-black">{t('premiumSoon')}</div>
       </div>
     </div>
   );
@@ -306,7 +306,7 @@ partial = data;
           <div>
             <textarea value={inputText} onChange={e => setInputText(e.target.value.slice(0, 2000))}
               placeholder={t('placeholder')}
-              className="w-full h-44 p-4 border-2 border-gray-200 rounded-xl focus:border-red-400 focus:outline-none resize-none text-sm" />
+              className="w-full h-44 p-4 border-2 border-black rounded-xl focus:border-red-400 focus:outline-none resize-none text-sm" />
             <p className="text-xs text-black mt-1 text-right">{inputText.length}/2000</p>
           </div>
         ) : (
@@ -314,9 +314,9 @@ partial = data;
             <input ref={fileRef} type="file" accept="image/*" className="hidden"
               onChange={e => e.target.files?.[0] && handleImage(e.target.files[0])} />
             {imagePreview
-              ? <img src={imagePreview} alt="preview" className="w-full rounded-xl mb-3 border border-gray-200 max-h-64 object-contain" />
+              ? <img src={imagePreview} alt="preview" className="w-full rounded-xl mb-3 border border-black max-h-64 object-contain" />
               : <div onClick={() => fileRef.current?.click()}
-                  className="w-full h-44 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-400 transition">
+                  className="w-full h-44 border-2 border-dashed border-black rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-400 transition">
                   <span className="text-4xl mb-2">📷</span>
                   <span className="text-black text-sm">{t('uploadPhoto')}</span>
                 </div>
@@ -349,7 +349,7 @@ partial = data;
             <div className="text-5xl mb-2">{v.icon}</div>
             <h1 className={`text-3xl font-bold ${v.color}`}>{t(result.verdict)}</h1>
             <div className="mt-3 flex items-center gap-2">
-              <div className="flex-1 bg-white rounded-full h-2 border border-gray-200">
+              <div className="flex-1 bg-white rounded-full h-2 border border-black">
                 <div className={`h-2 rounded-full ${v.bar}`} style={{ width: `${result.confidence}%` }} />
               </div>
               <span className="text-sm font-bold text-black">{result.confidence}% {t('confidence')}</span>
@@ -427,7 +427,7 @@ partial = data;
         <div className="space-y-2 mb-8">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
-              className={`w-full p-3.5 rounded-xl border-2 font-medium text-left transition ${lang === l.code ? 'border-red-500 bg-red-50 text-red-600' : 'border-gray-200'}`}>
+              className={`w-full p-3.5 rounded-xl border-2 font-medium text-left transition ${lang === l.code ? 'border-red-500 bg-red-50 text-red-600' : 'border-black'}`}>
               {l.label} {lang === l.code && '✓'}
             </button>
           ))}
