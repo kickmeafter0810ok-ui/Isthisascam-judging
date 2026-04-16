@@ -231,9 +231,9 @@ partial = data;
     <div className="sticky top-0 bg-white border-b border-black z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
-          ? <button onClick={() => setPage('home')} className="text-blue-600 font-medium">{t('back')}</button>
-          : <span className="text-xl font-bold">IsThisAScam</span>}
-        {title && <span className="font-semibold">{title}</span>}
+  ? <button onClick={() => setPage('home')} className="text-blue-600 font-medium">{t('back')}</button>
+  : <span className="text-xl font-bold text-black">IsThisAScam</span>}
+{title && <span className="font-semibold text-black">{title}</span>}
         <button onClick={() => setPage('settings')} className="text-xl">⚙️</button>
       </div>
     </div>
@@ -271,7 +271,7 @@ partial = data;
           <button onClick={() => setPage('scan')} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
             {t('analyzeBtn')}
           </button>
-          <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-200 font-bold py-4 rounded-xl text-lg transition">
+          <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-black text-black font-bold py-4 rounded-xl text-lg transition">
             {t('historyBtn')}
           </button>
         </div>
