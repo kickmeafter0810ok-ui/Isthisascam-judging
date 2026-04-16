@@ -243,16 +243,16 @@ partial = data;
     <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
         <div className="text-center mb-8"><div className="text-6xl mb-3">❓</div><h1 className="text-2xl font-bold">IsThisAScam</h1></div>
-        <p className="text-center font-semibold text-gray-700 mb-4">{t('selectLang')}</p>
+        <p className="text-center font-semibold text-black mb-4">{t('selectLang')}</p>
         <div className="space-y-2 mb-6">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
-              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-gray-900">
+              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-black">
               {l.label}
             </button>
           ))}
         </div>
-        <p className="text-center text-xs text-gray-500">{t('privacy')}</p>
+        <p className="text-center text-xs text-black">{t('privacy')}</p>
       </div>
     </div>
   );
@@ -262,8 +262,8 @@ partial = data;
       <Header back={false} />
       <div className="max-w-lg mx-auto px-4 py-10 text-center">
         <div className="text-7xl mb-4">❓</div>
-        <h1 className="text-2xl font-bold text-gray-900">IsThisAScam</h1>
-        <p className="text-gray-600 mb-8">{t('sub')}</p>
+        <h1 className="text-2xl font-bold text-black">IsThisAScam</h1>
+        <p className="text-black mb-8">{t('sub')}</p>
         {limitReached && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
         )}
@@ -275,7 +275,7 @@ partial = data;
             {t('historyBtn')}
           </button>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-100 text-sm text-gray-500">{t('premiumSoon')}</div>
+        <div className="bg-white rounded-xl p-4 border border-gray-100 text-sm text-black">{t('premiumSoon')}</div>
       </div>
     </div>
   );
@@ -285,7 +285,7 @@ partial = data;
       <Header title={tab === 'text' ? t('textTab') : t('photoTab')} />
       <div className="max-w-lg mx-auto px-4 py-6">
 
-        <div className="flex justify-between text-xs text-gray-500 mb-1">
+        <div className="flex justify-between text-xs text-black mb-1">
           <span>{t('usageTitle')}</span>
           <span>{Math.max(remaining, 0)} {t('usageDesc')}</span>
         </div>
@@ -296,7 +296,7 @@ partial = data;
         <div className="flex gap-2 mb-5">
           {(['text', 'photo'] as const).map(tb => (
             <button key={tb} onClick={() => setTab(tb)}
-              className={`flex-1 py-2.5 rounded-lg font-semibold text-sm transition ${tab === tb ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600'}`}>
+              className={`flex-1 py-2.5 rounded-lg font-semibold text-sm transition ${tab === tb ? 'bg-red-500 text-white' : 'bg-gray-100 text-black'}`}>
               {tb === 'text' ? t('textTab') : t('photoTab')}
             </button>
           ))}
@@ -307,7 +307,7 @@ partial = data;
             <textarea value={inputText} onChange={e => setInputText(e.target.value.slice(0, 2000))}
               placeholder={t('placeholder')}
               className="w-full h-44 p-4 border-2 border-gray-200 rounded-xl focus:border-red-400 focus:outline-none resize-none text-sm" />
-            <p className="text-xs text-gray-400 mt-1 text-right">{inputText.length}/2000</p>
+            <p className="text-xs text-black mt-1 text-right">{inputText.length}/2000</p>
           </div>
         ) : (
           <div>
@@ -318,7 +318,7 @@ partial = data;
               : <div onClick={() => fileRef.current?.click()}
                   className="w-full h-44 border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-red-400 transition">
                   <span className="text-4xl mb-2">📷</span>
-                  <span className="text-gray-500 text-sm">{t('uploadPhoto')}</span>
+                  <span className="text-black text-sm">{t('uploadPhoto')}</span>
                 </div>
             }
             {imagePreview && (
@@ -334,7 +334,7 @@ partial = data;
           {loading ? t('analyzing') : t('analyze')}
         </button>
 
-        {limitReached && <p className="text-center text-xs text-gray-500 mt-3">{t('limitInfo')}</p>}
+        {limitReached && <p className="text-center text-xs text-black mt-3">{t('limitInfo')}</p>}
       </div>
     </div>
   );
@@ -352,18 +352,18 @@ partial = data;
               <div className="flex-1 bg-white rounded-full h-2 border border-gray-200">
                 <div className={`h-2 rounded-full ${v.bar}`} style={{ width: `${result.confidence}%` }} />
               </div>
-              <span className="text-sm font-bold text-gray-700">{result.confidence}% {t('confidence')}</span>
+              <span className="text-sm font-bold text-black">{result.confidence}% {t('confidence')}</span>
             </div>
           </div>
 
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
-            <p className="text-sm text-gray-800">{result.reason}</p>
+            <p className="text-xs font-semibold text-black uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
+            <p className="text-sm text-black">{result.reason}</p>
           </div>
 
           {result.tactics?.length > 0 && (
             <div className="bg-gray-50 rounded-xl p-4 mb-5">
-              <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{t('tacticsFound')}</p>
+              <p className="text-xs font-semibold text-black uppercase mb-2">{t('tacticsFound')}</p>
               <div className="flex flex-wrap gap-2">
                 {result.tactics.map(tactic => (
                   <span key={tactic} className="bg-red-100 text-red-700 text-xs px-2.5 py-1 rounded-full">
@@ -388,7 +388,7 @@ partial = data;
       <Header title="History" />
       <div className="max-w-lg mx-auto px-4 py-6">
         {history.length === 0
-          ? <div className="text-center py-20"><p className="text-5xl mb-4">📋</p><p className="text-gray-500">{t('noHistory')}</p></div>
+          ? <div className="text-center py-20"><p className="text-5xl mb-4">📋</p><p className="-text-black">{t('noHistory')}</p></div>
           : <>
               <div className="space-y-3 mb-6">
                 {history.map(item => {
@@ -399,13 +399,13 @@ partial = data;
                         <div className="flex items-center gap-2 mb-1">
                           <span>{v.icon}</span>
                           <span className={`font-bold text-sm ${v.color}`}>{t(item.verdict)}</span>
-                          <span className="text-xs text-gray-500">{item.confidence}%</span>
+                          <span className="text-xs text-black">{item.confidence}%</span>
                           {item.isImage && <span className="text-xs bg-gray-200 px-1.5 rounded">📷</span>}
                         </div>
-                        <p className="text-xs text-gray-600 truncate">{item.text.substring(0, 60)}</p>
-                        <p className="text-xs text-gray-400 mt-1">{new Date(item.timestamp).toLocaleDateString()}</p>
+                        <p className="text-xs text-black truncate">{item.text.substring(0, 60)}</p>
+                        <p className="text-xs text-black mt-1">{new Date(item.timestamp).toLocaleDateString()}</p>
                       </div>
-                      <button onClick={() => deleteItem(item.id)} className="text-gray-400 hover:text-red-500 text-lg">🗑️</button>
+                      <button onClick={() => deleteItem(item.id)} className="text-black hover:text-red-500 text-lg">🗑️</button>
                     </div>
                   );
                 })}
@@ -423,7 +423,7 @@ partial = data;
     <div className="min-h-screen bg-white">
       <Header title={t('settings')} />
       <div className="max-w-lg mx-auto px-4 py-6">
-        <p className="text-xs font-semibold text-gray-400 uppercase mb-3">{t('language')}</p>
+        <p className="text-xs font-semibold text-black uppercase mb-3">{t('language')}</p>
         <div className="space-y-2 mb-8">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
@@ -433,17 +433,17 @@ partial = data;
           ))}
         </div>
 
-        <p className="text-xs font-semibold text-gray-400 uppercase mb-3">{t('usageTitle')}</p>
+        <p className="text-xs font-semibold text-black uppercase mb-3">{t('usageTitle')}</p>
         <div className="bg-gray-50 rounded-xl p-4 mb-2">
           <div className="flex justify-between mb-2">
-            <span className="text-sm text-gray-600">{usage} / {FREE_LIMIT} AI scans used</span>
+            <span className="text-sm text-black">{usage} / {FREE_LIMIT} AI scans used</span>
             <span className="text-sm font-bold text-red-500">{Math.max(remaining, 0)} left</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div className="bg-red-500 h-2 rounded-full" style={{ width: `${Math.min((usage / FREE_LIMIT) * 100, 100)}%` }} />
           </div>
         </div>
-        <p className="text-xs text-gray-500 text-center mt-2">{t('premiumSoon')}</p>
+        <p className="text-xs text-black text-center mt-2">{t('premiumSoon')}</p>
       </div>
     </div>
   );
