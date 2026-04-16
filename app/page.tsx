@@ -427,7 +427,7 @@ partial = data;
         <div className="space-y-2 mb-8">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
-              className={`w-full p-3.5 rounded-xl border-2 font-medium text-left transition ${lang === l.code ? 'border-red-500 bg-red-50 text-red-600' : 'border-black'}`}>
+              className={`w-full p-3.5 rounded-xl border-2 font-medium text-left transition text-black ${lang === l.code ? 'border-red-500 bg-red-50 text-red-600' : 'border-black'}`}
               {l.label} {lang === l.code && '✓'}
             </button>
           ))}
