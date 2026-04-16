@@ -247,7 +247,7 @@ partial = data;
         <div className="space-y-2 mb-6">
           {LANGS.map(l => (
             <button key={l.code} onClick={() => selectLang(l.code)}
-              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 font-medium text-left transition">
+              className="w-full py-3 px-4 rounded-xl border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-gray-900">
               {l.label}
             </button>
           ))}
@@ -262,7 +262,7 @@ partial = data;
       <Header back={false} />
       <div className="max-w-lg mx-auto px-4 py-10 text-center">
         <div className="text-7xl mb-4">❓</div>
-        <h1 className="text-4xl font-bold mb-2">{t('headline')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">IsThisAScam</h1>
         <p className="text-gray-600 mb-8">{t('sub')}</p>
         {limitReached && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
