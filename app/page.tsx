@@ -415,8 +415,7 @@ export default function App() {
   className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition flex items-center justify-center mt-3">
   💬 Give Feedback
 </a>
-<div>
-            </button>
+
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
         </div>
