@@ -9,6 +9,7 @@ type Lang = 'en' | 'ms' | 'zh-s' | 'ta';
 interface Result {
   id: number;
   scanId?: string;
+  storedText?: string;
   verdict: Verdict;
   confidence: number;
   reason: string;
