@@ -68,7 +68,7 @@ const T: Record<Lang, Record<string, string>> = {
     headline: 'Adakah Ini Scam?', sub: 'Semak mesej mencurigakan dengan segera',
     analyzeBtn: '🔍 Analisis Sekarang', historyBtn: '📋 Lihat Sejarah',
     learnBtn: '📚 Pelajari Tentang Scam', back: '← Kembali',
-    textTab: 'Tampal Teks', '📷 Foto / Kod QR',
+    textTab: 'Tampal Teks', photoTab: '📷 Foto / Kod QR',
     placeholder: 'Tampal mesej mencurigakan di sini...',
     analyze: '🔍 Analisis', analyzing: '⏳ Menganalisis...',
     uploadPhoto: '📷 Pilih Tangkapan Skrin',
