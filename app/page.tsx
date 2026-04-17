@@ -1,13 +1,14 @@
 'use client';
- 
+
 import { useState, useRef, useEffect, useCallback } from 'react';
- 
-type Page = 'language' | 'home' | 'scan' | 'results' | 'history' | 'settings';
+
+type Page = 'language' | 'home' | 'scan' | 'results' | 'history' | 'settings' | 'learn';
 type Verdict = 'scam' | 'suspicious' | 'safe';
 type Lang = 'en' | 'ms' | 'zh-s' | 'ta';
- 
+
 interface Result {
   id: number;
+  scanId?: string;
   verdict: Verdict;
   confidence: number;
   reason: string;
@@ -16,21 +17,22 @@ interface Result {
   isImage: boolean;
   timestamp: number;
 }
- 
+
 const FREE_LIMIT = 10;
- 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'en', label: '🇬🇧 English' },
   { code: 'ms', label: '🇲🇾 Bahasa Melayu' },
   { code: 'zh-s', label: '🇨🇳 中文简体' },
   { code: 'ta', label: '🇮🇳 தமிழ்' },
 ];
- 
+
 const T: Record<Lang, Record<string, string>> = {
   en: {
-    selectLang: 'Select Your Language', privacy: '🔒 All analysis stays on your device',
+    selectLang: 'Select Your Language',
+    privacy: '🔒 Your data is never stored. Analysis powered by AI.',
     headline: 'Is This A Scam?', sub: 'Check suspicious messages instantly',
-    analyzeBtn: '🔍 Analyze Now', historyBtn: '📋 View History', back: '← Back',
+    analyzeBtn: '🔍 Analyze Now', historyBtn: '📋 View History',
+    learnBtn: '📚 Learn About Scams', back: '← Back',
     textTab: 'Paste Text', photoTab: 'Upload Photo',
     placeholder: 'Paste suspicious message here...',
     analyze: '🔍 Analyze', analyzing: '⏳ Analyzing...',
@@ -45,11 +47,24 @@ const T: Record<Lang, Record<string, string>> = {
     limitInfo: 'Premium coming soon for unlimited AI scans.',
     deleteAll: '🗑️ Clear All History', aiAnalysis: 'AI Analysis',
     basicAnalysis: 'Basic Analysis (AI limit reached)',
+    feedbackTitle: 'Was this correct?',
+    feedbackSub: 'Your feedback helps protect other Malaysians from scams',
+    thumbsUp: '✅ Yes, correct', thumbsDown: '❌ No, wrong',
+    feedbackThanks: '🙏 Thank you! Your feedback improves our detection.',
+    markAs: 'What should this be?',
+    consentTitle: 'Before You Start',
+    consentBody: 'IsThisAScam uses AI to analyze messages. Your message content is sent to OpenAI for analysis but never stored by us. Anonymous usage statistics are collected to improve the service.',
+    consentAgree: 'I Understand, Continue',
+    consentPDPA: 'This complies with Malaysian PDPA guidelines.',
+    learnTitle: '📚 Learn About Scams',
+    learnSub: 'Stay protected — know the latest scam tactics',
   },
   ms: {
-    selectLang: 'Pilih Bahasa Anda', privacy: '🔒 Semua analisis kekal di peranti anda',
+    selectLang: 'Pilih Bahasa Anda',
+    privacy: '🔒 Data anda tidak disimpan. Analisis dikuasakan oleh AI.',
     headline: 'Adakah Ini Scam?', sub: 'Semak mesej mencurigakan dengan segera',
-    analyzeBtn: '🔍 Analisis Sekarang', historyBtn: '📋 Lihat Sejarah', back: '← Kembali',
+    analyzeBtn: '🔍 Analisis Sekarang', historyBtn: '📋 Lihat Sejarah',
+    learnBtn: '📚 Pelajari Tentang Scam', back: '← Kembali',
     textTab: 'Tampal Teks', photoTab: 'Muat Naik Foto',
     placeholder: 'Tampal mesej mencurigakan di sini...',
     analyze: '🔍 Analisis', analyzing: '⏳ Menganalisis...',
@@ -64,11 +79,24 @@ const T: Record<Lang, Record<string, string>> = {
     limitInfo: 'Premium akan datang untuk imbasan AI tanpa had.',
     deleteAll: '🗑️ Padam Semua Sejarah', aiAnalysis: 'Analisis AI',
     basicAnalysis: 'Analisis Asas (had AI dicapai)',
+    feedbackTitle: 'Adakah ini betul?',
+    feedbackSub: 'Maklum balas anda membantu melindungi rakyat Malaysia daripada scam',
+    thumbsUp: '✅ Ya, betul', thumbsDown: '❌ Tidak, salah',
+    feedbackThanks: '🙏 Terima kasih! Maklum balas anda meningkatkan pengesanan kami.',
+    markAs: 'Apakah yang sepatutnya?',
+    consentTitle: 'Sebelum Anda Mula',
+    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami. Statistik penggunaan tanpa nama dikumpul untuk meningkatkan perkhidmatan.',
+    consentAgree: 'Saya Faham, Teruskan',
+    consentPDPA: 'Ini mematuhi garis panduan PDPA Malaysia.',
+    learnTitle: '📚 Pelajari Tentang Scam',
+    learnSub: 'Kekal dilindungi — kenali taktik scam terkini',
   },
   'zh-s': {
-    selectLang: '选择您的语言', privacy: '🔒 所有分析保留在您的设备上',
+    selectLang: '选择您的语言',
+    privacy: '🔒 您的数据不会被存储。分析由AI提供支持。',
     headline: '这是诈骗吗?', sub: '立即检查可疑信息',
-    analyzeBtn: '🔍 立即分析', historyBtn: '📋 查看历史', back: '← 返回',
+    analyzeBtn: '🔍 立即分析', historyBtn: '📋 查看历史',
+    learnBtn: '📚 了解诈骗', back: '← 返回',
     textTab: '粘贴文字', photoTab: '上传照片',
     placeholder: '在此粘贴可疑消息...',
     analyze: '🔍 分析', analyzing: '⏳ 正在分析...',
@@ -83,11 +111,24 @@ const T: Record<Lang, Record<string, string>> = {
     limitInfo: '即将推出高级版，提供无限AI扫描。',
     deleteAll: '🗑️ 清除所有历史', aiAnalysis: 'AI分析',
     basicAnalysis: '基本分析（已达AI限制）',
+    feedbackTitle: '这个结果正确吗?',
+    feedbackSub: '您的反馈有助于保护其他马来西亚人免受诈骗',
+    thumbsUp: '✅ 是，正确', thumbsDown: '❌ 不，错误',
+    feedbackThanks: '🙏 谢谢！您的反馈改善了我们的检测。',
+    markAs: '应该是什么?',
+    consentTitle: '开始之前',
+    consentBody: 'IsThisAScam使用AI分析消息。您的消息内容会发送给OpenAI进行分析，但我们不会存储。收集匿名使用统计数据以改善服务。',
+    consentAgree: '我明白，继续',
+    consentPDPA: '这符合马来西亚PDPA指南。',
+    learnTitle: '📚 了解诈骗',
+    learnSub: '保持保护 — 了解最新的诈骗手段',
   },
   ta: {
-    selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்', privacy: '🔒 அனைத்து பகுப்பாய்வும் உங்கள் சாதனத்தில்',
+    selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
+    privacy: '🔒 உங்கள் தரவு சேமிக்கப்படவில்லை. AI மூலம் பகுப்பாய்வு செய்யப்படுகிறது.',
     headline: 'இது மோசடியா?', sub: 'சந்தேகத்திற்குரிய செய்திகளை உடனே சரிபார்க்கவும்',
-    analyzeBtn: '🔍 இப்போது பகுப்பாய்வு செய்யவும்', historyBtn: '📋 வரலாற்றைப் பார்க்கவும்', back: '← திரும்பவும்',
+    analyzeBtn: '🔍 இப்போது பகுப்பாய்வு செய்யவும்', historyBtn: '📋 வரலாற்றைப் பார்க்கவும்',
+    learnBtn: '📚 மோசடிகளைப் பற்றி அறியுங்கள்', back: '← திரும்பவும்',
     textTab: 'உரையை ஒட்டவும்', photoTab: 'புகைப்படம் பதிவேற்றவும்',
     placeholder: 'சந்தேகத்திற்குரிய செய்தியை இங்கே ஒட்டவும்...',
     analyze: '🔍 பகுப்பாய்வு', analyzing: '⏳ பகுப்பாய்வு செய்கிறது...',
@@ -102,38 +143,65 @@ const T: Record<Lang, Record<string, string>> = {
     limitInfo: 'வரம்பற்ற AI ஸ்கேன்களுக்கு பிரீமியம் விரைவில்.',
     deleteAll: '🗑️ அனைத்து வரலாற்றையும் அழிக்கவும்', aiAnalysis: 'AI பகுப்பாய்வு',
     basicAnalysis: 'அடிப்படை பகுப்பாய்வு (AI வரம்பை அடைந்தது)',
+    feedbackTitle: 'இது சரியானதா?',
+    feedbackSub: 'உங்கள் கருத்து மற்ற மலேசியர்களை மோசடியிலிருந்து பாதுகாக்க உதவுகிறது',
+    thumbsUp: '✅ ஆம், சரி', thumbsDown: '❌ இல்லை, தவறு',
+    feedbackThanks: '🙏 நன்றி! உங்கள் கருத்து எங்கள் கண்டறிதலை மேம்படுத்துகிறது.',
+    markAs: 'இது என்னவாக இருக்க வேண்டும்?',
+    consentTitle: 'தொடங்கும் முன்',
+    consentBody: 'IsThisAScam செய்திகளை பகுப்பாய்வு செய்ய AI பயன்படுத்துகிறது. உங்கள் செய்தி உள்ளடக்கம் OpenAI க்கு அனுப்பப்படுகிறது ஆனால் எங்களால் சேமிக்கப்படவில்லை.',
+    consentAgree: 'புரிகிறது, தொடரவும்',
+    consentPDPA: 'இது மலேசிய PDPA வழிகாட்டுதல்களுக்கு இணங்குகிறது.',
+    learnTitle: '📚 மோசடிகளைப் பற்றி அறியுங்கள்',
+    learnSub: 'பாதுகாப்பாக இருங்கள் — சமீபத்திய மோசடி தந்திரங்களை அறியுங்கள்',
   },
 };
- 
+
 const VERDICT_STYLE: Record<Verdict, { icon: string; color: string; bg: string; border: string; bar: string }> = {
   scam:       { icon: '🚨', color: 'text-red-600',    bg: 'bg-red-50',    border: 'border-red-200',    bar: 'bg-red-500' },
   suspicious: { icon: '⚠️', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200', bar: 'bg-yellow-500' },
   safe:       { icon: '✅', color: 'text-green-600',  bg: 'bg-green-50',  border: 'border-green-200',  bar: 'bg-green-500' },
 };
- 
+
+const SCAM_LESSONS = [
+  { title: '🏦 Bank Impersonation SMS', tag: 'Common in Malaysia', content: 'Real banks NEVER send links asking you to verify accounts. Legitimate bank SMS contains your card\'s last 4 digits and specific merchant names. If you receive a link, call your bank directly using the number on the back of your card.', example: 'SCAM: "Your Maybank account suspended. Click bit.ly/verify"\nSAFE: "HLB: Card 0088 debited MYR220 at PETRONAS. Call if not you."' },
+  { title: '💼 Job Scams', tag: 'Rising trend', content: 'Scammers offer high-paying part-time jobs requiring no skills — typically "liking" YouTube videos or Shopee products. They ask you to top up a wallet first before "earning". You will never get paid back.', example: 'Red flags: Work from home, RM500/day, no experience needed, must top up first.' },
+  { title: '❤️ Love Scams (Macau Scam)', tag: 'Most losses in Malaysia', content: 'Scammers build romantic relationships online over weeks or months, then claim an emergency requiring money — medical bills, customs fees, business investment. Malaysians lost over RM1.2 billion to this in 2023.', example: 'Red flags: Never meets in person, always has emergencies, asks for money transfers.' },
+  { title: '🎰 Prize & Lucky Draw Scams', tag: 'Very common', content: 'You "win" a prize from Shopee, TnG, or Petronas, but must pay a fee to claim it. Real companies never ask winners to pay fees. If you didn\'t enter a contest, you can\'t win it.', example: 'SCAM: "Tahniah! You won RM5,000. Pay RM50 admin fee to claim."' },
+  { title: '📱 Parcel Delivery Scams', tag: 'Post-pandemic surge', content: 'Fake notifications from Pos Malaysia, J&T, or DHL claiming your parcel is held. They direct you to a fake website to pay a small release fee and steal your card details.', example: 'Red flags: Unexpected parcel, small payment required, link not from official domain.' },
+  { title: '🏛️ Government Impersonation', tag: 'Very serious', content: 'Scammers impersonate LHDN, PDRM, or MCMC claiming you have unpaid taxes or are under investigation. They demand immediate payment to avoid arrest. Government agencies NEVER demand payment via phone or WhatsApp.', example: 'Red flags: Urgent arrest threat, demand for immediate bank transfer, secrecy required.' },
+];
+
 const HISTORY_KEY = 'itsascam_history';
 const usageKey = () => `itsascam_usage_${new Date().toISOString().slice(0, 7)}`;
 const LANG_KEY = 'itsascam_lang';
- 
+const CONSENT_KEY = 'itsascam_consent';
+const DEVICE_KEY = 'itsascam_device';
+
 const loadHistory = (): Result[] => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } };
 const persistHistory = (h: Result[]) => localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0, 50)));
 const loadUsage = (): number => parseInt(localStorage.getItem(usageKey()) || '0');
 const bumpUsage = () => localStorage.setItem(usageKey(), String(loadUsage() + 1));
- 
+const getDeviceId = (): string => {
+  let id = localStorage.getItem(DEVICE_KEY);
+  if (!id) { id = `d_${Date.now()}_${Math.random().toString(36).slice(2)}`; localStorage.setItem(DEVICE_KEY, id); }
+  return id;
+};
+
 function keywordFallback(text: string): Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> {
   const t = text.toLowerCase();
   let score = 0;
   const tactics: string[] = [];
-  if (/urgent|segera|act now|immediately/.test(t))                                     { score += 25; tactics.push('urgency'); }
-  if (/bit\.ly|tinyurl|http:\/\/|goo\.gl/.test(t))                                    { score += 30; tactics.push('phishing_link'); }
-  if (/(dbs|maybank|cimb|uob|bsn|rhb|ocbc).{0,30}(account|akaun|verify|suspend)/.test(t)) { score += 35; tactics.push('impersonation'); }
-  if (/\botp\b|password|kata sandi|\bpin\b|\bcvv\b/.test(t))                          { score += 30; tactics.push('credential_harvesting'); }
-  if (/won|winner|prize|lucky|congratulations|tahniah/.test(t))                        { score += 25; tactics.push('prize_scam'); }
+  if (/urgent|segera|act now|immediately/.test(t))                                         { score += 25; tactics.push('urgency'); }
+  if (/bit\.ly|tinyurl|http:\/\/|goo\.gl/.test(t))                                        { score += 30; tactics.push('phishing_link'); }
+  if (/(dbs|hlb|maybank|cimb|uob|bsn|rhb|ocbc).{0,30}(account|akaun|verify|suspend)/.test(t)) { score += 35; tactics.push('impersonation'); }
+  if (/\botp\b|password|kata sandi|\bpin\b|\bcvv\b/.test(t))                              { score += 30; tactics.push('credential_harvesting'); }
+  if (/won|winner|prize|lucky|congratulations|tahniah/.test(t))                            { score += 25; tactics.push('prize_scam'); }
   const confidence = Math.min(score, 100);
   const verdict: Verdict = score >= 60 ? 'scam' : score >= 35 ? 'suspicious' : 'safe';
   return { verdict, confidence, reason: tactics.length ? `Detected: ${tactics.join(', ')}` : 'No threats found', tactics };
 }
- 
+
 export default function App() {
   const [page, setPage]                 = useState<Page>('language');
   const [lang, setLang]                 = useState<Lang>('en');
@@ -147,24 +215,40 @@ export default function App() {
   const [history, setHistory]           = useState<Result[]>([]);
   const [usage, setUsage]               = useState(0);
   const [mounted, setMounted]           = useState(false);
+  const [showConsent, setShowConsent]   = useState(false);
+  const [feedback, setFeedback]         = useState<'pending' | 'given' | null>(null);
+  const [showMarkAs, setShowMarkAs]     = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const t = useCallback((k: string) => T[lang][k] ?? T.en[k], [lang]);
- 
+
   useEffect(() => {
     const savedLang = localStorage.getItem(LANG_KEY) as Lang | null;
     if (savedLang) { setLang(savedLang); setPage('home'); }
     setHistory(loadHistory());
     setUsage(loadUsage());
+    const hasConsent = localStorage.getItem(CONSENT_KEY);
+    if (!hasConsent && savedLang) setShowConsent(true);
     setMounted(true);
   }, []);
- 
+
   if (!mounted) return null;
- 
+
   const remaining = FREE_LIMIT - usage;
   const limitReached = usage >= FREE_LIMIT;
- 
-  const selectLang = (l: Lang) => { setLang(l); localStorage.setItem(LANG_KEY, l); setPage('home'); };
- 
+
+  const selectLang = (l: Lang) => {
+    setLang(l);
+    localStorage.setItem(LANG_KEY, l);
+    const hasConsent = localStorage.getItem(CONSENT_KEY);
+    if (!hasConsent) { setShowConsent(true); }
+    setPage('home');
+  };
+
+  const handleConsent = () => {
+    localStorage.setItem(CONSENT_KEY, 'true');
+    setShowConsent(false);
+  };
+
   const handleImage = (file: File) => {
     const reader = new FileReader();
     reader.onload = e => {
@@ -174,18 +258,18 @@ export default function App() {
     };
     reader.readAsDataURL(file);
   };
- 
+
   const analyze = async () => {
-    setLoading(true); setError('');
+    setLoading(true); setError(''); setFeedback(null);
     try {
-      let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'>;
+      let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> & { scanId?: string };
       if (limitReached) {
         partial = keywordFallback(inputText);
       } else {
         const res = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: inputText, imageBase64, language: lang }),
+          body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Analysis failed');
@@ -194,6 +278,7 @@ export default function App() {
         setUsage(loadUsage());
       }
       setResult({ ...partial, id: Date.now(), timestamp: Date.now(), isImage: !!imageBase64, text: imageBase64 ? '[Screenshot]' : inputText });
+      setFeedback('pending');
       setPage('results');
     } catch (e: any) {
       setError(e.message);
@@ -201,76 +286,118 @@ export default function App() {
       setLoading(false);
     }
   };
- 
+
+  const submitFeedback = async (isCorrect: boolean, correctVerdict?: Verdict) => {
+    if (!result) return;
+    setFeedback('given');
+    setShowMarkAs(false);
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          scanId: result.scanId,
+          correctVerdict: isCorrect ? result.verdict : correctVerdict,
+          originalVerdict: result.verdict,
+          originalText: result.text,
+          deviceId: getDeviceId(),
+        }),
+      });
+    } catch { /* silent fail — feedback is non-critical */ }
+  };
+
   const saveResult = () => {
     if (!result) return;
     const updated = [result, ...history].slice(0, 50);
     setHistory(updated); persistHistory(updated); setPage('home');
   };
- 
+
   const deleteItem = (id: number) => {
     const updated = history.filter(h => h.id !== id);
     setHistory(updated); persistHistory(updated);
   };
- 
-  const resetScan = () => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setPage('scan'); };
- 
-  const Header = ({ title, back = true }: { title?: string; back?: boolean }) => (
+
+  const resetScan = () => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setPage('scan'); };
+
+  const Header = ({ title, back = true, backTo = 'home' }: { title?: string; back?: boolean; backTo?: Page }) => (
     <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
-          ? <button onClick={() => setPage('home')} className="text-blue-600 font-medium">{t('back')}</button>
+          ? <button onClick={() => setPage(backTo)} className="text-blue-600 font-medium">{t('back')}</button>
           : <span className="text-xl font-bold text-gray-900">IsThisAScam</span>}
         {title && <span className="font-semibold text-gray-900">{title}</span>}
         <button onClick={() => setPage('settings')} className="text-xl">⚙️</button>
       </div>
     </div>
   );
- 
+
+  // ── Consent Modal ────────────────────────────────────────────────────────────
+  const ConsentModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end justify-center p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md">
+        <h2 className="text-xl font-bold text-gray-900 mb-3">{t('consentTitle')}</h2>
+        <p className="text-sm text-gray-900 mb-4 leading-relaxed">{t('consentBody')}</p>
+        <p className="text-xs text-gray-900 mb-5">🏛️ {t('consentPDPA')}</p>
+        <button onClick={handleConsent} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl">
+          {t('consentAgree')}
+        </button>
+      </div>
+    </div>
+  );
+
   if (page === 'language') return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-3">❓</div>
-          <h1 className="text-2xl font-bold text-gray-900">IsThisAScam</h1>
+    <>
+      {showConsent && <ConsentModal />}
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-3">❓</div>
+            <h1 className="text-2xl font-bold text-gray-900">IsThisAScam</h1>
+          </div>
+          <p className="text-center font-semibold text-gray-900 mb-4">{t('selectLang')}</p>
+          <div className="space-y-2 mb-6">
+            {LANGS.map(l => (
+              <button key={l.code} onClick={() => selectLang(l.code)}
+                className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-gray-900">
+                {l.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-center text-xs text-gray-900">{t('privacy')}</p>
         </div>
-        <p className="text-center font-semibold text-gray-900 mb-4">{t('selectLang')}</p>
-        <div className="space-y-2 mb-6">
-          {LANGS.map(l => (
-            <button key={l.code} onClick={() => selectLang(l.code)}
-              className="w-full py-3 px-4 rounded-xl border-2 border-gray-300 hover:border-red-400 hover:bg-red-50 font-medium text-left transition text-gray-900">
-              {l.label}
-            </button>
-          ))}
-        </div>
-        <p className="text-center text-xs text-gray-900">{t('privacy')}</p>
       </div>
-    </div>
+    </>
   );
- 
+
   if (page === 'home') return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
-      <Header back={false} />
-      <div className="max-w-lg mx-auto px-4 py-10 text-center">
-        <div className="text-7xl mb-4">❓</div>
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('headline')}</h1>
-        <p className="text-gray-900 mb-8">{t('sub')}</p>
-        {limitReached && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
-        )}
-        <div className="space-y-3 mb-8">
-          <button onClick={() => setPage('scan')} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
-            {t('analyzeBtn')}
-          </button>
-          <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
-            {t('historyBtn')}
-          </button>
+    <>
+      {showConsent && <ConsentModal />}
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
+        <Header back={false} />
+        <div className="max-w-lg mx-auto px-4 py-10 text-center">
+          <div className="text-7xl mb-4">❓</div>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('headline')}</h1>
+          <p className="text-gray-900 mb-8">{t('sub')}</p>
+          {limitReached && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
+          )}
+          <div className="space-y-3 mb-6">
+            <button onClick={() => setPage('scan')} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
+              {t('analyzeBtn')}
+            </button>
+            <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
+              {t('historyBtn')}
+            </button>
+            <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
+              {t('learnBtn')}
+            </button>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
       </div>
-    </div>
+    </>
   );
- 
+
   if (page === 'scan') return (
     <div className="min-h-screen bg-white">
       <Header title={tab === 'text' ? t('textTab') : t('photoTab')} />
@@ -323,7 +450,7 @@ export default function App() {
       </div>
     </div>
   );
- 
+
   if (page === 'results' && result) {
     const v = VERDICT_STYLE[result.verdict];
     return (
@@ -340,12 +467,14 @@ export default function App() {
               <span className="text-sm font-bold text-gray-900">{result.confidence}% {t('confidence')}</span>
             </div>
           </div>
+
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
             <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
             <p className="text-sm text-gray-900">{result.reason}</p>
           </div>
+
           {result.tactics?.length > 0 && (
-            <div className="bg-gray-50 rounded-xl p-4 mb-5">
+            <div className="bg-gray-50 rounded-xl p-4 mb-4">
               <p className="text-xs font-semibold text-gray-900 uppercase mb-2">{t('tacticsFound')}</p>
               <div className="flex flex-wrap gap-2">
                 {result.tactics.map(tactic => (
@@ -356,6 +485,43 @@ export default function App() {
               </div>
             </div>
           )}
+
+          {/* Feedback Section */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5">
+            {feedback === 'given' ? (
+              <p className="text-sm text-blue-800 text-center font-medium">{t('feedbackThanks')}</p>
+            ) : (
+              <>
+                <p className="text-sm font-bold text-gray-900 mb-1">{t('feedbackTitle')}</p>
+                <p className="text-xs text-gray-900 mb-3">{t('feedbackSub')}</p>
+                {!showMarkAs ? (
+                  <div className="flex gap-2">
+                    <button onClick={() => submitFeedback(true)}
+                      className="flex-1 bg-green-500 text-white font-semibold py-2 rounded-lg text-sm">
+                      {t('thumbsUp')}
+                    </button>
+                    <button onClick={() => setShowMarkAs(true)}
+                      className="flex-1 bg-red-100 text-red-700 font-semibold py-2 rounded-lg text-sm">
+                      {t('thumbsDown')}
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs font-semibold text-gray-900 mb-2">{t('markAs')}</p>
+                    <div className="flex gap-2">
+                      {(['scam', 'suspicious', 'safe'] as Verdict[]).filter(v => v !== result.verdict).map(v => (
+                        <button key={v} onClick={() => submitFeedback(false, v)}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold ${VERDICT_STYLE[v].bg} ${VERDICT_STYLE[v].color} border ${VERDICT_STYLE[v].border}`}>
+                          {t(v)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
           <div className="space-y-3">
             <button onClick={saveResult} className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition">{t('save')}</button>
             <button onClick={resetScan} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-xl transition">{t('checkAnother')}</button>
@@ -364,7 +530,7 @@ export default function App() {
       </div>
     );
   }
- 
+
   if (page === 'history') return (
     <div className="min-h-screen bg-white">
       <Header title="History" />
@@ -400,7 +566,39 @@ export default function App() {
       </div>
     </div>
   );
- 
+
+  if (page === 'learn') return (
+    <div className="min-h-screen bg-white">
+      <Header title={t('learnTitle')} />
+      <div className="max-w-lg mx-auto px-4 py-6">
+        <p className="text-sm text-gray-900 mb-6">{t('learnSub')}</p>
+        <div className="space-y-4">
+          {SCAM_LESSONS.map((lesson, i) => (
+            <details key={i} className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+              <summary className="p-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center">
+                <span>{lesson.title}</span>
+                <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full ml-2 shrink-0">{lesson.tag}</span>
+              </summary>
+              <div className="px-4 pb-4">
+                <p className="text-sm text-gray-900 mb-3">{lesson.content}</p>
+                <div className="bg-white rounded-lg p-3 border border-gray-200">
+                  <p className="text-xs font-semibold text-gray-900 mb-1">Example:</p>
+                  <p className="text-xs text-gray-900 whitespace-pre-line">{lesson.example}</p>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+        <div className="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+          <p className="text-sm font-bold text-gray-900 mb-1">🚨 Report Scams in Malaysia</p>
+          <p className="text-xs text-gray-900">CCID Scam Response Centre: <strong>013-211 9999</strong></p>
+          <p className="text-xs text-gray-900">BNM LINK: <strong>1-300-88-5465</strong></p>
+          <p className="text-xs text-gray-900">MCMC Aduan: <strong>aduan.mcmc.gov.my</strong></p>
+        </div>
+      </div>
+    </div>
+  );
+
   if (page === 'settings') return (
     <div className="min-h-screen bg-white">
       <Header title={t('settings')} />
@@ -428,6 +626,6 @@ export default function App() {
       </div>
     </div>
   );
- 
+
   return null;
 }
