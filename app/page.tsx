@@ -85,7 +85,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 Terima kasih! Maklum balas anda meningkatkan pengesanan kami.',
     markAs: 'Apakah yang sepatutnya?',
     consentTitle: 'Sebelum Anda Mula',
-    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami. Statistik penggunaan tanpa nama dikumpul untuk meningkatkan perkhidmatan.',
+    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami.',
     consentAgree: 'Saya Faham, Teruskan',
     consentPDPA: 'Ini mematuhi garis panduan PDPA Malaysia.',
     learnTitle: '📚 Pelajari Tentang Scam',
@@ -117,7 +117,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 谢谢！您的反馈改善了我们的检测。',
     markAs: '应该是什么?',
     consentTitle: '开始之前',
-    consentBody: 'IsThisAScam使用AI分析消息。您的消息内容会发送给OpenAI进行分析，但我们不会存储。收集匿名使用统计数据以改善服务。',
+    consentBody: 'IsThisAScam使用AI分析消息。您的消息内容会发送给OpenAI进行分析，但我们不会存储。',
     consentAgree: '我明白，继续',
     consentPDPA: '这符合马来西亚PDPA指南。',
     learnTitle: '📚 了解诈骗',
@@ -164,12 +164,12 @@ const VERDICT_STYLE: Record<Verdict, { icon: string; color: string; bg: string; 
 };
 
 const SCAM_LESSONS = [
-  { title: '🏦 Bank Impersonation SMS', tag: 'Common in Malaysia', content: 'Real banks NEVER send links asking you to verify accounts. Legitimate bank SMS contains your card\'s last 4 digits and specific merchant names. If you receive a link, call your bank directly using the number on the back of your card.', example: 'SCAM: "Your Maybank account suspended. Click bit.ly/verify"\nSAFE: "HLB: Card 0088 debited MYR220 at PETRONAS. Call if not you."' },
-  { title: '💼 Job Scams', tag: 'Rising trend', content: 'Scammers offer high-paying part-time jobs requiring no skills — typically "liking" YouTube videos or Shopee products. They ask you to top up a wallet first before "earning". You will never get paid back.', example: 'Red flags: Work from home, RM500/day, no experience needed, must top up first.' },
-  { title: '❤️ Love Scams (Macau Scam)', tag: 'Most losses in Malaysia', content: 'Scammers build romantic relationships online over weeks or months, then claim an emergency requiring money — medical bills, customs fees, business investment. Malaysians lost over RM1.2 billion to this in 2023.', example: 'Red flags: Never meets in person, always has emergencies, asks for money transfers.' },
-  { title: '🎰 Prize & Lucky Draw Scams', tag: 'Very common', content: 'You "win" a prize from Shopee, TnG, or Petronas, but must pay a fee to claim it. Real companies never ask winners to pay fees. If you didn\'t enter a contest, you can\'t win it.', example: 'SCAM: "Tahniah! You won RM5,000. Pay RM50 admin fee to claim."' },
+  { title: '🏦 Bank Impersonation SMS', tag: 'Common in Malaysia', content: 'Real banks NEVER send links asking you to verify accounts. Legitimate bank SMS contains your card last 4 digits and specific merchant names. If you receive a link, call your bank directly using the number on the back of your card.', example: 'SCAM: "Your Maybank account suspended. Click bit.ly/verify"\nSAFE: "HLB: Card 0088 debited MYR220 at PETRONAS. Call if not you."' },
+  { title: '💼 Job Scams', tag: 'Rising trend', content: 'Scammers offer high-paying part-time jobs requiring no skills — typically liking YouTube videos or Shopee products. They ask you to top up a wallet first before earning. You will never get paid back.', example: 'Red flags: Work from home, RM500/day, no experience needed, must top up first.' },
+  { title: '❤️ Love Scams', tag: 'Most losses in Malaysia', content: 'Scammers build romantic relationships online over weeks or months, then claim an emergency requiring money. Malaysians lost over RM1.2 billion to this in 2023.', example: 'Red flags: Never meets in person, always has emergencies, asks for money transfers.' },
+  { title: '🎰 Prize & Lucky Draw Scams', tag: 'Very common', content: 'You win a prize from Shopee, TnG, or Petronas, but must pay a fee to claim it. Real companies never ask winners to pay fees.', example: 'SCAM: "Tahniah! You won RM5,000. Pay RM50 admin fee to claim."' },
   { title: '📱 Parcel Delivery Scams', tag: 'Post-pandemic surge', content: 'Fake notifications from Pos Malaysia, J&T, or DHL claiming your parcel is held. They direct you to a fake website to pay a small release fee and steal your card details.', example: 'Red flags: Unexpected parcel, small payment required, link not from official domain.' },
-  { title: '🏛️ Government Impersonation', tag: 'Very serious', content: 'Scammers impersonate LHDN, PDRM, or MCMC claiming you have unpaid taxes or are under investigation. They demand immediate payment to avoid arrest. Government agencies NEVER demand payment via phone or WhatsApp.', example: 'Red flags: Urgent arrest threat, demand for immediate bank transfer, secrecy required.' },
+  { title: '🏛️ Government Impersonation', tag: 'Very serious', content: 'Scammers impersonate LHDN, PDRM, or MCMC claiming you have unpaid taxes or are under investigation. Government agencies NEVER demand payment via phone or WhatsApp.', example: 'Red flags: Urgent arrest threat, demand for immediate bank transfer, secrecy required.' },
 ];
 
 const HISTORY_KEY = 'itsascam_history';
@@ -220,7 +220,6 @@ export default function App() {
   const [showMarkAs, setShowMarkAs]     = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const t = useCallback((k: string) => T[lang][k] ?? T.en[k], [lang]);
-useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); } }, [page]);
 
   useEffect(() => {
     const savedLang = localStorage.getItem(LANG_KEY) as Lang | null;
@@ -232,6 +231,17 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
     setMounted(true);
   }, []);
 
+  // Clear inputs every time scan page is entered
+  useEffect(() => {
+    if (page === 'scan') {
+      setInputText('');
+      setImageBase64(null);
+      setImagePreview(null);
+      setError('');
+      setTab('text');
+    }
+  }, [page]);
+
   if (!mounted) return null;
 
   const remaining = FREE_LIMIT - usage;
@@ -240,8 +250,7 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
   const selectLang = (l: Lang) => {
     setLang(l);
     localStorage.setItem(LANG_KEY, l);
-    const hasConsent = localStorage.getItem(CONSENT_KEY);
-    if (!hasConsent) { setShowConsent(true); }
+    if (!localStorage.getItem(CONSENT_KEY)) setShowConsent(true);
     setPage('home');
   };
 
@@ -304,7 +313,7 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
           deviceId: getDeviceId(),
         }),
       });
-    } catch { /* silent fail — feedback is non-critical */ }
+    } catch { /* silent */ }
   };
 
   const saveResult = () => {
@@ -318,14 +327,13 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
     setHistory(updated); persistHistory(updated);
   };
 
-  <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }}
-  className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
+  const goToScan = () => setPage('scan');
 
-  const Header = ({ title, back = true, backTo = 'home' }: { title? string</ back?: boolean; backTo?: Page }) => (
+  const Header = ({ title, back = true, backTo = 'home' as Page }: { title?: string; back?: boolean; backTo?: Page }) => (
     <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
-          ? <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }}
+          ? <button onClick={() => setPage(backTo)} className="text-blue-600 font-medium">{t('back')}</button>
           : <span className="text-xl font-bold text-gray-900">IsThisAScam</span>}
         {title && <span className="font-semibold text-gray-900">{title}</span>}
         <button onClick={() => setPage('settings')} className="text-xl">⚙️</button>
@@ -333,7 +341,6 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
     </div>
   );
 
-  // ── Consent Modal ────────────────────────────────────────────────────────────
   const ConsentModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end justify-center p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md">
@@ -384,7 +391,7 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
           )}
           <div className="space-y-3 mb-6">
-            <button onClick={() => setPage('scan')} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
+            <button onClick={goToScan} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
               {t('analyzeBtn')}
             </button>
             <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
@@ -469,12 +476,10 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
               <span className="text-sm font-bold text-gray-900">{result.confidence}% {t('confidence')}</span>
             </div>
           </div>
-
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
             <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
             <p className="text-sm text-gray-900">{result.reason}</p>
           </div>
-
           {result.tactics?.length > 0 && (
             <div className="bg-gray-50 rounded-xl p-4 mb-4">
               <p className="text-xs font-semibold text-gray-900 uppercase mb-2">{t('tacticsFound')}</p>
@@ -487,8 +492,6 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
               </div>
             </div>
           )}
-
-          {/* Feedback Section */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5">
             {feedback === 'given' ? (
               <p className="text-sm text-blue-800 text-center font-medium">{t('feedbackThanks')}</p>
@@ -511,10 +514,10 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
                   <div>
                     <p className="text-xs font-semibold text-gray-900 mb-2">{t('markAs')}</p>
                     <div className="flex gap-2">
-                      {(['scam', 'suspicious', 'safe'] as Verdict[]).filter(v => v !== result.verdict).map(v => (
-                        <button key={v} onClick={() => submitFeedback(false, v)}
-                          className={`flex-1 py-2 rounded-lg text-xs font-bold ${VERDICT_STYLE[v].bg} ${VERDICT_STYLE[v].color} border ${VERDICT_STYLE[v].border}`}>
-                          {t(v)}
+                      {(['scam', 'suspicious', 'safe'] as Verdict[]).filter(vv => vv !== result.verdict).map(vv => (
+                        <button key={vv} onClick={() => submitFeedback(false, vv)}
+                          className={`flex-1 py-2 rounded-lg text-xs font-bold ${VERDICT_STYLE[vv].bg} ${VERDICT_STYLE[vv].color} border ${VERDICT_STYLE[vv].border}`}>
+                          {t(vv)}
                         </button>
                       ))}
                     </div>
@@ -523,10 +526,9 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
               </>
             )}
           </div>
-
           <div className="space-y-3">
             <button onClick={saveResult} className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition">{t('save')}</button>
-            <button onClick={resetScan} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-xl transition">{t('checkAnother')}</button>
+            <button onClick={goToScan} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-xl transition">{t('checkAnother')}</button>
           </div>
         </div>
       </div>
