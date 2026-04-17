@@ -10,15 +10,21 @@ export async function POST(req: NextRequest) {
   try {
     const { scanId, correctVerdict, originalVerdict, originalText, deviceId } = await req.json();
 
-    await supabase.from('feedback').insert({
-      scan_id: scanId,
+    console.log('Feedback received:', { scanId, correctVerdict, originalVerdict });
+
+    const { error: feedbackError } = await supabase.from('feedback').insert({
+      scan_id: scanId || null,
       correct_verdict: correctVerdict,
       original_verdict: originalVerdict,
       original_text: originalText,
       device_id: deviceId,
     });
 
-    // If enough feedback on same text, auto-add to examples
+    if (feedbackError) {
+      console.error('Feedback insert error:', JSON.stringify(feedbackError));
+      return NextResponse.json({ error: feedbackError.message }, { status: 500 });
+    }
+
     const { count } = await supabase
       .from('feedback')
       .select('*', { count: 'exact' })
@@ -36,6 +42,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true });
   } catch (e: any) {
+    console.error('Feedback route error:', e.message);
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }
