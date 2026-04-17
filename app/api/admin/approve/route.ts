@@ -6,62 +6,61 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-function authCheck(req: NextRequest) {
-  return req.cookies.get('admin_auth')?.value === process.env.ADMIN_PASSWORD;
-}
+const REVIEW_PROMPT = `You are a Malaysian scam detection expert. 
+A user submitted feedback saying a message was incorrectly classified.
+Analyze if the correction is legitimate.
+Return JSON only: { "approve": true/false, "reason": "brief explanation" }
+Consider: bank SMS patterns, Malaysian scam tactics, Manglish/Rojak text.`;
 
-export async function GET(req: NextRequest) {
-  if (!authCheck(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function POST(req: NextRequest) {
+  if (req.cookies.get('admin_auth')?.value !== process.env.ADMIN_PASSWORD) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
 
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const { feedbackId, action, originalText, correctVerdict } = await req.json();
 
-  const [
-    { count: totalScans },
-    { count: todayScans },
-    { count: monthScans },
-    { data: verdicts },
-    { data: countries },
-    { data: languages },
-    { data: tactics },
-    { data: recentScans },
-    { data: pendingFeedback },
-    { count: totalFeedback },
-  ] = await Promise.all([
-    supabase.from('scans').select('*', { count: 'exact', head: true }),
-    supabase.from('scans').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
-    supabase.from('scans').select('*', { count: 'exact', head: true }).gte('created_at', monthStart),
-    supabase.from('scans').select('verdict').gte('created_at', monthStart),
-    supabase.from('scans').select('country').not('country', 'eq', 'Unknown'),
-    supabase.from('scans').select('language'),
-    supabase.from('scans').select('tactics').not('tactics', 'eq', '{}'),
-    supabase.from('scans').select('verdict, confidence, language, country, created_at').order('created_at', { ascending: false }).limit(10),
-    supabase.from('feedback').select('*, scans(verdict)').order('created_at', { ascending: false }).limit(20),
-    supabase.from('feedback').select('*', { count: 'exact', head: true }),
-  ]);
+  if (action === 'ai_review') {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: REVIEW_PROMPT },
+          { role: 'user', content: `Message: "${originalText}"\nUser says correct verdict: ${correctVerdict}` },
+        ],
+        max_tokens: 100,
+        response_format: { type: 'json_object' },
+      }),
+    });
+    const data = await res.json();
+    const review = JSON.parse(data.choices[0].message.content);
 
-  // Count verdicts
-  const verdictCount = { scam: 0, suspicious: 0, safe: 0 };
-  verdicts?.forEach(s => { if (s.verdict in verdictCount) verdictCount[s.verdict as keyof typeof verdictCount]++; });
+    if (review.approve) {
+      await supabase.from('examples').upsert({
+        text: originalText,
+        correct_verdict: correctVerdict,
+        explanation: `AI verified: ${review.reason}`,
+        confirmed: true,
+      }, { onConflict: 'text' });
+    }
+    return NextResponse.json(review);
+  }
 
-  // Count countries
-  const countryCount: Record<string, number> = {};
-  countries?.forEach(s => { countryCount[s.country] = (countryCount[s.country] || 0) + 1; });
-  const topCountries = Object.entries(countryCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  if (action === 'approve') {
+    await supabase.from('examples').upsert({
+      text: originalText,
+      correct_verdict: correctVerdict,
+      explanation: `Manually approved by admin`,
+      confirmed: true,
+    }, { onConflict: 'text' });
+    return NextResponse.json({ success: true });
+  }
 
-  // Count languages
-  const langCount: Record<string, number> = {};
-  languages?.forEach(s => { langCount[s.language] = (langCount[s.language] || 0) + 1; });
+  if (action === 'reject') {
+    await supabase.from('feedback').delete().eq('id', feedbackId);
+    return NextResponse.json({ success: true });
+  }
 
-  // Count tactics
-  const tacticCount: Record<string, number> = {};
-  tactics?.forEach(s => { s.tactics?.forEach((t: string) => { tacticCount[t] = (tacticCount[t] || 0) + 1; }); });
-  const topTactics = Object.entries(tacticCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
-
-  return NextResponse.json({
-    totalScans, todayScans, monthScans, totalFeedback,
-    verdictCount, topCountries, langCount, topTactics,
-    recentScans, pendingFeedback,
-  });
+  return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 }
