@@ -61,6 +61,13 @@ const T: Record<Lang, Record<string, string>> = {
     consentPDPA: 'This complies with Malaysian PDPA guidelines.',
     learnTitle: '📚 Learn About Scams',
     learnSub: 'Stay protected — know the latest scam tactics',
+    disclaimerTitle: 'Important Disclaimer',
+    disclaimerBody: 'IsThisAScam is an AI-powered tool designed to help identify potentially suspicious messages. It is provided for informational purposes only.\n\n• Results are not guaranteed to be accurate\n• This app does not constitute legal or financial advice\n• Do not rely solely on this app to make decisions\n• Always verify with official sources (your bank, PDRM, MCMC)\n• The developer is not liable for any losses arising from use of this app\n\nBy using this app, you accept these terms.',
+    disclaimerAgree: 'I Understand & Accept',
+    disclaimerQR: '⚠️ QR Code detected. Never click unknown links. Verify with the official website directly.',
+    extractedURL: 'URL found in QR:',
+    aiDisclaimer: 'AI-powered analysis. Not guaranteed accurate. Always verify with official sources.',
+    termsLink: 'Terms of Use',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -93,6 +100,13 @@ const T: Record<Lang, Record<string, string>> = {
     consentPDPA: 'Ini mematuhi garis panduan PDPA Malaysia.',
     learnTitle: '📚 Pelajari Tentang Scam',
     learnSub: 'Kekal dilindungi — kenali taktik scam terkini',
+    disclaimerTitle: 'Penafian Penting',
+    disclaimerBody: 'IsThisAScam adalah alat berkuasa AI untuk membantu mengenal pasti mesej yang mencurigakan. Ia disediakan untuk tujuan maklumat sahaja.\n\n• Keputusan tidak dijamin tepat\n• Aplikasi ini bukan nasihat undang-undang atau kewangan\n• Jangan bergantung sepenuhnya pada aplikasi ini\n• Sentiasa sahkan dengan sumber rasmi (bank anda, PDRM, MCMC)\n• Pembangun tidak bertanggungjawab atas sebarang kerugian\n\nDengan menggunakan aplikasi ini, anda menerima syarat-syarat ini.',
+    disclaimerAgree: 'Saya Faham & Terima',
+    disclaimerQR: '⚠️ Kod QR dikesan. Jangan klik pautan yang tidak dikenali. Sahkan terus dengan laman web rasmi.',
+    extractedURL: 'URL dalam kod QR:',
+    aiDisclaimer: 'Analisis berkuasa AI. Tidak dijamin tepat. Sentiasa sahkan dengan sumber rasmi.',
+    termsLink: 'Terma Penggunaan',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -125,6 +139,13 @@ const T: Record<Lang, Record<string, string>> = {
     consentPDPA: '这符合马来西亚PDPA指南。',
     learnTitle: '📚 了解诈骗',
     learnSub: '保持保护 — 了解最新的诈骗手段',
+    disclaimerTitle: '重要免责声明',
+    disclaimerBody: 'IsThisAScam是一个AI驱动的工具，旨在帮助识别可疑消息。仅供参考。\n\n• 结果不保证准确\n• 本应用不构成法律或财务建议\n• 请勿单独依赖本应用做决定\n• 请始终向官方来源核实（您的银行、警察、MCMC）\n• 开发者对使用本应用造成的任何损失不承担责任\n\n使用本应用即表示您接受这些条款。',
+    disclaimerAgree: '我理解并接受',
+    disclaimerQR: '⚠️ 检测到二维码。切勿点击未知链接。请直接通过官方网站核实。',
+    extractedURL: '二维码中的网址:',
+    aiDisclaimer: 'AI驱动分析。不保证准确。请始终向官方来源核实。',
+    termsLink: '使用条款',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -157,6 +178,13 @@ const T: Record<Lang, Record<string, string>> = {
     consentPDPA: 'இது பயனர் கருத்து மற்றும் திருத்தங்கள் கண்டறிதல் துல்லியத்தை மேம்படுத்த IsThisAScam குழுவால் மதிப்பாய்வு செய்யப்படுகின்றன. மலேசிய PDPA இன் கீழ் தொடர்வதன் மூலம் நீங்கள் இந்த தரவு செயலாக்கத்திற்கு சம்மதிக்கிறீர்கள்.',
     learnTitle: '📚 மோசடிகளைப் பற்றி அறியுங்கள்',
     learnSub: 'பாதுகாப்பாக இருங்கள் — சமீபத்திய மோசடி தந்திரங்களை அறியுங்கள்',
+    disclaimerTitle: 'முக்கியமான மறுப்பு',
+    disclaimerBody: 'IsThisAScam என்பது சந்தேகத்திற்குரிய செய்திகளை அடையாளம் காண உதவும் AI கருவி. தகவல் நோக்கங்களுக்காக மட்டுமே.\n\n• முடிவுகள் துல்லியமாக இருப்பதற்கு உத்தரவாதம் இல்லை\n• இந்த பயன்பாடு சட்ட அல்லது நிதி ஆலோசனை அல்ல\n• இந்த பயன்பாட்டை மட்டுமே நம்பி முடிவு எடுக்காதீர்கள்\n• எப்போதும் அதிகாரப்பூர்வ ஆதாரங்களுடன் சரிபார்க்கவும்\n• டெவலப்பர் எந்த இழப்புக்கும் பொறுப்பு அல்ல\n\nஇந்த பயன்பாட்டை பயன்படுத்துவதன் மூலம் நீங்கள் இந்த விதிமுறைகளை ஏற்கிறீர்கள்.',
+    disclaimerAgree: 'நான் புரிந்துகொண்டேன் & ஏற்கிறேன்',
+    disclaimerQR: '⚠️ QR குறியீடு கண்டறியப்பட்டது. அறியாத இணைப்புகளை கிளிக் செய்யாதீர்கள்.',
+    extractedURL: 'QR இல் உள்ள URL:',
+    aiDisclaimer: 'AI பகுப்பாய்வு. துல்லியம் உத்தரவாதப்படுத்தப்படவில்லை.',
+    termsLink: 'பயன்பாட்டு விதிமுறைகள்',
   },
 };
 
@@ -180,6 +208,7 @@ const HISTORY_KEY = 'itsascam_history';
 const usageKey = () => `itsascam_usage_${new Date().toISOString().slice(0, 7)}`;
 const LANG_KEY = 'itsascam_lang';
 const CONSENT_KEY = 'itsascam_consent';
+const DISCLAIMER_KEY = 'itsascam_disclaimer';
 const DEVICE_KEY = 'itsascam_device';
 
 const loadHistory = (): Result[] => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } };
@@ -220,6 +249,7 @@ export default function App() {
   const [usage, setUsage]               = useState(0);
   const [mounted, setMounted]           = useState(false);
   const [showConsent, setShowConsent]   = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [feedback, setFeedback]         = useState<'pending' | 'given' | null>(null);
   const [showMarkAs, setShowMarkAs]     = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -232,6 +262,8 @@ export default function App() {
     setUsage(loadUsage());
     const hasConsent = localStorage.getItem(CONSENT_KEY);
     if (!hasConsent && savedLang) setShowConsent(true);
+    const hasDisclaimer = localStorage.getItem(DISCLAIMER_KEY);
+    if (!hasDisclaimer && savedLang) setShowDisclaimer(true);
     setMounted(true);
   }, []);
 
@@ -251,10 +283,11 @@ export default function App() {
   const remaining = FREE_LIMIT - usage;
   const limitReached = usage >= FREE_LIMIT;
 
-  const selectLang = (l: Lang) => {
+const selectLang = (l: Lang) => {
     setLang(l);
     localStorage.setItem(LANG_KEY, l);
     if (!localStorage.getItem(CONSENT_KEY)) setShowConsent(true);
+    if (!localStorage.getItem(DISCLAIMER_KEY)) setShowDisclaimer(true);
     setPage('home');
   };
 
@@ -387,9 +420,24 @@ export default function App() {
     </div>
   );
 
+const DisclaimerModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-end justify-center p-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
+        <h2 className="text-xl font-bold text-gray-900 mb-3">⚠️ {t('disclaimerTitle')}</h2>
+        <p className="text-xs text-gray-900 mb-4 leading-relaxed whitespace-pre-line">{t('disclaimerBody')}</p>
+        <p className="text-xs text-gray-500 mb-4 italic">* English version prevails in case of discrepancy between translations.</p>
+        <button onClick={() => { localStorage.setItem(DISCLAIMER_KEY, 'true'); setShowDisclaimer(false); }}
+          className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl">
+          {t('disclaimerAgree')}
+        </button>
+      </div>
+    </div>
+  );
+
   if (page === 'language') return (
     <>
       {showConsent && <ConsentModal />}
+      {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-sm">
           <div className="text-center mb-8">
@@ -414,6 +462,7 @@ export default function App() {
   if (page === 'home') return (
     <>
       {showConsent && <ConsentModal />}
+      {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
         <Header back={false} />
         <div className="max-w-lg mx-auto px-4 py-10 text-center">
@@ -537,6 +586,13 @@ export default function App() {
               <span className="text-sm font-bold text-gray-900">{result.confidence}% {t('confidence')}</span>
             </div>
           </div>
+          {result.isImage && result.text && result.text !== '[Screenshot]' && (
+            <div className="bg-gray-50 rounded-xl p-4 mb-4">
+              <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{t('extractedURL')}</p>
+              <p className="text-xs text-gray-900 break-all font-mono bg-white p-2 rounded border border-gray-200">{result.text}</p>
+              <p className="text-xs text-red-600 mt-2 font-medium">{t('disclaimerQR')}</p>
+            </div>
+          )}
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
             <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
             <p className="text-sm text-gray-900">{result.reason}</p>
@@ -591,6 +647,7 @@ export default function App() {
             <button onClick={saveResult} className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition">{t('save')}</button>
             <button onClick={goToScan} className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-3 rounded-xl transition">{t('checkAnother')}</button>
           </div>
+          <p className="text-xs text-gray-500 text-center mt-4">⚠️ {t('aiDisclaimer')}</p>
         </div>
       </div>
     );
@@ -688,6 +745,10 @@ export default function App() {
           </div>
         </div>
         <p className="text-xs text-gray-900 text-center mt-2">{t('premiumSoon')}</p>
+        <button onClick={() => { localStorage.removeItem(DISCLAIMER_KEY); setShowDisclaimer(true); }}
+          className="w-full mt-6 py-3 border border-gray-200 rounded-xl text-xs text-gray-500">
+          📄 {t('termsLink')}
+        </button>
       </div>
     </div>
   );
