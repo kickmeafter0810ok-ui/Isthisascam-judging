@@ -6,16 +6,23 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-const REVIEW_PROMPT = `You are reviewing user feedback for a scam detection app.
-A user says the AI gave the WRONG verdict for a message.
-Your job is to decide if the user's correction is valid.
+const REVIEW_PROMPT = `You are a quality control agent for a Malaysian scam detection app.
 
-Return JSON only: { "approve": true/false, "reason": "one sentence explaining your recommendation" }
+A user flagged an AI verdict as wrong. You must evaluate:
+1. Is the user's correction logical? (Does the suggested verdict make sense for this message?)
+2. Is this message relevant to scam detection? (Some messages may be unrelated - LinkedIn posts, random text, etc.)
 
-approve: true = user is RIGHT, the AI was wrong, we should update our examples
-approve: false = user is WRONG, the original AI verdict was correct, reject this feedback
+Return JSON only:
+{
+  "approve": true/false,
+  "reason": "2-3 sentences explaining: (1) whether the correction is logical, (2) whether this message is relevant to scam detection, (3) your recommendation to approve or reject"
+}
 
-Be concise. Focus on whether the correction makes sense, not on analyzing the scam.`;
+approve: true = correction is valid AND message is relevant → add to training examples
+approve: false = correction is wrong OR message is irrelevant → reject this feedback
+
+Examples of irrelevant messages: LinkedIn posts, news articles, random English text, non-Malaysian content.
+Examples of relevant messages: Bank SMS, WhatsApp scam messages, prize notifications, job offers, investment pitches.`;
 
 export async function POST(req: NextRequest) {
   if (req.cookies.get('admin_auth')?.value !== process.env.ADMIN_PASSWORD) {
