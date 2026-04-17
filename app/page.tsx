@@ -86,7 +86,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 Terima kasih! Maklum balas anda meningkatkan pengesanan kami.',
     markAs: 'Apakah yang sepatutnya?',
     consentTitle: 'Sebelum Anda Mula',
-    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami. Maklum balas dan pembetulan pengguna disemak oleh pasukan IsThisAScam untuk meningkatkan ketepatan pengesanan. Dengan meneruskan, anda bersetuju dengan pemprosesan data ini di bawah PDPA Malaysia.',
+    consentBody: 'IsThisAScam menggunakan ChatGPT OpenAI untuk menganalisis mesej anda. Kandungan mesej anda dihantar ke OpenAI (USA) untuk analisis dan tertakluk kepada dasar privasi OpenAI (openai.com/privacy). Kami tidak menyimpan kandungan mesej anda. Statistik penggunaan tanpa nama dikumpul melalui Supabase. Maklum balas dan pembetulan pengguna disemak oleh pasukan IsThisAScam untuk meningkatkan ketepatan pengesanan. Dengan meneruskan, anda bersetuju dengan pemprosesan data ini di bawah PDPA Malaysia.',
     consentAgree: 'Saya Faham, Teruskan',
     consentPDPA: 'Ini mematuhi garis panduan PDPA Malaysia.',
     learnTitle: '📚 Pelajari Tentang Scam',
@@ -298,7 +298,7 @@ export default function App() {
     }
   };
 
-  console.log('Feedback scanId:', result?.scanId, 'verdict:', result?.verdict);
+
   const submitFeedback = async (isCorrect: boolean, correctVerdict?: Verdict) => {
     if (!result) { console.log('No result'); return; }
     setFeedback('given');
@@ -355,14 +355,7 @@ export default function App() {
         <h2 className="text-xl font-bold text-gray-900 mb-3">{t('consentTitle')}</h2>
         <p className="text-sm text-gray-900 mb-4 leading-relaxed">{t('consentBody')}</p>
         <p className="text-xs text-gray-900 mb-5">🏛️ {t('consentPDPA')}</p>
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-  <p className="text-sm font-bold text-gray-900 mb-2">💬 Share Your Feedback</p>
-  <p className="text-xs text-gray-900 mb-3">Help us improve IsThisAScam for all Malaysians</p>
-  <a href="https://tally.so/r/2ExkNj" target="_blank" rel="noopener noreferrer"
-    className="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg text-sm inline-block">
-    Give Feedback
-  </a>
-</div>
+        
         <button onClick={handleConsent} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl">
           {t('consentAgree')}
         </button>
