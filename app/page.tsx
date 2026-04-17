@@ -318,7 +318,7 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
     setHistory(updated); persistHistory(updated);
   };
 
-  <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }};
+  <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }}
 
   const Header = ({ title, back = true, backTo = 'home' }: { title?: string; back?: boolean; backTo?: Page }) => (
     <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
