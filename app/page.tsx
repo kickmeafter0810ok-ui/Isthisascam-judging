@@ -321,7 +321,7 @@ useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null);
   <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }}
   className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
 
-  const Header = ({ title, back = true, backTo = 'home' }: { title? string; back?: boolean; backTo?: Page }) => (
+  const Header = ({ title, back = true, backTo = 'home' }: { title? string</ back?: boolean; backTo?: Page }) => (
     <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
