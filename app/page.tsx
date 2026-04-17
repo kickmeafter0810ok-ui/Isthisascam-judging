@@ -299,12 +299,13 @@ export default function App() {
       if (limitReached) {
         partial = keywordFallback(inputText);
       } else {
+        console.log('Image base64 length:', imageBase64?.length, 'starts with:', imageBase64?.substring(0, 50));
         const res = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          console:log('Image base64 length:', imageBase64?.length, 'starts with:', imageBase64?.substring(0, 50)),
           body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
         });
+        
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Analysis failed');
         partial = data;
