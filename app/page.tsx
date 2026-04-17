@@ -287,7 +287,7 @@ export default function App() {
         bumpUsage();
         setUsage(loadUsage());
       }
-      setResult({ ...partial, id: Date.now(), timestamp: Date.now(), isImage: !!imageBase64, text: imageBase64 ? '[Screenshot]' : inputText });
+      setResult({ ...partial, id: Date.now(), timestamp: Date.now(), isImage: !!imageBase64, text: imageBase64 ? (partial.storedText || '[Screenshot]') : inputText });
       setFeedback('pending');
       setPage('results');
     } catch (e: any) {
@@ -299,22 +299,28 @@ export default function App() {
 
   console.log('Feedback scanId:', result?.scanId, 'verdict:', result?.verdict);
   const submitFeedback = async (isCorrect: boolean, correctVerdict?: Verdict) => {
-    if (!result) return;
+    if (!result) { console.log('No result'); return; }
     setFeedback('given');
     setShowMarkAs(false);
+    const payload = {
+      scanId: result.scanId || null,
+      correctVerdict: isCorrect ? result.verdict : correctVerdict,
+      originalVerdict: result.verdict,
+      originalText: result.text,
+      deviceId: getDeviceId(),
+    };
+    console.log('Submitting feedback:', payload);
     try {
-      await fetch('/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          scanId: result.scanId,
-          correctVerdict: isCorrect ? result.verdict : correctVerdict,
-          originalVerdict: result.verdict,
-          originalText: result.text,
-          deviceId: getDeviceId(),
-        }),
+        body: JSON.stringify(payload),
       });
-    } catch { /* silent */ }
+      const data = await res.json();
+      console.log('Feedback response:', data);
+    } catch (e: any) {
+      console.error('Feedback error:', e.message);
+    }
   };
 
   const saveResult = () => {

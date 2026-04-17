@@ -14,7 +14,8 @@ Return JSON only:
   "verdict": "scam" | "suspicious" | "safe",
   "confidence": 0-100,
   "reason": "brief explanation in user's language",
-  "tactics": ["list", "of", "tactics", "detected"]
+  "tactics": ["list", "of", "tactics", "detected"],
+  "extracted_text": "if image input, extract ALL text visible in the image. If text input, return null."
 }
 Tactics: urgency, impersonation, phishing_link, credential_harvesting, prize_scam, loan_scam, job_scam, romance_scam, investment_scam.
 Legitimate bank SMS patterns (mark as SAFE):
@@ -30,13 +31,10 @@ async function getExamples(): Promise<string> {
       .select('text, correct_verdict, explanation')
       .eq('confirmed', true)
       .limit(10);
-
     if (!data?.length) return '';
-
     const examples = data.map(e =>
       `Message: "${e.text}"\nVerdict: ${e.correct_verdict}\nReason: ${e.explanation}`
     ).join('\n\n');
-
     return `\n\nLearned examples from user feedback:\n${examples}`;
   } catch { return ''; }
 }
@@ -55,7 +53,7 @@ export async function POST(req: NextRequest) {
     const userContent: any[] = imageBase64
       ? [
           { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}`, detail: 'high' } },
-          { type: 'text', text: `Analyze this screenshot for scams. Respond in: ${language}` },
+          { type: 'text', text: `Analyze this screenshot for scams. Extract all visible text. Respond in: ${language}` },
         ]
       : [{ type: 'text', text: `Analyze for scams. Respond in: ${language}\n\nMessage: ${text}` }];
 
@@ -65,7 +63,7 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         model: imageBase64 ? 'gpt-4o' : 'gpt-4o-mini',
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userContent }],
-        max_tokens: 300,
+        max_tokens: 500,
         response_format: { type: 'json_object' },
       }),
     });
@@ -75,25 +73,28 @@ export async function POST(req: NextRequest) {
 
     const result = JSON.parse(data.choices[0].message.content);
 
-    // Get country from Vercel geo headers
     const country = req.headers.get('x-vercel-ip-country') || 'Unknown';
     const region = req.headers.get('x-vercel-ip-country-region') || 'Unknown';
 
-    // Save scan to Supabase
-  const { data: scan, error: scanError } = await supabase.from('scans').insert({
-  verdict: result.verdict,
-  confidence: result.confidence,
-  language,
-  is_image: !!imageBase64,
-  tactics: result.tactics || [],
-  country,
-  region,
-  device_id: deviceId || null,
-}).select('id').single();
+    // Use extracted text for images, original text for text input
+    const storedText = imageBase64
+      ? (result.extracted_text || '[Screenshot - text extraction failed]')
+      : text;
 
-if (scanError) console.error('Supabase insert error:', JSON.stringify(scanError));
+    const { data: scan, error: scanError } = await supabase.from('scans').insert({
+      verdict: result.verdict,
+      confidence: result.confidence,
+      language,
+      is_image: !!imageBase64,
+      tactics: result.tactics || [],
+      country,
+      region,
+      device_id: deviceId || null,
+    }).select('id').single();
 
-    return NextResponse.json({ ...result, scanId: scan?.id });
+    if (scanError) console.error('Supabase insert error:', JSON.stringify(scanError));
+
+    return NextResponse.json({ ...result, scanId: scan?.id, storedText });
   } catch (e: any) {
     console.error('Route error:', e.message);
     return NextResponse.json({ error: e.message }, { status: 500 });
