@@ -6,11 +6,16 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-const REVIEW_PROMPT = `You are a Malaysian scam detection expert. 
-A user submitted feedback saying a message was incorrectly classified.
-Analyze if the correction is legitimate.
-Return JSON only: { "approve": true/false, "reason": "brief explanation" }
-Consider: bank SMS patterns, Malaysian scam tactics, Manglish/Rojak text.`;
+const REVIEW_PROMPT = `You are reviewing user feedback for a scam detection app.
+A user says the AI gave the WRONG verdict for a message.
+Your job is to decide if the user's correction is valid.
+
+Return JSON only: { "approve": true/false, "reason": "one sentence explaining your recommendation" }
+
+approve: true = user is RIGHT, the AI was wrong, we should update our examples
+approve: false = user is WRONG, the original AI verdict was correct, reject this feedback
+
+Be concise. Focus on whether the correction makes sense, not on analyzing the scam.`;
 
 export async function POST(req: NextRequest) {
   if (req.cookies.get('admin_auth')?.value !== process.env.ADMIN_PASSWORD) {
