@@ -407,15 +407,20 @@ export default function App() {
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
           )}
           <div className="space-y-3 mb-6">
-          <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
-  {t('learnBtn')}
-</button>
-</div>
-<a href="https://tally.so/r/2ExkNj" target="_blank" rel="noopener noreferrer"
-  className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition flex items-center justify-center mt-3">
-  💬 Give Feedback
-</a>
-
+            <button onClick={() => setPage('scan')} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
+              {t('analyzeBtn')}
+            </button>
+            <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
+              {t('historyBtn')}
+            </button>
+            <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
+              {t('learnBtn')}
+            </button>
+            <a href="https://tally.so/r/2ExkNj" target="_blank" rel="noopener noreferrer"
+              className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition flex items-center justify-center">
+              💬 Give Feedback
+            </a>
+          </div>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
         </div>
