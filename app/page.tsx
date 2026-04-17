@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 type Page = 'language' | 'home' | 'scan' | 'results' | 'history' | 'settings' | 'learn';
-type Verdict = 'scam' | 'suspicious' | 'safe';
+type Verdict = 'scam' | 'suspicious' | 'safe' | 'no_text';
 type Lang = 'en' | 'ms' | 'zh-s' | 'ta';
 
 interface Result {
@@ -17,6 +17,8 @@ interface Result {
   text: string;
   isImage: boolean;
   timestamp: number;
+  limitReached?: boolean;
+  limitMessage?: string;
 }
 
 const FREE_LIMIT = 10;
@@ -34,7 +36,7 @@ const T: Record<Lang, Record<string, string>> = {
     headline: 'Is This A Scam?', sub: 'Check suspicious messages instantly',
     analyzeBtn: '🔍 Analyze Now', historyBtn: '📋 View History',
     learnBtn: '📚 Learn About Scams', back: '← Back',
-    textTab: 'Paste Text', photoTab: 'Upload Photo',
+    textTab: 'Paste Text', photoTab: '📷 Photo / QR Code',
     placeholder: 'Paste suspicious message here...',
     analyze: '🔍 Analyze', analyzing: '⏳ Analyzing...',
     uploadPhoto: '📷 Choose Screenshot',
@@ -66,7 +68,7 @@ const T: Record<Lang, Record<string, string>> = {
     headline: 'Adakah Ini Scam?', sub: 'Semak mesej mencurigakan dengan segera',
     analyzeBtn: '🔍 Analisis Sekarang', historyBtn: '📋 Lihat Sejarah',
     learnBtn: '📚 Pelajari Tentang Scam', back: '← Kembali',
-    textTab: 'Tampal Teks', photoTab: 'Muat Naik Foto',
+    textTab: 'Tampal Teks', '📷 Foto / Kod QR',
     placeholder: 'Tampal mesej mencurigakan di sini...',
     analyze: '🔍 Analisis', analyzing: '⏳ Menganalisis...',
     uploadPhoto: '📷 Pilih Tangkapan Skrin',
@@ -98,7 +100,7 @@ const T: Record<Lang, Record<string, string>> = {
     headline: '这是诈骗吗?', sub: '立即检查可疑信息',
     analyzeBtn: '🔍 立即分析', historyBtn: '📋 查看历史',
     learnBtn: '📚 了解诈骗', back: '← 返回',
-    textTab: '粘贴文字', photoTab: '上传照片',
+    textTab: '粘贴文字', photoTab: '📷 照片 / 二维码',
     placeholder: '在此粘贴可疑消息...',
     analyze: '🔍 分析', analyzing: '⏳ 正在分析...',
     uploadPhoto: '📷 选择截图',
@@ -130,7 +132,7 @@ const T: Record<Lang, Record<string, string>> = {
     headline: 'இது மோசடியா?', sub: 'சந்தேகத்திற்குரிய செய்திகளை உடனே சரிபார்க்கவும்',
     analyzeBtn: '🔍 இப்போது பகுப்பாய்வு செய்யவும்', historyBtn: '📋 வரலாற்றைப் பார்க்கவும்',
     learnBtn: '📚 மோசடிகளைப் பற்றி அறியுங்கள்', back: '← திரும்பவும்',
-    textTab: 'உரையை ஒட்டவும்', photoTab: 'புகைப்படம் பதிவேற்றவும்',
+    textTab: 'உரையை ஒட்டவும்', photoTab: '📷 புகைப்படம் / QR குறியீடு',
     placeholder: 'சந்தேகத்திற்குரிய செய்தியை இங்கே ஒட்டவும்...',
     analyze: '🔍 பகுப்பாய்வு', analyzing: '⏳ பகுப்பாய்வு செய்கிறது...',
     uploadPhoto: '📷 ஸ்கிரீன்ஷாட் தேர்ந்தெடுக்கவும்',
@@ -162,6 +164,7 @@ const VERDICT_STYLE: Record<Verdict, { icon: string; color: string; bg: string; 
   scam:       { icon: '🚨', color: 'text-red-600',    bg: 'bg-red-50',    border: 'border-red-200',    bar: 'bg-red-500' },
   suspicious: { icon: '⚠️', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-200', bar: 'bg-yellow-500' },
   safe:       { icon: '✅', color: 'text-green-600',  bg: 'bg-green-50',  border: 'border-green-200',  bar: 'bg-green-500' },
+  no_text:    { icon: '📷', color: 'text-gray-600',   bg: 'bg-gray-50',   border: 'border-gray-200',   bar: 'bg-gray-400' },
 };
 
 const SCAM_LESSONS = [
@@ -475,10 +478,34 @@ export default function App() {
 
   if (page === 'results' && result) {
     const v = VERDICT_STYLE[result.verdict];
+
+    // No text detected in image — ask user to retake
+    if (result.verdict === 'no_text') return (
+      <div className="min-h-screen bg-white">
+        <Header title="Result" />
+        <div className="max-w-lg mx-auto px-4 py-6">
+          <div className="bg-gray-50 border-2 border-gray-200 rounded-2xl p-8 text-center mb-5">
+            <div className="text-5xl mb-3">📷</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">No Readable Text Found</h1>
+            <p className="text-gray-900 text-sm mb-4">The image doesn't contain clear text or a readable QR code. Please try again with a clearer photo.</p>
+            <p className="text-xs text-gray-900">Tips: Ensure good lighting, hold camera steady, make sure text is in focus.</p>
+          </div>
+          <button onClick={resetScan} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl">
+            📷 Try Again
+          </button>
+        </div>
+      </div>
+    );
+
     return (
       <div className="min-h-screen bg-white">
         <Header title="Result" />
         <div className="max-w-lg mx-auto px-4 py-6">
+          {result.limitReached && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 text-xs text-yellow-800">
+              ⚠️ {result.limitMessage}
+            </div>
+          )}
           <div className={`${v.bg} ${v.border} border-2 rounded-2xl p-6 text-center mb-5`}>
             <div className="text-5xl mb-2">{v.icon}</div>
             <h1 className={`text-3xl font-bold ${v.color}`}>{t(result.verdict)}</h1>
