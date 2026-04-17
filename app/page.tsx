@@ -297,6 +297,7 @@ export default function App() {
     }
   };
 
+  console.log('Feedback scanId:', result?.scanId, 'verdict:', result?.verdict);
   const submitFeedback = async (isCorrect: boolean, correctVerdict?: Verdict) => {
     if (!result) return;
     setFeedback('given');
