@@ -54,7 +54,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 Thank you! Your feedback improves our detection.',
     markAs: 'What should this be?',
     consentTitle: 'Before You Start',
-    consentBody: 'IsThisAScam uses AI to analyze messages. Your message content is sent to OpenAI for analysis but never stored by us. Anonymous usage statistics are collected to improve the service.',
+    consentBody: 'IsThisAScam uses OpenAI\'s ChatGPT to analyze your messages. Your message content is transmitted to OpenAI (USA) for analysis and is subject to OpenAI\'s privacy policy (openai.com/privacy). We do not store your message content. Anonymous usage statistics (verdict, language, country) are collected via Supabase to improve our service. User feedback and corrections are reviewed by the IsThisAScam team to improve detection accuracy. By continuing, you consent to this data processing under Malaysian PDPA.',
     consentAgree: 'I Understand, Continue',
     consentPDPA: 'This complies with Malaysian PDPA guidelines.',
     learnTitle: '📚 Learn About Scams',
@@ -86,7 +86,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 Terima kasih! Maklum balas anda meningkatkan pengesanan kami.',
     markAs: 'Apakah yang sepatutnya?',
     consentTitle: 'Sebelum Anda Mula',
-    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami.',
+    consentBody: 'IsThisAScam menggunakan AI untuk menganalisis mesej. Kandungan mesej anda dihantar ke OpenAI untuk analisis tetapi tidak disimpan oleh kami. Maklum balas dan pembetulan pengguna disemak oleh pasukan IsThisAScam untuk meningkatkan ketepatan pengesanan. Dengan meneruskan, anda bersetuju dengan pemprosesan data ini di bawah PDPA Malaysia.',
     consentAgree: 'Saya Faham, Teruskan',
     consentPDPA: 'Ini mematuhi garis panduan PDPA Malaysia.',
     learnTitle: '📚 Pelajari Tentang Scam',
@@ -118,7 +118,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 谢谢！您的反馈改善了我们的检测。',
     markAs: '应该是什么?',
     consentTitle: '开始之前',
-    consentBody: 'IsThisAScam使用AI分析消息。您的消息内容会发送给OpenAI进行分析，但我们不会存储。',
+    consentBody: 'IsThisAScam使用AI分析消息。您的消息内容会发送给OpenAI进行分析，但我们不会存储。用户反馈和更正由IsThisAScam团队审核，以提高检测准确性, 继续即表示您同意根据马来西亚PDPA进行数据处理。',
     consentAgree: '我明白，继续',
     consentPDPA: '这符合马来西亚PDPA指南。',
     learnTitle: '📚 了解诈骗',
@@ -150,9 +150,9 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackThanks: '🙏 நன்றி! உங்கள் கருத்து எங்கள் கண்டறிதலை மேம்படுத்துகிறது.',
     markAs: 'இது என்னவாக இருக்க வேண்டும்?',
     consentTitle: 'தொடங்கும் முன்',
-    consentBody: 'IsThisAScam செய்திகளை பகுப்பாய்வு செய்ய AI பயன்படுத்துகிறது. உங்கள் செய்தி உள்ளடக்கம் OpenAI க்கு அனுப்பப்படுகிறது ஆனால் எங்களால் சேமிக்கப்படவில்லை.',
+    consentBody: 'IsThisAScam செய்திகளை பகுப்பாய்வு செய்ய AI பயன்படுத்துகிறது. உங்கள் செய்தி உள்ளடக்கம் OpenAI க்கு அனுப்பப்படுகிறது ஆனால் எங்களால் சேமிக்கப்படவில்லை.பயனர் கருத்து மற்றும் திருத்தங்கள் கண்டறிதல் துல்லியத்தை மேம்படுத்த IsThisAScam குழுவால் மதிப்பாய்வு செய்யப்படுகின்றன.',
     consentAgree: 'புரிகிறது, தொடரவும்',
-    consentPDPA: 'இது மலேசிய PDPA வழிகாட்டுதல்களுக்கு இணங்குகிறது.',
+    consentPDPA: 'இது பயனர் கருத்து மற்றும் திருத்தங்கள் கண்டறிதல் துல்லியத்தை மேம்படுத்த IsThisAScam குழுவால் மதிப்பாய்வு செய்யப்படுகின்றன. மலேசிய PDPA இன் கீழ் தொடர்வதன் மூலம் நீங்கள் இந்த தரவு செயலாக்கத்திற்கு சம்மதிக்கிறீர்கள்.',
     learnTitle: '📚 மோசடிகளைப் பற்றி அறியுங்கள்',
     learnSub: 'பாதுகாப்பாக இருங்கள் — சமீபத்திய மோசடி தந்திரங்களை அறியுங்கள்',
   },
@@ -407,18 +407,15 @@ export default function App() {
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-6 text-sm text-yellow-800">{t('limitReached')}</div>
           )}
           <div className="space-y-3 mb-6">
-            <button onClick={goToScan} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl text-lg transition">
-              {t('analyzeBtn')}
-            </button>
-            <button onClick={() => setPage('history')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
-              {t('historyBtn')}
-            </button>
-            <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
-              {t('learnBtn')}
-              <a href="https://tally.so/r/2ExkNj" target="_blank" rel="noopener noreferrer"
-  className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition flex items-center justify-center">
+          <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
+  {t('learnBtn')}
+</button>
+</div>
+<a href="https://tally.so/r/2ExkNj" target="_blank" rel="noopener noreferrer"
+  className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition flex items-center justify-center mt-3">
   💬 Give Feedback
 </a>
+<div>
             </button>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
