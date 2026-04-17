@@ -263,12 +263,31 @@ export default function App() {
     setShowConsent(false);
   };
 
-  const handleImage = (file: File) => {
+ const handleImage = (file: File) => {
+    // Validate file size
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image too large. Please use an image under 5MB.');
+      return;
+    }
     const reader = new FileReader();
     reader.onload = e => {
       const url = e.target?.result as string;
-      setImagePreview(url);
-      setImageBase64(url.split(',')[1]);
+      // Convert to JPEG via canvas to ensure compatibility
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // Resize if too large (max 1920px wide)
+        const maxWidth = 1920;
+        const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const jpegUrl = canvas.toDataURL('image/jpeg', 0.85);
+        setImagePreview(jpegUrl);
+        setImageBase64(jpegUrl.split(',')[1]);
+      };
+      img.src = url;
     };
     reader.readAsDataURL(file);
   };
