@@ -224,7 +224,10 @@ export default function AdminDashboard() {
             {stats.pendingFeedback?.length === 0 && (
               <p className="text-gray-400 text-sm">No feedback yet</p>
             )}
-            {stats.pendingFeedback?.map((f: any) => (
+            {[...( stats.pendingFeedback || [])].sort((a, b) => {
+  const order = { pending: 0, approved: 1, rejected: 2 };
+  return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
+}).map((f: any) => (
               <div key={f.id} className={`rounded-xl p-4 ${f.status === 'approved' ? 'bg-green-900 opacity-60' : f.status === 'rejected' ? 'bg-red-900 opacity-60' : 'bg-gray-700'}`}>
                 <div className="flex gap-2 mb-2 items-center">
   {f.status !== 'pending' && (
