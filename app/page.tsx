@@ -419,7 +419,6 @@ export default function App() {
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
         </div>
-      </div>
     </>
   );
 
