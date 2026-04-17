@@ -63,14 +63,16 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === 'approve') {
-    await supabase.from('examples').upsert({
+    const { error: exampleError } = await supabase.from('examples').upsert({
       text: originalText,
       correct_verdict: correctVerdict,
       explanation: `Manually approved by admin`,
       confirmed: true,
     }, { onConflict: 'text' });
-    await supabase.from('feedback').update({ status: 'approved' }).eq('id', feedbackId);
-    return NextResponse.json({ success: true });
+    if (exampleError) console.error('Example upsert error:', JSON.stringify(exampleError));
+    const { error: feedbackError } = await supabase.from('feedback').update({ status: 'approved' }).eq('id', feedbackId);
+    if (feedbackError) console.error('Feedback update error:', JSON.stringify(feedbackError));
+    return NextResponse.json({ success: true, exampleError, feedbackError });
   }
 
   if (action === 'reject') {
