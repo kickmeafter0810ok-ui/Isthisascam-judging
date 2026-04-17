@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     supabase.from('scans').select('language'),
     supabase.from('scans').select('tactics').not('tactics', 'eq', '{}'),
     supabase.from('scans').select('verdict, confidence, language, country, created_at').order('created_at', { ascending: false }).limit(10),
-    supabase.from('feedback').select('*, scans(verdict)').order('created_at', { ascending: false }).limit(20),
+    supabase.from('feedback').select('*, scans(verdict)').order('status', { ascending: true }).order('created_at', { ascending: false }).limit(50),
     supabase.from('feedback').select('*', { count: 'exact', head: true }),
   ]);
 

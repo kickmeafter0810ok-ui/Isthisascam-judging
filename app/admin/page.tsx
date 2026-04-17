@@ -225,8 +225,14 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-sm">No feedback yet</p>
             )}
             {stats.pendingFeedback?.map((f: any) => (
-              <div key={f.id} className="bg-gray-700 rounded-xl p-4">
-                <div className="flex gap-2 mb-2">
+              <div key={f.id} className={`rounded-xl p-4 ${f.status === 'approved' ? 'bg-green-900 opacity-60' : f.status === 'rejected' ? 'bg-red-900 opacity-60' : 'bg-gray-700'}`}>
+                <div className="flex gap-2 mb-2 items-center">
+  {f.status !== 'pending' && (
+    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+      {f.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+    </span>
+  )}
+  
                   <span className={`text-xs px-2 py-1 rounded-full font-bold ${
                     f.original_verdict === 'scam' ? 'bg-red-900 text-red-300' :
                     f.original_verdict === 'suspicious' ? 'bg-yellow-900 text-yellow-300' :

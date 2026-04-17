@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
         explanation: `AI verified: ${review.reason}`,
         confirmed: true,
       }, { onConflict: 'text' });
+      await supabase.from('feedback').update({ status: 'approved' }).eq('id', feedbackId);
+    } else {
+      await supabase.from('feedback').update({ status: 'rejected' }).eq('id', feedbackId);
     }
     return NextResponse.json(review);
   }
@@ -54,11 +57,12 @@ export async function POST(req: NextRequest) {
       explanation: `Manually approved by admin`,
       confirmed: true,
     }, { onConflict: 'text' });
+    await supabase.from('feedback').update({ status: 'approved' }).eq('id', feedbackId);
     return NextResponse.json({ success: true });
   }
 
   if (action === 'reject') {
-    await supabase.from('feedback').delete().eq('id', feedbackId);
+    await supabase.from('feedback').update({ status: 'rejected' }).eq('id', feedbackId);
     return NextResponse.json({ success: true });
   }
 
