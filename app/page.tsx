@@ -220,6 +220,7 @@ export default function App() {
   const [showMarkAs, setShowMarkAs]     = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const t = useCallback((k: string) => T[lang][k] ?? T.en[k], [lang]);
+useEffect(() => { if (page === 'scan') { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); } }, [page]);
 
   useEffect(() => {
     const savedLang = localStorage.getItem(LANG_KEY) as Lang | null;
@@ -317,13 +318,13 @@ export default function App() {
     setHistory(updated); persistHistory(updated);
   };
 
-  const resetScan = () => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setPage('scan'); };
+  <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }};
 
   const Header = ({ title, back = true, backTo = 'home' }: { title?: string; back?: boolean; backTo?: Page }) => (
     <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
       <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
         {back
-          ? <button onClick={() => setPage(backTo)} className="text-blue-600 font-medium">{t('back')}</button>
+          ? <button onClick={() => { setInputText(''); setImageBase64(null); setImagePreview(null); setError(''); setFeedback(null); setTab('text'); setPage('scan'); }}
           : <span className="text-xl font-bold text-gray-900">IsThisAScam</span>}
         {title && <span className="font-semibold text-gray-900">{title}</span>}
         <button onClick={() => setPage('settings')} className="text-xl">⚙️</button>

@@ -80,16 +80,18 @@ export async function POST(req: NextRequest) {
     const region = req.headers.get('x-vercel-ip-country-region') || 'Unknown';
 
     // Save scan to Supabase
-    const { data: scan } = await supabase.from('scans').insert({
-      verdict: result.verdict,
-      confidence: result.confidence,
-      language,
-      is_image: !!imageBase64,
-      tactics: result.tactics || [],
-      country,
-      region,
-      device_id: deviceId || null,
-    }).select('id').single();
+  const { data: scan, error: scanError } = await supabase.from('scans').insert({
+  verdict: result.verdict,
+  confidence: result.confidence,
+  language,
+  is_image: !!imageBase64,
+  tactics: result.tactics || [],
+  country,
+  region,
+  device_id: deviceId || null,
+}).select('id').single();
+
+if (scanError) console.error('Supabase insert error:', JSON.stringify(scanError));
 
     return NextResponse.json({ ...result, scanId: scan?.id });
   } catch (e: any) {
