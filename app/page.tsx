@@ -723,6 +723,7 @@ const DisclaimerModal = () => (
 
   if (page === 'settings') return (
     <div className="min-h-screen bg-white">
+      {showDisclaimer && <DisclaimerModal />}
       <Header title={t('settings')} />
       <div className="max-w-lg mx-auto px-4 py-6">
         <p className="text-xs font-semibold text-gray-900 uppercase mb-3">{t('language')}</p>
@@ -745,8 +746,11 @@ const DisclaimerModal = () => (
           </div>
         </div>
         <p className="text-xs text-gray-900 text-center mt-2">{t('premiumSoon')}</p>
-        <button onClick={() => { localStorage.removeItem(DISCLAIMER_KEY); setShowDisclaimer(true); }}
-          className="w-full mt-6 py-3 border border-gray-200 rounded-xl text-xs text-gray-500">
+        <button onClick={() => { 
+          localStorage.removeItem(DISCLAIMER_KEY); 
+          setShowDisclaimer(true); 
+        }}
+          className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100">
           📄 {t('termsLink')}
         </button>
       </div>
