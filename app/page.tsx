@@ -490,7 +490,7 @@ export default function App() {
             <p className="text-gray-900 text-sm mb-4">The image doesn't contain clear text or a readable QR code. Please try again with a clearer photo.</p>
             <p className="text-xs text-gray-900">Tips: Ensure good lighting, hold camera steady, make sure text is in focus.</p>
           </div>
-          <button onClick={resetScan} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl">
+          <button onClick={goToScan} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl">
             📷 Try Again
           </button>
         </div>
