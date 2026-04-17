@@ -273,7 +273,7 @@ export default function App() {
   const analyze = async () => {
     setLoading(true); setError(''); setFeedback(null);
     try {
-      let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> & { scanId?: string };
+      let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> & { scanId?: string; storedText?: string };
       if (limitReached) {
         partial = keywordFallback(inputText);
       } else {
