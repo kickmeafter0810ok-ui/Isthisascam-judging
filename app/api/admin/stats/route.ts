@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
     { data: recentScans },
     { data: pendingFeedback },
     { count: totalFeedback },
+    { data: appFeedback },
   ] = await Promise.all([
     supabase.from('scans').select('*', { count: 'exact', head: true }),
     supabase.from('scans').select('*', { count: 'exact', head: true }).gte('created_at', todayStart),
@@ -39,22 +40,19 @@ export async function GET(req: NextRequest) {
     supabase.from('scans').select('verdict, confidence, language, country, created_at').order('created_at', { ascending: false }).limit(10),
     supabase.from('feedback').select('*, scans(verdict)').order('status', { ascending: true }).order('created_at', { ascending: false }).limit(50),
     supabase.from('feedback').select('*', { count: 'exact', head: true }),
+    supabase.from('app_feedback').select('*').order('created_at', { ascending: false }).limit(50),
   ]);
 
-  // Count verdicts
   const verdictCount = { scam: 0, suspicious: 0, safe: 0 };
   verdicts?.forEach(s => { if (s.verdict in verdictCount) verdictCount[s.verdict as keyof typeof verdictCount]++; });
 
-  // Count countries
   const countryCount: Record<string, number> = {};
   countries?.forEach(s => { countryCount[s.country] = (countryCount[s.country] || 0) + 1; });
   const topCountries = Object.entries(countryCount).sort((a, b) => b[1] - a[1]).slice(0, 10);
 
-  // Count languages
   const langCount: Record<string, number> = {};
   languages?.forEach(s => { langCount[s.language] = (langCount[s.language] || 0) + 1; });
 
-  // Count tactics
   const tacticCount: Record<string, number> = {};
   tactics?.forEach(s => { s.tactics?.forEach((t: string) => { tacticCount[t] = (tacticCount[t] || 0) + 1; }); });
   const topTactics = Object.entries(tacticCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -62,6 +60,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     totalScans, todayScans, monthScans, totalFeedback,
     verdictCount, topCountries, langCount, topTactics,
-    recentScans, pendingFeedback,
+    recentScans, pendingFeedback, appFeedback,
   });
 }
