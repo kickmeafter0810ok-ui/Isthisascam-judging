@@ -68,6 +68,8 @@ const T: Record<Lang, Record<string, string>> = {
     extractedURL: 'URL found in QR:',
     aiDisclaimer: 'AI-powered analysis. Not guaranteed accurate. Always verify with official sources.',
     termsLink: 'Terms of Use',
+    feedbackBtn: 'Give Feedback',
+privacyPolicy: 'Privacy Policy',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -107,6 +109,8 @@ const T: Record<Lang, Record<string, string>> = {
     extractedURL: 'URL dalam kod QR:',
     aiDisclaimer: 'Analisis berkuasa AI. Tidak dijamin tepat. Sentiasa sahkan dengan sumber rasmi.',
     termsLink: 'Terma Penggunaan',
+    feedbackBtn: 'Beri Maklum Balas',
+privacyPolicy: 'Dasar Privasi',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -146,6 +150,8 @@ const T: Record<Lang, Record<string, string>> = {
     extractedURL: '二维码中的网址:',
     aiDisclaimer: 'AI驱动分析。不保证准确。请始终向官方来源核实。',
     termsLink: '使用条款',
+    feedbackBtn: '提供反馈',
+privacyPolicy: '隐私政策',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -185,6 +191,8 @@ const T: Record<Lang, Record<string, string>> = {
     extractedURL: 'QR இல் உள்ள URL:',
     aiDisclaimer: 'AI பகுப்பாய்வு. துல்லியம் உத்தரவாதப்படுத்தப்படவில்லை.',
     termsLink: 'பயன்பாட்டு விதிமுறைகள்',
+    feedbackBtn: 'கருத்து தெரிவிக்கவும்',
+privacyPolicy: 'தனியுரிமைக் கொள்கை',
   },
 };
 
@@ -631,7 +639,7 @@ const DisclaimerModal = () => (
             </button>
             <button onClick={() => setPage('feedback' as any)}
   className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
-  💼 Give Feedback
+  {t('feedbackBtn')}
 </button>
           </div>
           </div>
@@ -906,7 +914,7 @@ const DisclaimerModal = () => (
         </button>
         <a href="/privacy" target="_blank" rel="noopener noreferrer"
           className="w-full mt-3 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
-          🔒 Privacy Policy
+          🔒 {t('privacyPolicy')}
         </a>
       </div>
     </div>
