@@ -753,6 +753,10 @@ const DisclaimerModal = () => (
           className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100">
           📄 {t('termsLink')}
         </button>
+        <a href="/privacy" target="_blank" rel="noopener noreferrer"
+          className="w-full mt-3 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
+          🔒 Privacy Policy
+        </a>
       </div>
     </div>
   );
