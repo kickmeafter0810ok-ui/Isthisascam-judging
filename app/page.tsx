@@ -469,34 +469,45 @@ const selectLang = (l: Lang) => {
   };
 
   const analyze = async () => {
-    setLoading(true); setError(''); setFeedback(null);
-    try {
-      let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> & { scanId?: string; storedText?: string };
-      if (limitReached) {
-  setError('monthly_limit');
-  setLoading(false);
-  return;
-} else {
-        console.log('Image base64 length:', imageBase64?.length, 'starts with:', imageBase64?.substring(0, 50));
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
-        });
-        
-        const data = await res.json()
-        bumpUsage();
-        setUsage(loadUsage());
-      }
-      setResult({ ...partial, id: Date.now(), timestamp: Date.now(), isImage: !!imageBase64, text: imageBase64 ? (partial.storedText || '[Screenshot]') : inputText });
-      setFeedback('pending');
-      setPage('results');
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true); setError(''); setFeedback(null);
+
+  if (limitReached) {
+    setError('monthly_limit');
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
+    });
+
+    const data = await res.json();
+
+    if (res.status === 429) throw new Error('rate_limit');
+    if (!res.ok) throw new Error(data.error || 'Analysis failed');
+
+    const partial = data;
+    bumpUsage();
+    setUsage(loadUsage());
+
+    setResult({
+      ...partial,
+      id: Date.now(),
+      timestamp: Date.now(),
+      isImage: !!imageBase64,
+      text: imageBase64 ? (partial.storedText || '[Screenshot]') : inputText,
+    });
+    setFeedback('pending');
+    setPage('results');
+  } catch (e: any) {
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   const submitFeedback = async (isCorrect: boolean, correctVerdict?: Verdict) => {
