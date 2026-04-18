@@ -860,12 +860,13 @@ const DisclaimerModal = () => (
         </div>
         <div className="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 text-center">
           <p className="text-sm font-bold text-gray-900 mb-1">🚨 Report Scams in Malaysia</p>
-          <p className="text-xs text-gray-900">🚨 NSRC (Scam Emergency): <strong>997</strong> (8am-8pm daily)</p>
-          <p className="text-xs text-gray-900">🏦 BNM LINK: <strong>1-300-88-5465</strong></p>
-          <p className="text-xs text-gray-900">👮 CCID Police Report: <strong>03-2610 1559</strong></p>
-          <p className="text-xs text-gray-900">📡 MCMC: <strong>1-800-188-030</strong></p>
-          <p className="text-xs text-gray-900">🌐 MCMC Online: <strong>aduan.mcmc.gov.my</strong></p>
-          <p className="text-xs text-gray-900">🔍 Semak Mule: <strong>ccid.rmp.gov.my</strong></p>
+          <p className="text-xs text-gray-900">🚨 NSRC (Scam Emergency): <strong>997</strong> (24/7)</p>
+<p className="text-xs text-gray-900">🏦 BNM LINK: <strong>1-300-88-5465</strong></p>
+<p className="text-xs text-gray-900">🏦 Your Bank Hotline: <strong>Call immediately if money lost</strong></p>
+<p className="text-xs text-gray-900">👮 Police (CCID): <strong>03-2610 1559</strong></p>
+<p className="text-xs text-gray-900">📡 MCMC Hotline: <strong>1-800-188-030</strong></p>
+<p className="text-xs text-gray-900">🌐 MCMC Online: <strong>aduan.mcmc.gov.my</strong></p>
+<p className="text-xs text-gray-900">🔍 Semak Mule: <strong>ccid.rmp.gov.my</strong></p>
         </div>
       </div>
     </div>
