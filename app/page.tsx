@@ -736,11 +736,7 @@ const DisclaimerModal = () => (
       <div className="min-h-screen bg-white">
         <Header title="Result" />
         <div className="max-w-lg mx-auto px-4 py-6">
-          {result.limitReached && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 text-xs text-yellow-800">
-              ⚠️ {result.limitMessage}
-            </div>
-          )}
+          
           <div className={`${v.bg} ${v.border} border-2 rounded-2xl p-6 text-center mb-5`}>
             <div className="text-5xl mb-2">{v.icon}</div>
             <h1 className={`text-3xl font-bold ${v.color}`}>{t(result.verdict)}</h1>
