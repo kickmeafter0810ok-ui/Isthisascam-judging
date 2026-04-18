@@ -1,10 +1,10 @@
 {
   "name": "IsThisAScam",
   "short_name": "IsThisAScam",
-  "description": "Check suspicious messages instantly. Protect yourself from scams.",
+  "description": "AI-powered scam detection for Malaysia",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fff7ed",
+  "background_color": "#ffffff",
   "theme_color": "#ef4444",
   "orientation": "portrait",
   "icons": [
