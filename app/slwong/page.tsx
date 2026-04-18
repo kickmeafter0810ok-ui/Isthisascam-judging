@@ -13,25 +13,43 @@ interface Stats {
   topTactics: [string, number][];
   recentScans: any[];
   pendingFeedback: any[];
+  appFeedback: any[];
 }
 
 export default function AdminDashboard() {
-  const [authed, setAuthed]     = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError]       = useState('');
-  const [stats, setStats]       = useState<Stats | null>(null);
-  const [loading, setLoading]   = useState(false);
+  const [authed, setAuthed]       = useState(false);
+  const [password, setPassword]   = useState('');
+  const [error, setError]         = useState('');
+  const [stats, setStats]         = useState<Stats | null>(null);
+  const [loading, setLoading]     = useState(false);
   const [reviewing, setReviewing] = useState<string | null>(null);
   const [reviewResults, setReviewResults] = useState<Record<string, any>>({});
+  const [brief, setBrief]         = useState<string>('');
+  const [briefLoading, setBriefLoading] = useState(false);
+  const [todos, setTodos]         = useState<string[]>([]);
+  const [doneTodos, setDoneTodos] = useState<string[]>([]);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
     const res = await fetch('/api/admin/stats');
-    if (res.ok) { setStats(await res.json()); }
+    if (res.ok) setStats(await res.json());
     setLoading(false);
   }, []);
 
-  useEffect(() => { if (authed) fetchStats(); }, [authed, fetchStats]);
+  const fetchBrief = useCallback(async () => {
+    setBriefLoading(true);
+    const res = await fetch('/api/admin/brief');
+    if (res.ok) {
+      const data = await res.json();
+      setBrief(data.summary || '');
+      setTodos(data.todos || []);
+    }
+    setBriefLoading(false);
+  }, []);
+
+  useEffect(() => {
+    if (authed) { fetchStats(); fetchBrief(); }
+  }, [authed, fetchStats, fetchBrief]);
 
   const login = async () => {
     const res = await fetch('/api/admin/auth', {
@@ -48,12 +66,7 @@ export default function AdminDashboard() {
     const res = await fetch('/api/admin/approve', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        feedbackId: f.id,
-        action,
-        originalText: f.original_text,
-        correctVerdict: f.correct_verdict,
-      }),
+      body: JSON.stringify({ feedbackId: f.id, action, originalText: f.original_text, correctVerdict: f.correct_verdict }),
     });
     const data = await res.json();
     setReviewResults(prev => ({ ...prev, [f.id]: data }));
@@ -61,11 +74,25 @@ export default function AdminDashboard() {
     if (action !== 'ai_review') fetchStats();
   };
 
+  const markAppFeedbackRead = async (id: string) => {
+    await fetch('/api/admin/approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appFeedbackId: id, action: 'mark_read' }),
+    });
+    fetchStats();
+  };
+
+  const tickTodo = (todo: string) => {
+    setDoneTodos(prev => [...prev, todo]);
+    setTodos(prev => prev.filter(t => t !== todo));
+  };
+
   if (!authed) return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl p-8 w-full max-w-sm">
         <div className="text-center mb-6">
-          <p className="text-3xl mb-2">🛡️</p>
+          <p className="text-3xl mb-2">🔐</p>
           <h1 className="text-xl font-bold text-gray-900">IsThisAScam Admin</h1>
         </div>
         <input type="password" value={password} onChange={e => setPassword(e.target.value)}
@@ -73,9 +100,7 @@ export default function AdminDashboard() {
           placeholder="Enter admin password"
           className="w-full p-3 border-2 border-gray-300 rounded-xl mb-3 text-gray-900" />
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-        <button onClick={login} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl">
-          Login
-        </button>
+        <button onClick={login} className="w-full bg-red-500 text-white font-bold py-3 rounded-xl">Login</button>
       </div>
     </div>
   );
@@ -87,6 +112,8 @@ export default function AdminDashboard() {
   );
 
   const totalVerdicts = stats.verdictCount.scam + stats.verdictCount.suspicious + stats.verdictCount.safe || 1;
+  const unreadAppFeedback = stats.appFeedback?.filter(f => !f.is_read) || [];
+  const readAppFeedback = stats.appFeedback?.filter(f => f.is_read) || [];
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
@@ -95,12 +122,63 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold">🛡️ IsThisAScam Dashboard</h1>
+            <h1 className="text-2xl font-bold">🔐 IsThisAScam Dashboard</h1>
             <p className="text-gray-400 text-sm">Real-time analytics & feedback review</p>
           </div>
-          <button onClick={fetchStats} className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm">
+          <button onClick={() => { fetchStats(); fetchBrief(); }}
+            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm">
             🔄 Refresh
           </button>
+        </div>
+
+        {/* AI Summary & To-Dos */}
+        <div className="bg-gray-800 rounded-xl p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-bold text-lg">🤖 AI Briefing & To-Dos</h2>
+            <button onClick={fetchBrief} disabled={briefLoading}
+              className="text-xs bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg disabled:opacity-50">
+              {briefLoading ? '⏳ Generating...' : '✨ Refresh Brief'}
+            </button>
+          </div>
+
+          {brief ? (
+            <div className="bg-gray-700 rounded-xl p-4 mb-4 text-sm text-gray-100 leading-relaxed whitespace-pre-line">
+              {brief}
+            </div>
+          ) : (
+            <div className="bg-gray-700 rounded-xl p-4 mb-4 text-sm text-gray-400">
+              {briefLoading ? '⏳ Generating AI summary...' : 'Click "Refresh Brief" to generate an AI summary of your app\'s status.'}
+            </div>
+          )}
+
+          {/* To-Do Items */}
+          {todos.length > 0 && (
+            <div className="space-y-2 mb-4">
+              <p className="text-xs font-semibold text-gray-400 uppercase">Action Items</p>
+              {todos.map((todo, i) => (
+                <div key={i} className="flex items-start gap-3 bg-gray-700 rounded-lg p-3">
+                  <button onClick={() => tickTodo(todo)}
+                    className="w-5 h-5 rounded border-2 border-gray-400 hover:border-green-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-sm text-gray-100">{todo}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Done items */}
+          {doneTodos.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold text-gray-500 uppercase">Completed</p>
+              {doneTodos.map((todo, i) => (
+                <div key={i} className="flex items-start gap-3 bg-gray-800 rounded-lg p-3 opacity-50">
+                  <div className="w-5 h-5 rounded border-2 border-green-400 bg-green-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs">✓</span>
+                  </div>
+                  <span className="text-sm text-gray-400 line-through">{todo}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Key Metrics */}
@@ -109,7 +187,7 @@ export default function AdminDashboard() {
             { label: 'Total Scans', value: stats.totalScans, icon: '🔍' },
             { label: 'Today', value: stats.todayScans, icon: '📅' },
             { label: 'This Month', value: stats.monthScans, icon: '📆' },
-            { label: 'Feedback', value: stats.totalFeedback, icon: '💬' },
+            { label: 'Feedback', value: stats.totalFeedback, icon: '💼' },
           ].map(m => (
             <div key={m.label} className="bg-gray-800 rounded-xl p-4 text-center">
               <p className="text-3xl mb-1">{m.icon}</p>
@@ -122,7 +200,7 @@ export default function AdminDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Verdict Breakdown */}
           <div className="bg-gray-800 rounded-xl p-6">
-            <h2 className="font-bold mb-4 text-lg">Verdict Breakdown (This Month)</h2>
+            <h2 className="font-bold mb-4 text-lg">Verdict Breakdown</h2>
             {[
               { label: 'Scam', count: stats.verdictCount.scam, color: 'bg-red-500' },
               { label: 'Suspicious', count: stats.verdictCount.suspicious, color: 'bg-yellow-500' },
@@ -180,6 +258,66 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* App Feedback from Users */}
+        <div className="bg-gray-800 rounded-xl p-6 mb-8">
+          <h2 className="font-bold mb-2 text-lg">💼 User Feedback
+            {unreadAppFeedback.length > 0 && (
+              <span className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{unreadAppFeedback.length} new</span>
+            )}
+          </h2>
+          <p className="text-gray-400 text-sm mb-4">Feedback submitted via the in-app feedback form</p>
+
+          {/* Unread first */}
+          <div className="space-y-4 mb-6">
+            {unreadAppFeedback.length === 0 && readAppFeedback.length === 0 && (
+              <p className="text-gray-400 text-sm">No user feedback yet</p>
+            )}
+            {unreadAppFeedback.map(f => (
+              <div key={f.id} className="bg-gray-700 rounded-xl p-4 border border-yellow-500">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex gap-2 items-center">
+                    <span className="text-yellow-400 text-xs font-bold">NEW</span>
+                    <span className="text-yellow-400">{'⭐'.repeat(f.rating || 0)}</span>
+                    <span className="text-gray-400 text-xs">{f.language} · {f.country}</span>
+                  </div>
+                  <span className="text-gray-400 text-xs">{new Date(f.created_at).toLocaleDateString()}</span>
+                </div>
+                {f.what_you_like && <p className="text-sm text-gray-100 mb-1"><span className="text-green-400 font-semibold">Likes: </span>{f.what_you_like}</p>}
+                {f.needs_improvement && <p className="text-sm text-gray-100 mb-1"><span className="text-red-400 font-semibold">Improve: </span>{f.needs_improvement}</p>}
+                {f.feature_suggestions && <p className="text-sm text-gray-100 mb-1"><span className="text-blue-400 font-semibold">Features: </span>{f.feature_suggestions}</p>}
+                {f.anything_else && <p className="text-sm text-gray-100 mb-1"><span className="text-gray-400 font-semibold">Other: </span>{f.anything_else}</p>}
+                {f.would_recommend !== null && <p className="text-xs text-gray-400 mb-2">Would recommend: {f.would_recommend ? '✅ Yes' : '❌ No'}</p>}
+                {f.name && <p className="text-xs text-gray-400">From: {f.name} {f.contact && `(${f.contact})`}</p>}
+                <button onClick={() => markAppFeedbackRead(f.id)}
+                  className="mt-3 w-full bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold py-2 rounded-lg">
+                  ✓ Mark as Read
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Read feedback collapsed */}
+          {readAppFeedback.length > 0 && (
+            <details className="mt-4">
+              <summary className="text-gray-400 text-sm cursor-pointer">
+                {readAppFeedback.length} read feedback items
+              </summary>
+              <div className="space-y-3 mt-3">
+                {readAppFeedback.map(f => (
+                  <div key={f.id} className="bg-gray-700 rounded-xl p-4 opacity-60">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-yellow-400">{'⭐'.repeat(f.rating || 0)}</span>
+                      <span className="text-gray-400 text-xs">{new Date(f.created_at).toLocaleDateString()}</span>
+                    </div>
+                    {f.what_you_like && <p className="text-xs text-gray-300 mb-1"><span className="text-green-400">Likes: </span>{f.what_you_like}</p>}
+                    {f.needs_improvement && <p className="text-xs text-gray-300 mb-1"><span className="text-red-400">Improve: </span>{f.needs_improvement}</p>}
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
+        </div>
+
         {/* Recent Scans */}
         <div className="bg-gray-800 rounded-xl p-6 mb-8">
           <h2 className="font-bold mb-4 text-lg">Recent Scans</h2>
@@ -218,46 +356,37 @@ export default function AdminDashboard() {
 
         {/* Feedback Review */}
         <div className="bg-gray-800 rounded-xl p-6">
-          <h2 className="font-bold mb-2 text-lg">Feedback Review</h2>
-          <p className="text-gray-400 text-sm mb-4">Review user corrections — approve to improve detection, use AI to auto-verify</p>
+          <h2 className="font-bold mb-2 text-lg">🔄 Detection Feedback Review</h2>
+          <p className="text-gray-400 text-sm mb-4">User corrections to scam verdicts — approve to improve AI detection</p>
           <div className="space-y-4">
             {stats.pendingFeedback?.length === 0 && (
               <p className="text-gray-400 text-sm">No feedback yet</p>
             )}
-            {[...( stats.pendingFeedback || [])].sort((a, b) => {
-  const order = { pending: 0, approved: 1, rejected: 2 };
-  return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
-}).map((f: any) => (
+            {[...(stats.pendingFeedback || [])].sort((a, b) => {
+              const order = { pending: 0, approved: 1, rejected: 2 };
+              return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
+            }).map((f: any) => (
               <div key={f.id} className={`rounded-xl p-4 ${f.status === 'approved' ? 'bg-green-900 opacity-60' : f.status === 'rejected' ? 'bg-red-900 opacity-60' : 'bg-gray-700'}`}>
-                <div className="flex gap-2 mb-2 items-center">
-  {f.status !== 'pending' && (
-    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-      {f.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
-    </span>
-  )}
-  
-                  <span className={`text-xs px-2 py-1 rounded-full font-bold ${
-                    f.original_verdict === 'scam' ? 'bg-red-900 text-red-300' :
-                    f.original_verdict === 'suspicious' ? 'bg-yellow-900 text-yellow-300' :
-                    'bg-green-900 text-green-300'}`}>
+                <div className="flex gap-2 mb-2 items-center flex-wrap">
+                  {f.status !== 'pending' && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                      {f.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
+                    </span>
+                  )}
+                  <span className={`text-xs px-2 py-1 rounded-full font-bold ${f.original_verdict === 'scam' ? 'bg-red-900 text-red-300' : f.original_verdict === 'suspicious' ? 'bg-yellow-900 text-yellow-300' : 'bg-green-900 text-green-300'}`}>
                     Was: {f.original_verdict}
                   </span>
                   <span>→</span>
-                  <span className={`text-xs px-2 py-1 rounded-full font-bold ${
-                    f.correct_verdict === 'scam' ? 'bg-red-900 text-red-300' :
-                    f.correct_verdict === 'suspicious' ? 'bg-yellow-900 text-yellow-300' :
-                    'bg-green-900 text-green-300'}`}>
+                  <span className={`text-xs px-2 py-1 rounded-full font-bold ${f.correct_verdict === 'scam' ? 'bg-red-900 text-red-300' : f.correct_verdict === 'suspicious' ? 'bg-yellow-900 text-yellow-300' : 'bg-green-900 text-green-300'}`}>
                     Should be: {f.correct_verdict}
                   </span>
                 </div>
                 <p className="text-sm text-gray-300 mb-3 bg-gray-900 p-2 rounded-lg">{f.original_text}</p>
-
                 {reviewResults[f.id] && (
                   <div className={`text-xs p-2 rounded-lg mb-3 ${reviewResults[f.id].approve ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
                     AI: {reviewResults[f.id].approve ? '✅ Approve' : '❌ Reject'} — {reviewResults[f.id].reason}
                   </div>
                 )}
-
                 <div className="flex gap-2">
                   <button onClick={() => handleApprove(f, 'ai_review')} disabled={reviewing === f.id}
                     className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold py-2 rounded-lg disabled:opacity-50">

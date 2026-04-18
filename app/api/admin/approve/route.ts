@@ -75,8 +75,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, exampleError, feedbackError });
   }
 
-  if (action === 'reject') {
+ if (action === 'reject') {
     await supabase.from('feedback').update({ status: 'rejected' }).eq('id', feedbackId);
+    return NextResponse.json({ success: true });
+  }
+
+  if (action === 'mark_read') {
+    const { appFeedbackId } = await req.json().catch(() => ({ appFeedbackId: null }));
+    const id = appFeedbackId || feedbackId;
+    await supabase.from('app_feedback').update({ is_read: true }).eq('id', id);
     return NextResponse.json({ success: true });
   }
 
