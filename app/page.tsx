@@ -229,19 +229,7 @@ const getDeviceId = (): string => {
   return id;
 };
 
-function keywordFallback(text: string): Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> {
-  const t = text.toLowerCase();
-  let score = 0;
-  const tactics: string[] = [];
-  if (/urgent|segera|act now|immediately/.test(t))                                         { score += 25; tactics.push('urgency'); }
-  if (/bit\.ly|tinyurl|http:\/\/|goo\.gl/.test(t))                                        { score += 30; tactics.push('phishing_link'); }
-  if (/(dbs|hlb|maybank|cimb|uob|bsn|rhb|ocbc).{0,30}(account|akaun|verify|suspend)/.test(t)) { score += 35; tactics.push('impersonation'); }
-  if (/\botp\b|password|kata sandi|\bpin\b|\bcvv\b/.test(t))                              { score += 30; tactics.push('credential_harvesting'); }
-  if (/won|winner|prize|lucky|congratulations|tahniah/.test(t))                            { score += 25; tactics.push('prize_scam'); }
-  const confidence = Math.min(score, 100);
-  const verdict: Verdict = score >= 60 ? 'scam' : score >= 35 ? 'suspicious' : 'safe';
-  return { verdict, confidence, reason: tactics.length ? `Detected: ${tactics.join(', ')}` : 'No threats found', tactics };
-}
+
 
 function FeedbackPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
   const [rating, setRating] = useState(0);
@@ -485,8 +473,10 @@ const selectLang = (l: Lang) => {
     try {
       let partial: Pick<Result, 'verdict' | 'confidence' | 'reason' | 'tactics'> & { scanId?: string; storedText?: string };
       if (limitReached) {
-        partial = keywordFallback(inputText);
-      } else {
+  setError('monthly_limit');
+  setLoading(false);
+  return;
+} else {
         console.log('Image base64 length:', imageBase64?.length, 'starts with:', imageBase64?.substring(0, 50));
         const res = await fetch('/api/analyze', {
           method: 'POST',
@@ -494,9 +484,7 @@ const selectLang = (l: Lang) => {
           body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
         });
         
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Analysis failed');
-        partial = data;
+        const data = await res.json()
         bumpUsage();
         setUsage(loadUsage());
       }
@@ -691,12 +679,23 @@ const DisclaimerModal = () => (
             )}
           </div>
         )}
-        {error && <p className="text-red-500 text-sm mt-3">⚠️ {error}</p>}
+        {error && (
+  <div className={`mt-3 rounded-xl p-4 text-sm ${
+    error === 'rate_limit' ? 'bg-yellow-50 border border-yellow-200 text-yellow-800' :
+    error === 'monthly_limit' ? 'bg-orange-50 border border-orange-200 text-orange-800' :
+    'bg-red-50 border border-red-200 text-red-600'}`}>
+    {error === 'rate_limit'
+      ? '⚠️ Too many scans today. Please try again tomorrow.'
+      : error === 'monthly_limit'
+      ? '⚠️ You have used your 10 free AI scans this month. Premium coming soon for unlimited scans.'
+      : `⚠️ ${error}`}
+  </div>
+)}
         <button onClick={analyze} disabled={loading || (!inputText.trim() && !imageBase64)}
           className="w-full mt-4 bg-red-500 hover:bg-red-600 disabled:opacity-40 text-white font-bold py-3.5 rounded-xl transition">
           {loading ? t('analyzing') : t('analyze')}
         </button>
-        {limitReached && <p className="text-center text-xs text-gray-900 mt-3">{t('limitInfo')}</p>}
+        
       </div>
     </div>
   );
