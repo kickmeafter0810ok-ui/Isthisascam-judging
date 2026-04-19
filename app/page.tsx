@@ -993,5 +993,51 @@ const DisclaimerModal = () => (
     <LearnPage lang={lang} t={t} onBack={() => setPage('home')} />
   );
   
+  if (page === 'settings') return (
+    <div className="min-h-screen bg-white">
+      {showDisclaimer && <DisclaimerModal />}
+      <div className="sticky top-0 bg-white border-b border-gray-200 z-10">
+        <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+          <button onClick={() => setPage('home')} className="text-blue-600 font-medium">{t('back')}</button>
+          <span className="font-semibold text-gray-900">{t('settings')}</span>
+          <div />
+        </div>
+      </div>
+      <div className="max-w-lg mx-auto px-4 py-6">
+        <p className="text-xs font-semibold text-gray-900 uppercase mb-3">{t('language')}</p>
+        <div className="space-y-2 mb-8">
+          {LANGS.map(l => (
+            <button key={l.code} onClick={() => selectLang(l.code)}
+              className={`w-full p-3.5 rounded-xl border-2 font-medium text-left transition text-gray-900 ${lang === l.code ? 'border-red-500 bg-red-50 text-red-600' : 'border-gray-300 bg-white'}`}>
+              {l.label} {lang === l.code && '✔'}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs font-semibold text-gray-900 uppercase mb-3">{t('usageTitle')}</p>
+        <div className="bg-gray-50 rounded-xl p-4 mb-2">
+          <div className="flex justify-between mb-2">
+            <span className="text-sm text-gray-900">{usage} / {FREE_LIMIT} AI scans used</span>
+            <span className="text-sm font-bold text-red-500">{Math.max(remaining, 0)} left</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-red-500 h-2 rounded-full" style={{ width: `${Math.min((usage / FREE_LIMIT) * 100, 100)}%` }} />
+          </div>
+        </div>
+        <p className="text-xs text-gray-900 text-center mt-2">{t('premiumSoon')}</p>
+        <button onClick={() => {
+          localStorage.removeItem(DISCLAIMER_KEY);
+          setShowDisclaimer(true);
+        }}
+          className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100">
+          📄 {t('termsLink')}
+        </button>
+        <a href="/privacy" target="_blank" rel="noopener noreferrer"
+          className="w-full mt-3 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
+          🔒 {t('privacyPolicy')}
+        </a>
+      </div>
+    </div>
+  );
+
   return null;
 }
