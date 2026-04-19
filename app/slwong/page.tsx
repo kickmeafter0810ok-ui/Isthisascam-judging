@@ -354,6 +354,69 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+{/* Scam Intelligence Feed */}
+        <div className="bg-gray-800 rounded-xl p-6 mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="font-bold text-lg">🔍 Scam Intelligence Feed</h2>
+              <p className="text-gray-400 text-sm">AI-curated scam patterns from Malaysian news sources</p>
+            </div>
+            <button onClick={runIntelligenceScan} disabled={intelLoading}
+              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-4 py-2 rounded-lg text-sm font-bold">
+              {intelLoading ? '⏳ Scanning...' : '🔍 Run Scan'}
+            </button>
+          </div>
+
+          {intelResults && (
+            <div className="bg-gray-700 rounded-lg p-3 mb-4 text-xs text-gray-300">
+              Last scan: fetched {intelResults.fetched} articles → {intelResults.scamRelated} scam-related →
+              {intelResults.newItems} new patterns → {intelResults.duplicates} duplicates skipped
+            </div>
+          )}
+
+          {/* Emerging alerts */}
+          {intelItems.filter(i => i.status === 'emerging').length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
+              <div className="space-y-3">
+                {intelItems.filter(i => i.status === 'emerging' && i.admin_action === 'pending').map(item => (
+                  <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* New items */}
+          <div className="mb-4">
+            <p className="text-xs font-bold text-yellow-400 uppercase mb-2">⚠️ Pending Review</p>
+            <div className="space-y-3">
+              {intelItems.filter(i => i.status === 'new' && i.admin_action === 'pending').length === 0 && (
+                <p className="text-gray-400 text-sm">No pending items — run a scan to fetch latest alerts</p>
+              )}
+              {intelItems.filter(i => i.status === 'new' && i.admin_action === 'pending').map(item => (
+                <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
+              ))}
+            </div>
+          </div>
+
+          {/* Approved items */}
+          {intelItems.filter(i => i.admin_action === 'approved').length > 0 && (
+            <details>
+              <summary className="text-gray-400 text-sm cursor-pointer mb-2">
+                {intelItems.filter(i => i.admin_action === 'approved').length} approved items
+              </summary>
+              <div className="space-y-3 mt-2">
+                {intelItems.filter(i => i.admin_action === 'approved').map(item => (
+                  <div key={item.id} className="bg-gray-700 rounded-xl p-4 opacity-60">
+                    <p className="text-sm font-semibold text-green-400">✅ {item.headline}</p>
+                    <p className="text-xs text-gray-400">{item.source} · {item.tactic_tags?.join(', ')}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
+        </div>
+        
         {/* Feedback Review */}
         <div className="bg-gray-800 rounded-xl p-6">
           <h2 className="font-bold mb-2 text-lg">🔄 Detection Feedback Review</h2>
