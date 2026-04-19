@@ -6,20 +6,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!
-  );
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_KEY;
+
+  console.log('ENV CHECK:', {
+    url: url ? url.slice(0, 30) : 'MISSING',
+    key: key ? key.slice(0, 20) : 'MISSING',
+  });
+
+  const supabase = createClient(url!, key!);
 
   const { data, error, count } = await supabase
     .from('scam_intel')
     .select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
     .limit(100);
 
-  console.log('scam_intel:', { count, error: error?.message, dataLength: data?.length });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  console.log('Result:', { count, dataLength: data?.length, error: error?.message });
 
   return NextResponse.json(data || []);
 }
