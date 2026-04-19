@@ -13,13 +13,15 @@ export async function POST(req: NextRequest) {
 
   const { id, action } = await req.json();
 
-  await supabase
-    .from('scam_intel')
-    .update({
-      admin_action: action === 'approve' ? 'approved' : 'dismissed',
-      added_to_learn: action === 'approve',
-    })
-    .eq('id', id);
+  const actionMap: Record<string, { admin_action: string; added_to_learn: boolean }> = {
+    approve:  { admin_action: 'approved',  added_to_learn: true  },
+    dismiss:  { admin_action: 'dismissed', added_to_learn: false },
+    undo:     { admin_action: 'pending',   added_to_learn: false },
+  };
 
+  const update = actionMap[action];
+  if (!update) return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+
+  await supabase.from('scam_intel').update(update).eq('id', id);
   return NextResponse.json({ success: true });
 }

@@ -36,7 +36,7 @@ const SCAM_KEYWORDS = [
   '诈骗', '骗局', '欺诈', '钓鱼', '冒充', '假冒', '受害', '损失',
 ];
 
-async function fetchRSS(url: string): Promise<{ title: string; description: string; link: string }[]> {
+async function fetchRSS(url: string, limit = 30): Promise<{ title: string; description: string; link: string }[]> {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'IsThisAScam-Bot/1.0 (scam-education-tool)' },
@@ -62,7 +62,7 @@ async function fetchRSS(url: string): Promise<{ title: string; description: stri
         link: link.trim(),
       });
     }
-    return items.slice(0, 10);
+    return items.slice(0, limit);
   } catch {
     return [];
   }
@@ -173,7 +173,8 @@ export async function POST(req: NextRequest) {
 
   for (const source of RSS_SOURCES) {
     try {
-      const items = await fetchRSS(source.url);
+      const limit = source.name === 'Reddit Malaysia' ? 10 : 30;
+        const items = await fetchRSS(source.url, limit);
       results.fetched += items.length;
 
       for (const item of items) {

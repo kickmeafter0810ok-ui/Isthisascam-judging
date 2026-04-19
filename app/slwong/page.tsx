@@ -16,7 +16,7 @@ interface Stats {
   appFeedback: any[];
 }
 
-function IntelCard({ item, onAction }: { item: any; onAction: (id: string, action: 'approve' | 'dismiss') => void }) {
+function IntelCard({ item, onAction }: { item: any; onAction: (id: string, action: 'approve' | 'dismiss' | 'undo') => void }) {
   return (
     <div className="bg-gray-700 rounded-xl p-4">
       <div className="flex justify-between items-start mb-2">
@@ -40,14 +40,22 @@ function IntelCard({ item, onAction }: { item: any; onAction: (id: string, actio
         <span>🔁 {item.occurrence_count}x reported</span>
       </div>
       <div className="flex gap-2">
-        <button onClick={() => onAction(item.id, 'approve')}
-          className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 rounded-lg">
-          ✅ Approve & Publish
-        </button>
-        <button onClick={() => onAction(item.id, 'dismiss')}
-          className="flex-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold py-2 rounded-lg">
-          ✕ Dismiss
-        </button>
+        {item.admin_action === 'pending' && <>
+          <button onClick={() => onAction(item.id, 'approve')}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 rounded-lg">
+            ✅ Approve & Publish
+          </button>
+          <button onClick={() => onAction(item.id, 'dismiss')}
+            className="flex-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold py-2 rounded-lg">
+            ✕ Dismiss
+          </button>
+        </>}
+        {item.admin_action !== 'pending' && (
+          <button onClick={() => onAction(item.id, 'undo')}
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white text-xs font-bold py-2 rounded-lg">
+            ↩ Undo — move back to pending
+          </button>
+        )}
       </div>
     </div>
   );
@@ -93,7 +101,7 @@ export default function AdminDashboard() {
     setIntelLoading(false);
   };
 
-  const handleIntelAction = async (id: string, action: 'approve' | 'dismiss') => {
+  const handleIntelAction = async (id: string, action: 'approve' | 'dismiss' | 'undo') => {
     await fetch('/api/admin/intelligence/action', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -469,14 +477,25 @@ export default function AdminDashboard() {
           {intelItems.filter(i => i.admin_action === 'approved').length > 0 && (
             <details>
               <summary className="text-gray-400 text-sm cursor-pointer mb-2">
-                {intelItems.filter(i => i.admin_action === 'approved').length} approved items
+                ✅ {intelItems.filter(i => i.admin_action === 'approved').length} approved items
               </summary>
               <div className="space-y-3 mt-2">
                 {intelItems.filter(i => i.admin_action === 'approved').map(item => (
-                  <div key={item.id} className="bg-gray-700 rounded-xl p-4 opacity-60">
-                    <p className="text-sm font-semibold text-green-400">✅ {item.headline}</p>
-                    <p className="text-xs text-gray-400">{item.source} · {item.tactic_tags?.join(', ')}</p>
-                  </div>
+                  <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
+                ))}
+              </div>
+            </details>
+          )}
+
+          {/* Dismissed items */}
+          {intelItems.filter(i => i.admin_action === 'dismissed').length > 0 && (
+            <details>
+              <summary className="text-gray-400 text-sm cursor-pointer mb-2">
+                ✕ {intelItems.filter(i => i.admin_action === 'dismissed').length} dismissed items
+              </summary>
+              <div className="space-y-3 mt-2">
+                {intelItems.filter(i => i.admin_action === 'dismissed').map(item => (
+                  <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
                 ))}
               </div>
             </details>
