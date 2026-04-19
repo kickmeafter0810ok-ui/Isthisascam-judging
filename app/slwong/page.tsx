@@ -16,6 +16,43 @@ interface Stats {
   appFeedback: any[];
 }
 
+function IntelCard({ item, onAction }: { item: any; onAction: (id: string, action: 'approve' | 'dismiss') => void }) {
+  return (
+    <div className="bg-gray-700 rounded-xl p-4">
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex gap-2 flex-wrap">
+          {item.status === 'emerging' && (
+            <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full font-bold">🚨 Emerging</span>
+          )}
+          {item.tactic_tags?.map((tag: string) => (
+            <span key={tag} className="text-xs bg-gray-600 text-gray-200 px-2 py-0.5 rounded-full">
+              {tag.replace(/_/g, ' ')}
+            </span>
+          ))}
+        </div>
+        <span className="text-xs text-gray-400 shrink-0 ml-2">{item.source}</span>
+      </div>
+      <p className="text-sm font-semibold text-white mb-1">{item.headline}</p>
+      <p className="text-xs text-gray-300 mb-2">{item.summary_en}</p>
+      <div className="text-xs text-gray-400 mb-3 flex gap-3">
+        {item.platform && <span>📱 {item.platform}</span>}
+        {item.target_demographic && <span>👥 {item.target_demographic}</span>}
+        <span>🔁 {item.occurrence_count}x reported</span>
+      </div>
+      <div className="flex gap-2">
+        <button onClick={() => onAction(item.id, 'approve')}
+          className="flex-1 bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 rounded-lg">
+          ✅ Approve & Publish
+        </button>
+        <button onClick={() => onAction(item.id, 'dismiss')}
+          className="flex-1 bg-gray-600 hover:bg-gray-500 text-white text-xs font-bold py-2 rounded-lg">
+          ✕ Dismiss
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
   const [authed, setAuthed]       = useState(false);
   const [password, setPassword]   = useState('');
@@ -28,6 +65,10 @@ export default function AdminDashboard() {
   const [briefLoading, setBriefLoading] = useState(false);
   const [todos, setTodos]         = useState<string[]>([]);
   const [doneTodos, setDoneTodos] = useState<string[]>([]);
+  const [intelItems, setIntelItems] = useState<any[]>([]);
+  const [intelLoading, setIntelLoading] = useState(false);
+  const [intelResults, setIntelResults] = useState<any>(null);
+
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
@@ -36,6 +77,31 @@ export default function AdminDashboard() {
     setLoading(false);
   }, []);
 
+  const fetchIntel = useCallback(async () => {
+    const res = await fetch('/api/admin/intelligence/items');
+    if (res.ok) setIntelItems(await res.json());
+  }, []);
+
+  const runIntelligenceScan = async () => {
+    setIntelLoading(true);
+    const res = await fetch('/api/admin/intelligence', { method: 'POST' });
+    if (res.ok) {
+      const data = await res.json();
+      setIntelResults(data.results);
+      await fetchIntel();
+    }
+    setIntelLoading(false);
+  };
+
+  const handleIntelAction = async (id: string, action: 'approve' | 'dismiss') => {
+    await fetch('/api/admin/intelligence/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action }),
+    });
+    await fetchIntel();
+  };
+  
   const fetchBrief = useCallback(async () => {
     setBriefLoading(true);
     const res = await fetch('/api/admin/brief');
@@ -48,8 +114,8 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    if (authed) { fetchStats(); fetchBrief(); }
-  }, [authed, fetchStats, fetchBrief]);
+    if (authed) { fetchStats(); fetchBrief(); fetchIntel(); }
+  }, [authed, fetchStats, fetchBrief, fetchIntel]);
 
   const login = async () => {
     const res = await fetch('/api/admin/auth', {
@@ -416,7 +482,7 @@ export default function AdminDashboard() {
             </details>
           )}
         </div>
-        
+
         {/* Feedback Review */}
         <div className="bg-gray-800 rounded-xl p-6">
           <h2 className="font-bold mb-2 text-lg">🔄 Detection Feedback Review</h2>
