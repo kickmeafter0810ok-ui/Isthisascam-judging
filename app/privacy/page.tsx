@@ -128,7 +128,7 @@ However, no system is 100% secure. We cannot guarantee absolute security of data
 - This app does not constitute legal, financial, or security advice
 - The developer is not liable for any losses, damages, or decisions made based on app results
 - Always verify suspicious messages with official sources (your bank, PDRM at 999, MCMC at 1-800-888-030)
-- Report scams to: CCID at 013-211 9999 or ccid.rmp.gov.my`
+- - Report scams to: NSRC at 997 (8am-8pm daily) or CCID at 03-2610 1559`
           },
           {
             title: '11. Contact',

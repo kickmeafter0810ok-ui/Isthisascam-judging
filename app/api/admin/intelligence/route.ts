@@ -177,6 +177,8 @@ export async function POST(req: NextRequest) {
         const items = await fetchRSS(source.url, limit);
       results.fetched += items.length;
 
+      console.log(`${source.name}: fetched ${items.length} articles`);
+      
       for (const item of items) {
         if (!isScamRelated(item.title, item.description)) continue;
         results.scamRelated++;
@@ -212,7 +214,8 @@ export async function POST(req: NextRequest) {
           source.name
         );
 
-        if (!extracted || !extracted.is_scam_pattern) continue;
+        if (!extracted) { console.log('Extraction failed for:', item.title); continue; }
+        if (!extracted.is_scam_pattern) { console.log('Not a pattern:', item.title, '- reason implied by AI'); continue; }
 
         // Store new intel item
         const { error } = await supabase.from('scam_intel').insert({

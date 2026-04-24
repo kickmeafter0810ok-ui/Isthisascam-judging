@@ -21,7 +21,7 @@ interface Result {
   limitMessage?: string;
 }
 
-const FREE_LIMIT = 10;
+const FREE_LIMIT = 20;
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'en', label: '🇬🇧 English' },
   { code: 'ms', label: '🇲🇾 Bahasa Melayu' },
@@ -69,7 +69,26 @@ const T: Record<Lang, Record<string, string>> = {
     aiDisclaimer: 'AI-powered analysis. Not guaranteed accurate. Always verify with official sources.',
     termsLink: 'Terms of Use',
     feedbackBtn: 'Give Feedback',
-privacyPolicy: 'Privacy Policy',
+    privacyPolicy: 'Privacy Policy',
+    onboardingTitle: 'Welcome to IsThisAScam',
+    onboardingCan: '✅ What we can do',
+    onboardingCan1: 'Analyse suspicious text messages, emails & WhatsApp messages',
+    onboardingCan2: 'Scan QR codes and reveal the hidden link before you use them',
+    onboardingCan3: 'Snap a photo or upload a screenshot of suspicious content',
+    onboardingCan4: 'Supports Bahasa Malaysia, English, Chinese & Tamil',
+    onboardingCannot: '⚠️ What we cannot do',
+    onboardingCannot1: 'Guarantee 100% accuracy — always use your judgment',
+    onboardingCannot2: 'Analyse live phone calls',
+    onboardingCannot3: 'Block scammers or recover lost money',
+    onboardingCannot4: 'Replace reporting to NSRC (997) or BNM (1-300-88-5465)',
+    onboardingHow: '📱 How to use',
+    onboardingHow1: 'Copy a suspicious message — or snap/upload a screenshot',
+    onboardingHow2: 'Paste the text or image into the scan box',
+    onboardingHow3: 'Scan a QR code to see where it really leads before clicking',
+    onboardingHow4: 'Get your AI verdict in seconds',
+    onboardingHow5: 'Give feedback on results — it helps improve accuracy for everyone',
+    onboardingHow6: 'When in doubt — don\'t click, don\'t transfer',
+    onboardingBtn: 'Got it, let\'s go →',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -110,7 +129,26 @@ privacyPolicy: 'Privacy Policy',
     aiDisclaimer: 'Analisis berkuasa AI. Tidak dijamin tepat. Sentiasa sahkan dengan sumber rasmi.',
     termsLink: 'Terma Penggunaan',
     feedbackBtn: 'Beri Maklum Balas',
-privacyPolicy: 'Dasar Privasi',
+    privacyPolicy: 'Dasar Privasi',
+    onboardingTitle: 'Selamat Datang ke IsThisAScam',
+    onboardingCan: '✅ Apa yang boleh kami lakukan',
+    onboardingCan1: 'Analisis mesej teks, emel & WhatsApp yang mencurigakan',
+    onboardingCan2: 'Imbas kod QR dan dedahkan pautan tersembunyi sebelum anda gunakannya',
+    onboardingCan3: 'Ambil foto atau muat naik tangkapan skrin kandungan mencurigakan',
+    onboardingCan4: 'Menyokong Bahasa Malaysia, Inggeris, Cina & Tamil',
+    onboardingCannot: '⚠️ Apa yang tidak boleh kami lakukan',
+    onboardingCannot1: 'Menjamin 100% ketepatan — sentiasa gunakan pertimbangan anda',
+    onboardingCannot2: 'Menganalisis panggilan telefon secara langsung',
+    onboardingCannot3: 'Menyekat penipu atau memulihkan wang yang hilang',
+    onboardingCannot4: 'Menggantikan laporan kepada NSRC (997) atau BNM (1-300-88-5465)',
+    onboardingHow: '📱 Cara menggunakan',
+    onboardingHow1: 'Salin mesej mencurigakan — atau ambil/muat naik tangkapan skrin',
+    onboardingHow2: 'Tampal teks atau imej ke dalam kotak imbasan',
+    onboardingHow3: 'Imbas kod QR untuk lihat destinasi sebenar sebelum klik',
+    onboardingHow4: 'Dapatkan keputusan AI dalam beberapa saat',
+    onboardingHow5: 'Beri maklum balas — ia membantu meningkatkan ketepatan untuk semua',
+    onboardingHow6: 'Apabila ragu-ragu — jangan klik, jangan pindah',
+    onboardingBtn: 'Faham, jom mula →',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -151,7 +189,26 @@ privacyPolicy: 'Dasar Privasi',
     aiDisclaimer: 'AI驱动分析。不保证准确。请始终向官方来源核实。',
     termsLink: '使用条款',
     feedbackBtn: '提供反馈',
-privacyPolicy: '隐私政策',
+    privacyPolicy: '隐私政策',
+    onboardingTitle: '欢迎使用 IsThisAScam',
+    onboardingCan: '✅ 我们能做什么',
+    onboardingCan1: '分析可疑的短信、电邮和WhatsApp消息',
+    onboardingCan2: '扫描二维码并在使用前揭露隐藏链接',
+    onboardingCan3: '拍照或上传可疑内容的截图',
+    onboardingCan4: '支持马来语、英语、中文和淡米尔语',
+    onboardingCannot: '⚠️ 我们不能做什么',
+    onboardingCannot1: '保证100%准确 — 请自行判断',
+    onboardingCannot2: '分析实时电话通话',
+    onboardingCannot3: '拦截骗子或追回损失款项',
+    onboardingCannot4: '替代向NSRC (997) 或BNM (1-300-88-5465) 举报',
+    onboardingHow: '📱 如何使用',
+    onboardingHow1: '复制可疑消息 — 或拍照/上传截图',
+    onboardingHow2: '将文字或图片粘贴到扫描框',
+    onboardingHow3: '扫描二维码查看真实链接目的地',
+    onboardingHow4: '几秒内获得AI分析结果',
+    onboardingHow5: '提供反馈 — 帮助提升所有用户的准确度',
+    onboardingHow6: '有疑虑时 — 不要点击，不要转账',
+    onboardingBtn: '明白了，开始吧 →',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -192,7 +249,26 @@ privacyPolicy: '隐私政策',
     aiDisclaimer: 'AI பகுப்பாய்வு. துல்லியம் உத்தரவாதப்படுத்தப்படவில்லை.',
     termsLink: 'பயன்பாட்டு விதிமுறைகள்',
     feedbackBtn: 'கருத்து தெரிவிக்கவும்',
-privacyPolicy: 'தனியுரிமைக் கொள்கை',
+    privacyPolicy: 'தனியுரிமைக் கொள்கை',
+    onboardingTitle: 'IsThisAScam-க்கு வரவேற்கிறோம்',
+    onboardingCan: '✅ நாம் என்ன செய்யலாம்',
+    onboardingCan1: 'சந்தேகமான SMS, மின்னஞ்சல் மற்றும் WhatsApp செய்திகளை பகுப்பாய்வு செய்யலாம்',
+    onboardingCan2: 'QR குறியீடுகளை ஸ்கேன் செய்து பயன்படுத்துவதற்கு முன் மறைக்கப்பட்ட இணைப்பை வெளிப்படுத்தலாம்',
+    onboardingCan3: 'சந்தேகமான உள்ளடக்கத்தின் புகைப்படம் எடுக்கலாம் அல்லது ஸ்கிரீன்ஷாட் பதிவேற்றலாம்',
+    onboardingCan4: 'மலாய், ஆங்கிலம், சீனம் மற்றும் தமிழை ஆதரிக்கிறது',
+    onboardingCannot: '⚠️ நாம் என்ன செய்ய முடியாது',
+    onboardingCannot1: '100% துல்லியத்தை உறுதி செய்ய முடியாது — உங்கள் சொந்த தீர்ப்பை பயன்படுத்துங்கள்',
+    onboardingCannot2: 'நேரடி தொலைபேசி அழைப்புகளை பகுப்பாய்வு செய்ய முடியாது',
+    onboardingCannot3: 'மோசடியாளர்களை தடுக்க அல்லது இழந்த பணத்தை மீட்டெடுக்க முடியாது',
+    onboardingCannot4: 'NSRC (997) அல்லது BNM (1-300-88-5465) க்கு புகாரளிப்பதை மாற்ற முடியாது',
+    onboardingHow: '📱 எப்படி பயன்படுத்துவது',
+    onboardingHow1: 'சந்தேகமான செய்தியை நகலெடுக்கவும் — அல்லது புகைப்படம்/ஸ்கிரீன்ஷாட் பதிவேற்றவும்',
+    onboardingHow2: 'உரை அல்லது படத்தை ஸ்கேன் பெட்டியில் ஒட்டவும்',
+    onboardingHow3: 'QR குறியீட்டை ஸ்கேன் செய்து கிளிக் செய்வதற்கு முன் உண்மையான இணைப்பை பாருங்கள்',
+    onboardingHow4: 'சில நொடிகளில் AI முடிவைப் பெறுங்கள்',
+    onboardingHow5: 'கருத்து தெரிவியுங்கள் — அனைவருக்கும் துல்லியத்தை மேம்படுத்த உதவுகிறது',
+    onboardingHow6: 'சந்தேகம் இருந்தால் — கிளிக் வேண்டாம், பணம் அனுப்ப வேண்டாம்',
+    onboardingBtn: 'புரிந்தது, தொடங்குவோம் →',
   },
 };
 
@@ -218,6 +294,7 @@ const LANG_KEY = 'itsascam_lang';
 const CONSENT_KEY = 'itsascam_consent';
 const DISCLAIMER_KEY = 'itsascam_disclaimer';
 const DEVICE_KEY = 'itsascam_device';
+const ONBOARDING_KEY = 'itsascam_onboarding';
 
 const loadHistory = (): Result[] => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } };
 const persistHistory = (h: Result[]) => localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0, 50)));
@@ -243,6 +320,7 @@ function FeedbackPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   const submit = async () => {
     if (rating === 0) { setError('Please select a rating.'); return; }
@@ -546,6 +624,8 @@ export default function App() {
     if (!hasConsent && savedLang) setShowConsent(true);
     const hasDisclaimer = localStorage.getItem(DISCLAIMER_KEY);
     if (!hasDisclaimer && savedLang) setShowDisclaimer(true);
+    const hasOnboarding = localStorage.getItem(ONBOARDING_KEY);
+    if (!hasOnboarding && savedLang) setShowOnboarding(true);
     setMounted(true);
   }, []);
 
@@ -699,6 +779,68 @@ const selectLang = (l: Lang) => {
     </div>
   );
 
+  const OnboardingModal = () => (
+  <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-end justify-center p-4">
+    <div className="bg-white rounded-2xl w-full max-w-md max-h-[85vh] overflow-y-auto">
+      <div className="p-6">
+        <div className="text-center mb-5">
+          <div className="text-5xl mb-2">🛡️</div>
+          <h2 className="text-xl font-bold text-gray-900">{t('onboardingTitle')}</h2>
+        </div>
+
+        <div className="mb-4">
+          <p className="font-semibold text-green-700 mb-2">{t('onboardingCan')}</p>
+          <ul className="space-y-1.5">
+            {['onboardingCan1','onboardingCan2','onboardingCan3','onboardingCan4'].map(k => (
+              <li key={k} className="flex gap-2 text-sm text-gray-700">
+                <span className="text-green-500 mt-0.5 shrink-0">•</span>
+                <span>{t(k)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mb-4">
+          <p className="font-semibold text-orange-600 mb-2">{t('onboardingCannot')}</p>
+          <ul className="space-y-1.5">
+            {['onboardingCannot1','onboardingCannot2','onboardingCannot3','onboardingCannot4'].map(k => (
+              <li key={k} className="flex gap-2 text-sm text-gray-700">
+                <span className="text-orange-400 mt-0.5 shrink-0">•</span>
+                <span>{t(k)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mb-5">
+          <p className="font-semibold text-blue-700 mb-2">{t('onboardingHow')}</p>
+          <ol className="space-y-1.5">
+            {['onboardingHow1','onboardingHow2','onboardingHow3','onboardingHow4','onboardingHow5','onboardingHow6'].map((k, i) => (
+              <li key={k} className="flex gap-2 text-sm text-gray-700">
+                <span className="text-blue-500 font-bold shrink-0">{i+1}.</span>
+                <span>{t(k)}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <p className="text-xs text-gray-400 text-center mb-4">
+          ⚠️ {t('aiDisclaimer')}
+        </p>
+
+        <button
+          onClick={() => {
+            localStorage.setItem(ONBOARDING_KEY, 'true');
+            setShowOnboarding(false);
+          }}
+          className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 rounded-xl text-base transition">
+          {t('onboardingBtn')}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
   const ConsentModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end justify-center p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md">
@@ -729,6 +871,7 @@ const DisclaimerModal = () => (
 
   if (page === 'language') return (
     <>
+     {showOnboarding && <OnboardingModal />}
       {showConsent && <ConsentModal />}
       {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
@@ -754,6 +897,7 @@ const DisclaimerModal = () => (
 
   if (page === 'home') return (
     <>
+      {showOnboarding && <OnboardingModal />}
       {showConsent && <ConsentModal />}
       {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
@@ -837,7 +981,7 @@ const DisclaimerModal = () => (
     {error === 'rate_limit'
       ? '⚠️ Too many scans today. Please try again tomorrow.'
       : error === 'monthly_limit'
-      ? '⚠️ You have used your 10 free AI scans this month. Premium coming soon for unlimited scans.'
+      ? '⚠️ You have used your 20 free AI scans this month. Premium coming soon for unlimited scans.'
       : `⚠️ ${error}`}
   </div>
 )}
