@@ -625,9 +625,7 @@ export default function App() {
     if (!hasConsent && savedLang) setShowConsent(true);
     const hasDisclaimer = localStorage.getItem(DISCLAIMER_KEY);
     if (!hasDisclaimer && savedLang) setShowDisclaimer(true);
-    const hasOnboarding = localStorage.getItem(ONBOARDING_KEY);
-    if (!hasOnboarding && savedLang) setShowOnboarding(true);
-    setMounted(true);
+        setMounted(true);
   }, []);
 
   // Clear inputs every time scan page is entered
@@ -649,6 +647,7 @@ export default function App() {
 const selectLang = (l: Lang) => {
     setLang(l);
     localStorage.setItem(LANG_KEY, l);
+    if (!localStorage.getItem(ONBOARDING_KEY)) setShowOnboarding(true);
     if (!localStorage.getItem(CONSENT_KEY)) setShowConsent(true);
     if (!localStorage.getItem(DISCLAIMER_KEY)) setShowDisclaimer(true);
     setPage('home');
@@ -926,7 +925,7 @@ const DisclaimerModal = () => (
 </button>
           </div>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-gray-200 text-sm text-gray-900">{t('premiumSoon')}</div>
+          
         </div>
     </>
   );
@@ -1168,7 +1167,7 @@ const DisclaimerModal = () => (
             <div className="bg-red-500 h-2 rounded-full" style={{ width: `${Math.min((usage / FREE_LIMIT) * 100, 100)}%` }} />
           </div>
         </div>
-        <p className="text-xs text-gray-900 text-center mt-2">{t('premiumSoon')}</p>
+        
         <button onClick={() => {
           localStorage.removeItem(DISCLAIMER_KEY);
           setShowDisclaimer(true);
