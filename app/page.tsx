@@ -320,7 +320,7 @@ function FeedbackPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  
 
   const submit = async () => {
     if (rating === 0) { setError('Please select a rating.'); return; }
@@ -610,6 +610,7 @@ export default function App() {
   const [mounted, setMounted]           = useState(false);
   const [showConsent, setShowConsent]   = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [feedback, setFeedback]         = useState<'pending' | 'given' | null>(null);
   const [showMarkAs, setShowMarkAs]     = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
