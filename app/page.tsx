@@ -46,10 +46,10 @@ const T: Record<Lang, Record<string, string>> = {
     noHistory: 'No scans yet', settings: 'Settings', language: 'Language',
     usageTitle: 'Usage This Month', usageDesc: 'free AI scans remaining',
     premiumSoon: '⭐ Premium coming soon — unlimited scans + priority analysis',
-    limitReached: '⚠️ Free limit reached. Using basic detection this month.',
-    limitInfo: 'Premium coming soon for unlimited AI scans.',
+    limitReached: '⚠️ You have used all 20 free scans this month. Please try again next month.',
+    limitInfo: 'You have used all 20 free AI scans this month. Try again next month.',
     deleteAll: '🗑️ Clear All History', aiAnalysis: 'AI Analysis',
-    basicAnalysis: 'Basic Analysis (AI limit reached)',
+    basicAnalysis: 'AI Analysis',
     feedbackTitle: 'Was this correct?',
     feedbackSub: 'Your feedback helps protect other Malaysians from scams',
     thumbsUp: '✅ Yes, correct', thumbsDown: '❌ No, wrong',
@@ -106,10 +106,10 @@ const T: Record<Lang, Record<string, string>> = {
     noHistory: 'Tiada imbasan lagi', settings: 'Tetapan', language: 'Bahasa',
     usageTitle: 'Penggunaan Bulan Ini', usageDesc: 'imbasan AI percuma berbaki',
     premiumSoon: '⭐ Premium akan datang — imbasan tanpa had',
-    limitReached: '⚠️ Had percuma dicapai. Menggunakan pengesanan asas.',
-    limitInfo: 'Premium akan datang untuk imbasan AI tanpa had.',
+    limitReached: '⚠️ Anda telah menggunakan kesemua 20 imbasan percuma bulan ini. Sila cuba lagi bulan hadapan.',
+    limitInfo: 'Anda telah menggunakan kesemua 20 imbasan AI percuma bulan ini. Cuba lagi bulan hadapan.',
     deleteAll: '🗑️ Padam Semua Sejarah', aiAnalysis: 'Analisis AI',
-    basicAnalysis: 'Analisis Asas (had AI dicapai)',
+    basicAnalysis: 'Analisis AI',
     feedbackTitle: 'Adakah ini betul?',
     feedbackSub: 'Maklum balas anda membantu melindungi rakyat Malaysia daripada scam',
     thumbsUp: '✅ Ya, betul', thumbsDown: '❌ Tidak, salah',
@@ -166,10 +166,10 @@ const T: Record<Lang, Record<string, string>> = {
     noHistory: '还没有扫描', settings: '设置', language: '语言',
     usageTitle: '本月使用情况', usageDesc: '免费AI扫描剩余',
     premiumSoon: '⭐ 即将推出高级版 — 无限扫描',
-    limitReached: '⚠️ 已达免费限制。使用基本检测。',
-    limitInfo: '即将推出高级版，提供无限AI扫描。',
+    limitReached: '⚠️ 您已使用本月全部20次免费扫描。请下个月再试。',
+    limitInfo: '您已使用本月全部20次免费AI扫描。请下个月再试。',
     deleteAll: '🗑️ 清除所有历史', aiAnalysis: 'AI分析',
-    basicAnalysis: '基本分析（已达AI限制）',
+    basicAnalysis: 'AI分析',
     feedbackTitle: '这个结果正确吗?',
     feedbackSub: '您的反馈有助于保护其他马来西亚人免受诈骗',
     thumbsUp: '✅ 是，正确', thumbsDown: '❌ 不，错误',
@@ -226,10 +226,10 @@ const T: Record<Lang, Record<string, string>> = {
     noHistory: 'இன்னும் ஸ்கேன் இல்லை', settings: 'அமைப்புகள்', language: 'மொழி',
     usageTitle: 'இந்த மாத பயன்பாடு', usageDesc: 'இலவச AI ஸ்கேன்கள் மீதமுள்ளன',
     premiumSoon: '⭐ பிரீமியம் விரைவில் — வரம்பற்ற ஸ்கேன்கள்',
-    limitReached: '⚠️ இலவச வரம்பை அடைந்தது. அடிப்படை கண்டறிதல் பயன்படுத்தப்படுகிறது.',
-    limitInfo: 'வரம்பற்ற AI ஸ்கேன்களுக்கு பிரீமியம் விரைவில்.',
+    limitReached: '⚠️ இந்த மாதம் 20 இலவச ஸ்கேன்கள் அனைத்தையும் பயன்படுத்திவிட்டீர்கள். அடுத்த மாதம் மீண்டும் முயற்சிக்கவும்.',
+    limitInfo: 'இந்த மாதம் 20 இலவச AI ஸ்கேன்கள் அனைத்தையும் பயன்படுத்திவிட்டீர்கள். அடுத்த மாதம் மீண்டும் முயற்சிக்கவும்.',
     deleteAll: '🗑️ அனைத்து வரலாற்றையும் அழிக்கவும்', aiAnalysis: 'AI பகுப்பாய்வு',
-    basicAnalysis: 'அடிப்படை பகுப்பாய்வு (AI வரம்பை அடைந்தது)',
+    basicAnalysis: 'AI பகுப்பாய்வு',
     feedbackTitle: 'இது சரியானதா?',
     feedbackSub: 'உங்கள் கருத்து மற்ற மலேசியர்களை மோசடியிலிருந்து பாதுகாக்க உதவுகிறது',
     thumbsUp: '✅ ஆம், சரி', thumbsDown: '❌ இல்லை, தவறு',
@@ -1038,7 +1038,9 @@ const DisclaimerModal = () => (
             </div>
           )}
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
-            <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{limitReached ? t('basicAnalysis') : t('aiAnalysis')}</p>
+            <p className="text-xs font-semibold text-gray-900 uppercase mb-1">
+  {t('aiAnalysis')}
+</p>
             <p className="text-sm text-gray-900">{result.reason}</p>
           </div>
           {result.tactics?.length > 0 && (
@@ -1168,13 +1170,10 @@ const DisclaimerModal = () => (
           </div>
         </div>
         
-        <button onClick={() => {
-          localStorage.removeItem(DISCLAIMER_KEY);
-          setShowDisclaimer(true);
-        }}
-          className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100">
-          📄 {t('termsLink')}
-        </button>
+        <a href="/terms" target="_blank" rel="noopener noreferrer"
+  className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
+  📄 {t('termsLink')}
+</a>
         <a href="/privacy" target="_blank" rel="noopener noreferrer"
           className="w-full mt-3 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
           🔒 {t('privacyPolicy')}
