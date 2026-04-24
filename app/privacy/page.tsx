@@ -50,7 +50,7 @@ e) App preferences (stored locally on your device only)
             content: `• To provide scam detection analysis
 - To improve detection accuracy via feedback
 - To monitor app usage and performance
-- To enforce fair usage limits (10 free AI scans/month)
+- To enforce fair usage limits (20 free AI scans/month)
 
 We do NOT:
 - Sell your data to third parties
@@ -76,10 +76,7 @@ Vercel (USA)
 - Data sent: Standard web request logs (IP, browser)
 - Privacy policy: vercel.com/legal/privacy-policy
 
-Tally.so
-- Purpose: User feedback collection (optional)
-- Only if you voluntarily submit the feedback form
-- Privacy policy: tally.so/privacy`
+`
           },
           {
             title: '5. Your Rights Under Malaysian PDPA',
@@ -97,6 +94,8 @@ For data deletion requests or privacy concerns, please use the feedback form in 
             title: '6. Data Retention',
             content: `• Message content: Not retained (processed and discarded)
 - Anonymous scan statistics: 12 months
+- User feedback corrections: Used to improve AI detection accuracy 
+  for all users. Anonymised before use.
 - User feedback: 24 months or until deleted by admin
 - Device identifier: Until you clear browser data
 - App preferences: Until you clear browser data or use "Clear History"`
@@ -127,7 +126,7 @@ However, no system is 100% secure. We cannot guarantee absolute security of data
 - Results are AI-generated and not guaranteed to be accurate
 - This app does not constitute legal, financial, or security advice
 - The developer is not liable for any losses, damages, or decisions made based on app results
-- Always verify suspicious messages with official sources (your bank, PDRM at 999, MCMC at 1-800-888-030)
+- Always verify suspicious messages with official sources (your bank, PDRM at 997, MCMC at 1-800-888-030)
 - - Report scams to: NSRC at 997 (8am-8pm daily) or CCID at 03-2610 1559`
           },
           {
