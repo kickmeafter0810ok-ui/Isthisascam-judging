@@ -449,16 +449,16 @@ export default function AdminDashboard() {
           )}
 
           {/* Emerging alerts */}
-          {intelItems.filter(i => i.status === 'emerging').length > 0 && (
-            <div className="mb-4">
-              <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
-              <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
-  {intelItems.filter(i => i.status === 'new' && i.admin_action === 'pending').length === 0 && (
-                  <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
-                ))}
-              </div>
-            </div>
-          )}
+{intelItems.filter(i => i.status === 'emerging').length > 0 && (
+  <div className="mb-4">
+    <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
+    <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+      {intelItems.filter(i => i.status === 'emerging' && i.admin_action === 'pending').map(item => (
+        <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
+      ))}
+    </div>
+  </div>
+)}
 
           {/* New items */}
           <div className="mb-4">
