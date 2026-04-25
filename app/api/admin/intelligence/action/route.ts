@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
   await supabase.from('scam_intel').update(update).eq('id', id);
 
   // Auto-embed when approved — closes the flywheel loop
+   // Auto-embed when approved — closes the flywheel loop
   if (action === 'approve') {
     try {
       const { data: item } = await supabase
@@ -58,4 +59,9 @@ export async function POST(req: NextRequest) {
           .eq('id', id);
       }
     } catch (e) {
-      // Embedding failed silently
+      console.error('Embedding failed:', e);
+    }
+  }
+
+  return NextResponse.json({ success: true });
+}
