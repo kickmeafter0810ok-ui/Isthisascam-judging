@@ -517,7 +517,7 @@ export default function AdminDashboard() {
                 <div key={f.id} className={`rounded-xl p-4 transition-all ${
                   f.status === 'approved' ? 'bg-green-900 opacity-40 border border-green-700' : 
                   f.status === 'rejected' ? 'bg-gray-900 opacity-40 border border-gray-700' : 
-                  'bg-gray-700 border border-gray-600'}`}>>
+                  'bg-gray-700 border border-gray-600'}`}>
                 <div className="flex gap-2 mb-2 items-center flex-wrap">
                   {f.status !== 'pending' && (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
