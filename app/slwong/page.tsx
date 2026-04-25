@@ -347,7 +347,7 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-sm">No user feedback yet</p>
             )}
             {unreadAppFeedback.map(f => (
-              <div key={f.id} className="bg-gray-700 rounded-xl p-4 border border-yellow-500">
+              <div key={f.id} className="bg-yellow-950 rounded-xl p-4 border-2 border-yellow-400">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex gap-2 items-center">
                     <span className="text-yellow-400 text-xs font-bold">NEW</span>
@@ -378,7 +378,7 @@ export default function AdminDashboard() {
               </summary>
               <div className="space-y-3 mt-3">
                 {readAppFeedback.map(f => (
-                  <div key={f.id} className="bg-gray-700 rounded-xl p-4 opacity-60">
+                  <div key={f.id} className="bg-gray-900 rounded-xl p-4 opacity-40 border border-gray-700">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-yellow-400">{'⭐'.repeat(f.rating || 0)}</span>
                       <span className="text-gray-400 text-xs">{new Date(f.created_at).toLocaleDateString()}</span>
