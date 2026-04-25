@@ -919,7 +919,7 @@ const DisclaimerModal = () => (
             <button onClick={() => setPage('learn')} className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
               {t('learnBtn')}
             </button>
-            <button onClick={() => setPage('feedback' as any)}
+            <button onClick={() => setPage('feedback')}
   className="w-full bg-white hover:bg-gray-50 border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl text-lg transition">
   {t('feedbackBtn')}
 </button>
@@ -1180,6 +1180,10 @@ const DisclaimerModal = () => (
         </a>
       </div>
     </div>
+  );
+
+  if (page === 'feedback') return (
+    <FeedbackPage lang={lang} onBack={() => setPage('home')} />
   );
 
   return null;

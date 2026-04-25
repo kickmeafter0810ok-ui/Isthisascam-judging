@@ -5,11 +5,11 @@ export default function DeleteData() {
 
         <div className="mb-10">
           <a href="/" className="text-sm text-gray-500 hover:text-gray-300 transition-colors mb-6 inline-block">
-            ← Back to IsItAScam
+            ← Back to IsThisAScam
           </a>
           <h1 className="text-3xl font-bold text-white mb-2">Data Deletion Request</h1>
           <p className="text-gray-400 text-sm">
-            IsItAScam — operated by JAGA Technologies<br />
+            IsThisAScam — operated by JAGA Technologies<br />
             Last updated: April 2026
           </p>
         </div>
@@ -18,11 +18,11 @@ export default function DeleteData() {
 
           <section>
             <h2 className="text-white font-semibold text-base mb-3">How to Request Data Deletion</h2>
-            <p className="mb-3">To request deletion of your data collected by IsItAScam, use either of the following methods:</p>
+            <p className="mb-3">To request deletion of your data collected by IsThisAScam, use either of the following methods:</p>
             <div className="bg-gray-900 rounded-xl p-4 space-y-3">
               <div>
                 <p className="text-white font-medium mb-1">Option 1 — In-app feedback form</p>
-                <p>Open IsItAScam → tap the Feedback button on the home screen → describe your deletion request. We will respond within 14 business days.</p>
+                <p>Open IsThisAScam → tap the Feedback button on the home screen → describe your deletion request. We will respond within 14 business days.</p>
               </div>
               <div>
                 <p className="text-white font-medium mb-1">Option 2 — Email</p>
@@ -64,7 +64,7 @@ export default function DeleteData() {
           <section>
             <h2 className="text-white font-semibold text-base mb-3">Contact</h2>
             <p>JAGA Technologies<br />
-            <span className="text-blue-400">[your email]</span></p>
+            <span className="text-blue-400">[isthisascam.my@gmail.com]</span></p>
           </section>
 
         </div>

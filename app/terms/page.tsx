@@ -105,7 +105,7 @@ export default function TermsOfService() {
             <p>For questions about these Terms, contact us at:</p>
             <div className="mt-2 text-gray-400">
               <p>JAGA Technologies</p>
-              <p><span className="text-blue-400">[your email]</span></p>
+              <p><span className="text-blue-400">[isthisascam.my@gmail.com]</span></p>
             </div>
           </section>
 
