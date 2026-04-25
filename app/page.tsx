@@ -700,7 +700,12 @@ const selectLang = (l: Lang) => {
     const res = await fetch('/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: inputText, imageBase64, language: lang, deviceId: getDeviceId() }),
+      body: JSON.stringify({ 
+  text: tab === 'text' ? inputText : '', 
+  imageBase64: tab === 'photo' ? imageBase64 : null, 
+  language: lang, 
+  deviceId: getDeviceId() 
+}),
     });
 
     const data = await res.json();

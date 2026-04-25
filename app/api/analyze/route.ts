@@ -57,6 +57,12 @@ IMPORTANT DISTINCTIONS:
 - Prize notifications WITHOUT payment required = "suspicious"
 - Prize notifications WITH fee to claim = "scam"
 
+MEANINGLESS INPUT:
+- Random characters, gibberish, keyboard mashing (e.g. "asdfghjkl", "qwerty123") = always "safe"
+- Reason should state: "This does not appear to be a real message"
+- Single words with no context = "safe" unless they contain phishing URLs or known scam phrases
+- Empty meaning, no sentences, no request = "safe"
+
 PHISHING URL PATTERNS (always "scam" regardless of language):
 - Domain names that mimic legitimate services with typos: booklng vs booking, paypa1 vs paypal
 - Suspicious domains: booking.opens-index.com, secure-maybank.net
