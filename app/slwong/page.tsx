@@ -216,8 +216,8 @@ export default function AdminDashboard() {
           </div>
 
           {brief ? (
-            <div className="bg-gray-700 rounded-xl p-4 mb-4 text-sm text-gray-100 leading-relaxed whitespace-pre-line">
-              {brief}
+           <div className="bg-gray-700 rounded-xl p-4 mb-4 text-sm text-gray-100 leading-relaxed whitespace-pre-line max-h-48 overflow-y-auto">
+           {brief}
             </div>
           ) : (
             <div className="bg-gray-700 rounded-xl p-4 mb-4 text-sm text-gray-400">
@@ -342,7 +342,7 @@ export default function AdminDashboard() {
           <p className="text-gray-400 text-sm mb-4">Feedback submitted via the in-app feedback form</p>
 
           {/* Unread first */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-4 mb-6 max-h-96 overflow-y-auto pr-1">
             {unreadAppFeedback.length === 0 && readAppFeedback.length === 0 && (
               <p className="text-gray-400 text-sm">No user feedback yet</p>
             )}
@@ -395,7 +395,7 @@ export default function AdminDashboard() {
         {/* Recent Scans */}
         <div className="bg-gray-800 rounded-xl p-6 mb-8">
           <h2 className="font-bold mb-4 text-lg">Recent Scans</h2>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-64 overflow-y-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-400 border-b border-gray-700">
@@ -452,8 +452,8 @@ export default function AdminDashboard() {
           {intelItems.filter(i => i.status === 'emerging').length > 0 && (
             <div className="mb-4">
               <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
-              <div className="space-y-3">
-                {intelItems.filter(i => i.status === 'emerging' && i.admin_action === 'pending').map(item => (
+              <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+  {intelItems.filter(i => i.status === 'new' && i.admin_action === 'pending').length === 0 && (
                   <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
                 ))}
               </div>
@@ -506,15 +506,18 @@ export default function AdminDashboard() {
         <div className="bg-gray-800 rounded-xl p-6">
           <h2 className="font-bold mb-2 text-lg">🔄 Detection Feedback Review</h2>
           <p className="text-gray-400 text-sm mb-4">User corrections to scam verdicts — approve to improve AI detection</p>
-          <div className="space-y-4">
+          <div className="space-y-4 max-h-96 overflow-y-auto pr-1">
             {stats.pendingFeedback?.length === 0 && (
               <p className="text-gray-400 text-sm">No feedback yet</p>
             )}
-            {[...(stats.pendingFeedback || [])].sort((a, b) => {
+         {[...(stats.pendingFeedback || [])].sort((a, b) => {
               const order = { pending: 0, approved: 1, rejected: 2 };
-              return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
-            }).map((f: any) => (
-              <div key={f.id} className={`rounded-xl p-4 ${f.status === 'approved' ? 'bg-green-900 opacity-60' : f.status === 'rejected' ? 'bg-red-900 opacity-60' : 'bg-gray-700'}`}>
+               return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
+                }).map((f: any) => (
+                <div key={f.id} className={`rounded-xl p-4 transition-all ${
+                  f.status === 'approved' ? 'bg-green-900 opacity-40 border border-green-700' : 
+                  f.status === 'rejected' ? 'bg-gray-900 opacity-40 border border-gray-700' : 
+                  'bg-gray-700 border border-gray-600'}`}>>
                 <div className="flex gap-2 mb-2 items-center flex-wrap">
                   {f.status !== 'pending' && (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
