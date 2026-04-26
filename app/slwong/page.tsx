@@ -511,15 +511,30 @@ export default function AdminDashboard() {
               <p className="text-gray-400 text-sm">No feedback yet</p>
             )}
          {[...(stats.pendingFeedback || [])].sort((a, b) => {
-              const order = { pending: 0, approved: 1, rejected: 2 };
-               return (order[a.status as keyof typeof order] ?? 0) - (order[b.status as keyof typeof order] ?? 0);
+  const statusOrder = { pending: 0, approved: 1, rejected: 2 };
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+  const statusDiff = (statusOrder[a.status as keyof typeof statusOrder] ?? 0) - 
+                     (statusOrder[b.status as keyof typeof statusOrder] ?? 0);
+  if (statusDiff !== 0) return statusDiff;
+  return (priorityOrder[a.priority as keyof typeof priorityOrder] ?? 2) - 
+         (priorityOrder[b.priority as keyof typeof priorityOrder] ?? 2);
                 }).map((f: any) => (
                 <div key={f.id} className={`rounded-xl p-4 transition-all ${
                   f.status === 'approved' ? 'bg-green-900 opacity-40 border border-green-700' : 
                   f.status === 'rejected' ? 'bg-gray-900 opacity-40 border border-gray-700' : 
                   'bg-gray-700 border border-gray-600'}`}>
                 <div className="flex gap-2 mb-2 items-center flex-wrap">
-                  {f.status !== 'pending' && (
+                    {f.auto_flagged && f.status === 'pending' && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
+                     f.priority === 'high' ? 'bg-red-500 text-white' :
+                      f.priority === 'medium' ? 'bg-orange-500 text-white' :
+                      'bg-gray-500 text-white'}`}>
+                       {f.priority === 'high' ? '🚨 High Priority' : 
+                        f.priority === 'medium' ? '⚠️ Medium Priority' : 
+                     '📋 Auto-flagged'}
+                    </span>
+                     )}
+               {f.status !== 'pending' && (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${f.status === 'approved' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
                       {f.status === 'approved' ? '✅ Approved' : '❌ Rejected'}
                     </span>
