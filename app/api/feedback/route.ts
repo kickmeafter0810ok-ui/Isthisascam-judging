@@ -42,8 +42,7 @@ export async function POST(req: NextRequest) {
 
     // Auto-flag contradicted verdicts for admin review
     // Only flag when user disagrees with verdict (correctVerdict !== originalVerdict)
-    const isContradiction = correctVerdict !== originalVerdict;
-    const isContradiction = correctVerdict !== originalVerdict;
+        const isContradiction = correctVerdict !== originalVerdict;
 
 // High priority: AI said not-scam, user says scam (dangerous miss)
 const isHighPriority = 
