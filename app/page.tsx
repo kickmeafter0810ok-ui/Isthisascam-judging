@@ -30,6 +30,23 @@ const LANGS: { code: Lang; label: string }[] = [
   { code: 'ta', label: '🇮🇳 தமிழ்' },
 ];
 
+const TACTIC_LABELS: Record<string, Record<string, string>> = {
+  urgency:                { en: 'Urgency', ms: 'Kecemasan', 'zh-s': '紧迫', ta: 'அவசரம்' },
+  impersonation:          { en: 'Impersonation', ms: 'Penyamaran', 'zh-s': '冒充', ta: 'போலியான அடையாளம்' },
+  phishing_link:          { en: 'Phishing Link', ms: 'Pautan Phishing', 'zh-s': '钓鱼链接', ta: 'ஃபிஷிங் இணைப்பு' },
+  credential_harvesting:  { en: 'Credential Theft', ms: 'Kecurian Akaun', 'zh-s': '账号盗取', ta: 'கணக்கு திருட்டு' },
+  prize_scam:             { en: 'Prize Scam', ms: 'Scam Hadiah', 'zh-s': '奖品诈骗', ta: 'பரிசு மோசடி' },
+  loan_scam:              { en: 'Loan Scam', ms: 'Scam Pinjaman', 'zh-s': '贷款诈骗', ta: 'கடன் மோசடி' },
+  job_scam:               { en: 'Job Scam', ms: 'Scam Kerja', 'zh-s': '工作诈骗', ta: 'வேலை மோசடி' },
+  romance_scam:           { en: 'Love Scam', ms: 'Love Scam', 'zh-s': '爱情诈骗', ta: 'காதல் மோசடி' },
+  investment_scam:        { en: 'Investment Scam', ms: 'Scam Pelaburan', 'zh-s': '投资诈骗', ta: 'முதலீட்டு மோசடி' },
+  fake_qr:                { en: 'Fake QR', ms: 'QR Palsu', 'zh-s': '假二维码', ta: 'போலி QR' },
+  government_impersonation: { en: 'Gov Impersonation', ms: 'Samaran Kerajaan', 'zh-s': '冒充政府', ta: 'அரசு போலியர்' },
+  bank_impersonation:     { en: 'Bank Impersonation', ms: 'Samaran Bank', 'zh-s': '冒充银行', ta: 'வங்கி போலியர்' },
+  malware:                { en: 'Malware', ms: 'Perisian Hasad', 'zh-s': '恶意软件', ta: 'தீம்பொருள்' },
+  data_breach:            { en: 'Data Breach', ms: 'Kebocoran Data', 'zh-s': '数据泄露', ta: 'தரவு கசிவு' },
+};
+
 const T: Record<Lang, Record<string, string>> = {
   en: {
     selectLang: 'Select Your Language',
@@ -90,6 +107,12 @@ const T: Record<Lang, Record<string, string>> = {
     onboardingHow5: 'Give feedback on results — it helps improve accuracy for everyone',
     onboardingHow6: 'When in doubt — don\'t click, don\'t transfer',
     onboardingBtn: 'Got it, let\'s go →',
+    emerging: 'EMERGING',
+    active: 'ACTIVE', 
+    resolved: 'RESOLVED',
+    shareWarning: '↗ Share Warning',
+    readArticle: '📰 Read Article',
+    tacticsDetected: 'Tactics:',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -150,6 +173,12 @@ const T: Record<Lang, Record<string, string>> = {
     onboardingHow5: 'Beri maklum balas — ia membantu meningkatkan ketepatan untuk semua',
     onboardingHow6: 'Apabila ragu-ragu — jangan klik, jangan pindah',
     onboardingBtn: 'Faham, jom mula →',
+    emerging: 'TERKINI',
+    active: 'AKTIF',
+    resolved: 'SELESAI',
+    shareWarning: '↗ Kongsi Amaran',
+    readArticle: '📰 Baca Artikel',
+    tacticsDetected: 'Taktik:',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -210,6 +239,12 @@ const T: Record<Lang, Record<string, string>> = {
     onboardingHow5: '提供反馈 — 帮助提升所有用户的准确度',
     onboardingHow6: '有疑虑时 — 不要点击，不要转账',
     onboardingBtn: '明白了，开始吧 →',
+    emerging: '新兴',
+    active: '活跃',
+    resolved: '已解决',
+    shareWarning: '↗ 分享警告',
+    readArticle: '📰 阅读文章',
+    tacticsDetected: '手法：',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -270,6 +305,12 @@ const T: Record<Lang, Record<string, string>> = {
     onboardingHow5: 'கருத்து தெரிவியுங்கள் — அனைவருக்கும் துல்லியத்தை மேம்படுத்த உதவுகிறது',
     onboardingHow6: 'சந்தேகம் இருந்தால் — கிளிக் வேண்டாம், பணம் அனுப்ப வேண்டாம்',
     onboardingBtn: 'புரிந்தது, தொடங்குவோம் →',
+    emerging: 'புதியது',
+    active: 'செயலில்',
+    resolved: 'தீர்க்கப்பட்டது',
+    shareWarning: '↗ எச்சரிக்கை பகிர்',
+    readArticle: '📰 கட்டுரை படிக்க',
+    tacticsDetected: 'தந்திரங்கள்:',
   },
 };
 
@@ -531,12 +572,12 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex gap-2 flex-wrap flex-1 mr-2">
                     <span className="text-xs font-bold">
-                      {statusIcon(item.status)} {item.status === 'emerging' ? 'EMERGING' : item.status === 'active' ? 'ACTIVE' : 'RESOLVED'}
+                      {statusIcon(item.status)} {item.status === 'emerging' ? t('emerging') : item.status === 'active' ? t('active') : t('resolved')}
                     </span>
                     {item.tactic_tags?.slice(0, 2).map((tag: string) => (
                       <span key={tag} className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
-                        {tag.replace(/_/g, ' ')}
-                      </span>
+                         {TACTIC_LABELS[tag]?.[lang] || tag.replace(/_/g, ' ')}
+                       </span>
                     ))}
                   </div>
                   {item.occurrence_count > 2 && (
@@ -553,12 +594,12 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
                     {item.source_url && (
                       <a href={item.source_url} target="_blank" rel="noopener noreferrer"
                      className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold py-2 rounded-lg transition text-center">
-                   📰 Read Full Article
+                   {t('readArticle')}
                   </a>
                   )}
                   <button onClick={() => handleShare(item)}
                   className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold py-2 rounded-lg transition">
-                  ↗ Share Warning
+                  {t('shareWarning')}
                   </button>
                 </div>
                </div>
