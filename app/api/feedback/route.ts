@@ -55,7 +55,7 @@ const isMediumPriority =
   (correctVerdict === 'safe' || correctVerdict === 'suspicious');
 
 // Low priority: safe ↔ suspicious disagreements (minor severity)
-const isLowPriority = isContradiction && !isHighPriority && !isMediumPriority;
+
 
 if (isContradiction) {
   const priority = isHighPriority ? 'high' : isMediumPriority ? 'medium' : 'low';
@@ -65,17 +65,6 @@ if (isContradiction) {
     .eq('correct_verdict', correctVerdict);
 }
 
-    if (isContradiction) {
-      const priority = isFalseNegative ? 'high' : isFalsePositive ? 'medium' : 'low';
-      await supabase.from('feedback')
-        .update({ 
-          status: 'pending',
-          priority: priority,
-          auto_flagged: true 
-        })
-        .eq('scan_id', scanId)
-        .eq('correct_verdict', correctVerdict);
-    }
 
     return NextResponse.json({ success: true });
   } catch (e: any) {
