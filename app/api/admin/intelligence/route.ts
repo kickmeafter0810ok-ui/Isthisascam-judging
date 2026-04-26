@@ -8,26 +8,21 @@ const supabase = createClient(
 );
 
 const RSS_SOURCES = [
-  // English — confirmed active feeds
-  { url: 'https://www.malaymail.com/feed', name: 'Malay Mail', lang: 'en' },
-  { url: 'https://www.themalaysianinsight.com/feed', name: 'The Malaysian Insight', lang: 'en' },
+  // Direct feeds — confirmed working
   { url: 'https://malaysianow.com/feed', name: 'MalaysiaNow', lang: 'en' },
-  { url: 'https://says.com/my/rss', name: 'Says.com', lang: 'en' },
   { url: 'https://vulcanpost.com/feed/', name: 'Vulcan Post', lang: 'en' },
-  { url: 'https://www.freemalaysiatoday.com/feed/', name: 'Free Malaysia Today', lang: 'en' },
   { url: 'https://bernama.com/en/rssfeed.php', name: 'Bernama', lang: 'en' },
-  { url: 'https://www.nst.com.my/rss/news', name: 'NST', lang: 'en' },
-  { url: 'https://theborneopost.com/feed', name: 'Borneo Post', lang: 'en' },
-
-  // Malay — confirmed active feeds
+  { url: 'https://www.freemalaysiatoday.com/feed/', name: 'Free Malaysia Today', lang: 'en' },
   { url: 'https://www.utusan.com.my/feed', name: 'Utusan Malaysia', lang: 'ms' },
-  { url: 'https://www.bharian.com.my/rss', name: 'Berita Harian', lang: 'ms' },
-  { url: 'https://www.hmetro.com.my/rss', name: 'Harian Metro', lang: 'ms' },
 
-  // Chinese — confirmed active feeds
-  { url: 'https://www.sinchew.com.my/feed/', name: 'Sin Chew Daily', lang: 'zh' },
-  { url: 'https://www.chinapress.com.my/feed/', name: 'China Press', lang: 'zh' },
-  { url: 'https://www.orientaldaily.com.my/feed', name: 'Oriental Daily', lang: 'zh' },
+  // Google News — recovers blocked sources
+  { url: 'https://news.google.com/rss/search?q=scam+fraud+Malaysia&hl=en-MY&gl=MY&ceid=MY:en', name: 'Google News EN Scam', lang: 'en' },
+  { url: 'https://news.google.com/rss/search?q=penipuan+sindiket+mangsa+Malaysia&hl=ms&gl=MY&ceid=MY:ms', name: 'Google News MS Penipuan', lang: 'ms' },
+  { url: 'https://news.google.com/rss/search?q=scam+macau+cinta+pelaburan+Malaysia&hl=ms&gl=MY&ceid=MY:ms', name: 'Google News MS Scam Types', lang: 'ms' },
+  { url: 'https://news.google.com/rss/search?q=诈骗+马来西亚&hl=zh-CN&gl=MY&ceid=MY:zh-Hans', name: 'Google News ZH Scam', lang: 'zh' },
+  { url: 'https://news.google.com/rss/search?q=PDRM+CCID+scam+arrest+Malaysia&hl=en-MY&gl=MY&ceid=MY:en', name: 'Google News PDRM', lang: 'en' },
+  { url: 'https://news.google.com/rss/search?q=BNM+Bank+Negara+scam+fraud+Malaysia&hl=en-MY&gl=MY&ceid=MY:en', name: 'Google News BNM', lang: 'en' },
+  { url: 'https://news.google.com/rss/search?q=NSRC+997+scam+Malaysia&hl=en-MY&gl=MY&ceid=MY:en', name: 'Google News NSRC', lang: 'en' },
 ];
 
 const SCAM_KEYWORDS = [
@@ -204,7 +199,8 @@ for (const source of RSS_SOURCES) {
       for (const item of items) {
         if (!isScamRelated(item.title, item.description)) continue;
         results.scamRelated++;
-
+        console.log(`Scam-related: [${source.name}] ${item.title}`);
+        
         const hash = generateHash(item.title, source.name);
 
         // Check duplicate
@@ -237,7 +233,11 @@ for (const source of RSS_SOURCES) {
         );
 
         if (!extracted) { console.log('Extraction failed for:', item.title); continue; }
-        if (!extracted.is_scam_pattern) { console.log('Not a pattern:', item.title, '- reason implied by AI'); continue; }
+        if (!extracted.is_scam_pattern) { 
+  console.log('Not a pattern:', item.title);
+  continue; 
+}
+console.log('New pattern found:', item.title);
 
         // Store new intel item
         const { error } = await supabase.from('scam_intel').insert({
