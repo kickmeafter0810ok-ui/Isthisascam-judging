@@ -119,6 +119,8 @@ const T: Record<Lang, Record<string, string>> = {
     lesson4Title: '🎰 Prize & Lucky Draw Scams', lesson4Tag: 'Very common',
     lesson5Title: '📦 Parcel Delivery Scams', lesson5Tag: 'Post-pandemic surge',
     lesson6Title: '🏛️ Government Impersonation', lesson6Tag: 'Very serious',
+    reportScams: 'Report Scams in Malaysia',
+    yourBank: 'Your Bank Hotline: Call immediately if money lost',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -191,6 +193,8 @@ const T: Record<Lang, Record<string, string>> = {
     lesson4Title: '🎰 Scam Hadiah & Cabutan Bertuah', lesson4Tag: 'Sangat biasa',
     lesson5Title: '📦 Scam Penghantaran Barang', lesson5Tag: 'Meningkat selepas pandemik',
     lesson6Title: '🏛️ Penyamaran Kerajaan', lesson6Tag: 'Sangat serius',
+    reportScams: 'Laporkan Scam di Malaysia',
+    yourBank: 'Talian Hotline Bank Anda: Hubungi segera jika wang hilang',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -263,6 +267,8 @@ const T: Record<Lang, Record<string, string>> = {
     lesson4Title: '🎰 奖品与幸运抽奖诈骗', lesson4Tag: '非常普遍',
     lesson5Title: '📦 包裹快递诈骗', lesson5Tag: '疫情后激增',
     lesson6Title: '🏛️ 冒充政府机构', lesson6Tag: '非常严重',
+    reportScams: '在马来西亚举报诈骗',
+    yourBank: '您的银行热线：如有资金损失请立即致电',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -335,6 +341,8 @@ const T: Record<Lang, Record<string, string>> = {
     lesson4Title: '🎰 பரிசு & லாட்டரி மோசடி', lesson4Tag: 'மிகவும் பொதுவானது',
     lesson5Title: '📦 பார்சல் டெலிவரி மோசடி', lesson5Tag: 'தொற்றுநோய்க்கு பின் அதிகரிப்பு',
     lesson6Title: '🏛️ அரசு போலியர்', lesson6Tag: 'மிகவும் தீவிரமானது',
+    reportScams: 'மலேசியாவில் மோசடியை புகாரளிக்கவும்',
+    yourBank: 'உங்கள் வங்கி ஹாட்லைன்: பணம் இழந்தால் உடனே அழைக்கவும்',
   },
 };
 
@@ -668,15 +676,15 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
 
         {/* Helplines */}
         <div className="mt-6 bg-red-50 border border-red-200 rounded-xl p-4 text-center">
-          <p className="text-sm font-bold text-gray-900 mb-1">🚨 Report Scams in Malaysia</p>
-          <p className="text-xs text-gray-900">🚨 NSRC (Scam Emergency): <strong>997</strong> (24/7)</p>
-          <p className="text-xs text-gray-900">🏦 BNM LINK: <strong>1-300-88-5465</strong></p>
-          <p className="text-xs text-gray-900">🏦 Your Bank Hotline: <strong>Call immediately if money lost</strong></p>
-          <p className="text-xs text-gray-900">👮 Police (CCID): <strong>03-2610 1559</strong></p>
-          <p className="text-xs text-gray-900">📡 MCMC Hotline: <strong>1-800-188-030</strong></p>
-          <p className="text-xs text-gray-900">🌐 MCMC Online: <strong>aduan.mcmc.gov.my</strong></p>
-          <p className="text-xs text-gray-900">🔍 Semak Mule: <strong>ccid.rmp.gov.my</strong></p>
-        </div>
+        <p className="text-sm font-bold text-gray-900 mb-1">🚨 {t('reportScams')}</p>
+        <p className="text-xs text-gray-900">🚨 NSRC (Scam Emergency): <strong>997</strong> (24/7)</p>
+        <p className="text-xs text-gray-900">🏦 BNM LINK: <strong>1-300-88-5465</strong></p>
+        <p className="text-xs text-gray-900">🏦 {t('yourBank')}</p>
+        <p className="text-xs text-gray-900">👮 Police (CCID): <strong>03-2610 1559</strong></p>
+        <p className="text-xs text-gray-900">📡 MCMC Hotline: <strong>1-800-188-030</strong></p>
+        <p className="text-xs text-gray-900">🌐 MCMC Online: <strong>aduan.mcmc.gov.my</strong></p>
+        <p className="text-xs text-gray-900">🔍 Semak Mule: <strong>ccid.rmp.gov.my</strong></p>
+      </div>
       </div>
     </div>
   );
