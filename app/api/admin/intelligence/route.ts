@@ -196,11 +196,18 @@ for (const source of RSS_SOURCES) {
     });
     console.log(`${source.name}: fetched ${items.length} articles`);
       
+    let processedCount = 0;
+    const MAX_PROCESS_PER_RUN = 10;
+
       for (const item of items) {
-        if (!isScamRelated(item.title, item.description)) continue;
-        results.scamRelated++;
-        console.log(`Scam-related: [${source.name}] ${item.title}`);
-        
+  if (!isScamRelated(item.title, item.description)) continue;
+  results.scamRelated++;
+  console.log(`Scam-related: [${source.name}] ${item.title}`);
+
+  // Stop processing if we've hit the limit
+  if (processedCount >= MAX_PROCESS_PER_RUN) continue;
+  processedCount++;
+
         const hash = generateHash(item.title, source.name);
 
         // Check duplicate
