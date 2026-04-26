@@ -549,9 +549,18 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
                   {item.platform && <span>📱 {item.platform}</span>}
                   {item.target_demographic && <span>👥 {item.target_demographic}</span>}
                 </div>
-                <button onClick={() => handleShare(item)}
-                  className="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold py-2 rounded-lg transition">
-                  ↗ Share Warning to Family & Friends
+                  <div className="flex gap-2">
+                    {item.source_url && (
+                      <a href={item.source_url} target="_blank" rel="noopener noreferrer"
+                     className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold py-2 rounded-lg transition text-center">
+                   📰 Read Full Article
+                  </a>
+                  )}
+                  <button onClick={() => handleShare(item)}
+                  className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold py-2 rounded-lg transition">
+                  ↗ Share Warning
+                  </button>
+                </div>
                 </button>
               </div>
             ))}
