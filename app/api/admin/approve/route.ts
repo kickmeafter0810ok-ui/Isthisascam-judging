@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { feedbackId, action, originalText, correctVerdict } = await req.json();
+  const { feedbackId, appFeedbackId, action, originalText, correctVerdict } = await req.json();
 
   if (action === 'ai_review') {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -81,7 +81,6 @@ export async function POST(req: NextRequest) {
   }
 
   if (action === 'mark_read') {
-    const { appFeedbackId } = await req.json().catch(() => ({ appFeedbackId: null }));
     const id = appFeedbackId || feedbackId;
     await supabase.from('app_feedback').update({ is_read: true }).eq('id', id);
     return NextResponse.json({ success: true });

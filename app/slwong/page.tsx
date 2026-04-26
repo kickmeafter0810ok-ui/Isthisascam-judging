@@ -465,7 +465,14 @@ export default function AdminDashboard() {
 )}
 
           {/* Emerging alerts */}
-{intelItems.filter(i => i.status === 'emerging').length > 0 && (
+const handleIntelAction = async (id: string, action: 'approve' | 'dismiss' | 'undo') => {
+  await fetch('/api/admin/intelligence/action', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, action }),
+  });
+  await fetchIntel();
+};
   <div className="mb-4">
     <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
     <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
@@ -490,25 +497,25 @@ export default function AdminDashboard() {
           </div>
 
           {/* Approved items */}
-          {intelItems.filter(i => i.admin_action === 'approved').length > 0 && (
-            <details>
-              <summary className="text-gray-400 text-sm cursor-pointer mb-2">
-                ✅ {intelItems.filter(i => i.admin_action === 'approved').length} approved items
-              </summary>
-              <div className="space-y-3 mt-2">
-                {intelItems.filter(i => i.admin_action === 'approved').map(item => (
-                  <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
-                ))}
-              </div>
-            </details>
-          )}
+         {intelItems.filter(i => i.admin_action === 'approved').length > 0 && (
+  <details className="mt-4">
+    <summary className="text-green-400 text-sm cursor-pointer mb-2 font-semibold">
+      ✅ {intelItems.filter(i => i.admin_action === 'approved').length} approved items — click to expand
+    </summary>
+    <div className="space-y-3 mt-2 max-h-96 overflow-y-auto">
+      {intelItems.filter(i => i.admin_action === 'approved').map(item => (
+        <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
+      ))}
+    </div>
+  </details>
+)}
 
           {/* Dismissed items */}
           {intelItems.filter(i => i.admin_action === 'dismissed').length > 0 && (
-            <details>
-              <summary className="text-gray-400 text-sm cursor-pointer mb-2">
-                ✕ {intelItems.filter(i => i.admin_action === 'dismissed').length} dismissed items
-              </summary>
+  <details className="mt-2">
+    <summary className="text-gray-500 text-sm cursor-pointer mb-2">
+      ❌ {intelItems.filter(i => i.admin_action === 'dismissed').length} dismissed items — click to expand
+    </summary>
               <div className="space-y-3 mt-2">
                 {intelItems.filter(i => i.admin_action === 'dismissed').map(item => (
                   <IntelCard key={item.id} item={item} onAction={handleIntelAction} />
