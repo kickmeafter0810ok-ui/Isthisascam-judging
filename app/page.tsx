@@ -561,8 +561,7 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
                   ↗ Share Warning
                   </button>
                 </div>
-                </button>
-              </div>
+               </div>
             ))}
           </div>
           {intelItems.length > 3 && (
