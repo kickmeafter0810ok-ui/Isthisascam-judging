@@ -113,6 +113,12 @@ const T: Record<Lang, Record<string, string>> = {
     shareWarning: '↗ Share Warning',
     readArticle: '📰 Read Article',
     tacticsDetected: 'Tactics:',
+    lesson1Title: '🏦 Bank Impersonation SMS', lesson1Tag: 'Common in Malaysia',
+    lesson2Title: '💼 Job Scams', lesson2Tag: 'Rising trend',
+    lesson3Title: '❤️ Love Scams', lesson3Tag: 'Most losses in Malaysia',
+    lesson4Title: '🎰 Prize & Lucky Draw Scams', lesson4Tag: 'Very common',
+    lesson5Title: '📦 Parcel Delivery Scams', lesson5Tag: 'Post-pandemic surge',
+    lesson6Title: '🏛️ Government Impersonation', lesson6Tag: 'Very serious',
   },
   ms: {
     selectLang: 'Pilih Bahasa Anda',
@@ -179,6 +185,12 @@ const T: Record<Lang, Record<string, string>> = {
     shareWarning: '↗ Kongsi Amaran',
     readArticle: '📰 Baca Artikel',
     tacticsDetected: 'Taktik:',
+    lesson1Title: '🏦 SMS Penyamaran Bank', lesson1Tag: 'Biasa di Malaysia',
+    lesson2Title: '💼 Scam Kerja', lesson2Tag: 'Trend meningkat',
+    lesson3Title: '❤️ Love Scam', lesson3Tag: 'Kerugian terbesar di Malaysia',
+    lesson4Title: '🎰 Scam Hadiah & Cabutan Bertuah', lesson4Tag: 'Sangat biasa',
+    lesson5Title: '📦 Scam Penghantaran Barang', lesson5Tag: 'Meningkat selepas pandemik',
+    lesson6Title: '🏛️ Penyamaran Kerajaan', lesson6Tag: 'Sangat serius',
   },
   'zh-s': {
     selectLang: '选择您的语言',
@@ -245,6 +257,12 @@ const T: Record<Lang, Record<string, string>> = {
     shareWarning: '↗ 分享警告',
     readArticle: '📰 阅读文章',
     tacticsDetected: '手法：',
+    lesson1Title: '🏦 银行冒充短信', lesson1Tag: '马来西亚常见',
+    lesson2Title: '💼 工作诈骗', lesson2Tag: '上升趋势',
+    lesson3Title: '❤️ 爱情诈骗', lesson3Tag: '马来西亚损失最大',
+    lesson4Title: '🎰 奖品与幸运抽奖诈骗', lesson4Tag: '非常普遍',
+    lesson5Title: '📦 包裹快递诈骗', lesson5Tag: '疫情后激增',
+    lesson6Title: '🏛️ 冒充政府机构', lesson6Tag: '非常严重',
   },
   ta: {
     selectLang: 'உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்',
@@ -311,6 +329,12 @@ const T: Record<Lang, Record<string, string>> = {
     shareWarning: '↗ எச்சரிக்கை பகிர்',
     readArticle: '📰 கட்டுரை படிக்க',
     tacticsDetected: 'தந்திரங்கள்:',
+    lesson1Title: '🏦 வங்கி போலி SMS', lesson1Tag: 'மலேசியாவில் பொதுவானது',
+    lesson2Title: '💼 வேலை மோசடி', lesson2Tag: 'அதிகரிக்கும் போக்கு',
+    lesson3Title: '❤️ காதல் மோசடி', lesson3Tag: 'மலேசியாவில் அதிக இழப்பு',
+    lesson4Title: '🎰 பரிசு & லாட்டரி மோசடி', lesson4Tag: 'மிகவும் பொதுவானது',
+    lesson5Title: '📦 பார்சல் டெலிவரி மோசடி', lesson5Tag: 'தொற்றுநோய்க்கு பின் அதிகரிப்பு',
+    lesson6Title: '🏛️ அரசு போலியர்', lesson6Tag: 'மிகவும் தீவிரமானது',
   },
 };
 
@@ -627,9 +651,9 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
             {SCAM_LESSONS.map((lesson, i) => (
               <details key={i} className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
                 <summary className="p-4 cursor-pointer font-semibold text-gray-900 flex justify-between items-center">
-                  <span>{lesson.title}</span>
-                  <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full ml-2 shrink-0">{lesson.tag}</span>
-                </summary>
+                  <span>{t(`lesson${i+1}Title`)}</span>
+                <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full ml-2 shrink-0">{t(`lesson${i+1}Tag`)}</span>
+              </summary>
                 <div className="px-4 pb-4">
                   <p className="text-sm text-gray-900 mb-3">{lesson.content}</p>
                   <div className="bg-white rounded-lg p-3 border border-gray-200">
