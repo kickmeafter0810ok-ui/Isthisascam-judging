@@ -101,14 +101,7 @@ export default function AdminDashboard() {
     setIntelLoading(false);
   };
 
-  const handleIntelAction = async (id: string, action: 'approve' | 'dismiss' | 'undo') => {
-    await fetch('/api/admin/intelligence/action', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, action }),
-    });
-    await fetchIntel();
-  };
+ 
   
   const fetchBrief = useCallback(async () => {
     setBriefLoading(true);
@@ -155,6 +148,17 @@ export default function AdminDashboard() {
       body: JSON.stringify({ appFeedbackId: id, action: 'mark_read' }),
     });
     fetchStats();
+  };
+
+
+
+  const handleIntelAction = async (id: string, action: 'approve' | 'dismiss' | 'undo') => {
+    await fetch('/api/admin/intelligence/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action }),
+    });
+    await fetchIntel();
   };
 
   const tickTodo = (todo: string) => {
@@ -465,14 +469,7 @@ export default function AdminDashboard() {
 )}
 
           {/* Emerging alerts */}
-const handleIntelAction = async (id: string, action: 'approve' | 'dismiss' | 'undo') => {
-  await fetch('/api/admin/intelligence/action', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id, action }),
-  });
-  await fetchIntel();
-};
+
   <div className="mb-4">
     <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
     <div className="space-y-3 max-h-96 overflow-y-auto pr-1">

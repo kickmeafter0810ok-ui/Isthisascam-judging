@@ -460,6 +460,7 @@ function FeedbackPage({ lang, onBack }: { lang: Lang; onBack: () => void }) {
 function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; onBack: () => void }) {
   const [intelItems, setIntelItems] = useState<any[]>([]);
   const [intelLoading, setIntelLoading] = useState(true);
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
 
   useEffect(() => {
     fetch('/api/intel')
@@ -525,7 +526,7 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
           )}
 
           <div className="space-y-3">
-            {intelItems.map((item, i) => (
+  {intelItems.slice(0, showAllAlerts ? intelItems.length : 3).map((item, i) => (
               <div key={i} className={`rounded-xl border p-4 ${item.status === 'emerging' ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200'}`}>
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex gap-2 flex-wrap flex-1 mr-2">
@@ -555,8 +556,13 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
               </div>
             ))}
           </div>
+          {intelItems.length > 3 && (
+            <button onClick={() => setShowAllAlerts(!showAllAlerts)}
+              className="w-full mt-3 py-2 text-sm text-red-500 font-semibold border border-red-200 rounded-xl hover:bg-red-50 transition">
+              {showAllAlerts ? '▲ Show less' : `▼ Show all ${intelItems.length} alerts`}
+            </button>
+          )}
         </div>
-
         {/* Scam Guide */}
         <div>
           <h2 className="text-base font-bold text-gray-900 mb-1">📚 Scam Guide</h2>
