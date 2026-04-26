@@ -8,32 +8,42 @@ const supabase = createClient(
 );
 
 const RSS_SOURCES = [
-  // English
+  // English — verified working
   { url: 'https://www.freemalaysiatoday.com/feed/', name: 'Free Malaysia Today', lang: 'en' },
-  { url: 'https://vulcanpost.com/feed/', name: 'Vulcan Post', lang: 'en' },
+  { url: 'https://www.thestar.com.my/rss/News/Nation', name: 'The Star Nation', lang: 'en' },
+  { url: 'https://www.malaymail.com/feed', name: 'Malay Mail', lang: 'en' },
   { url: 'https://says.com/my/rss', name: 'Says.com', lang: 'en' },
-  { url: 'https://www.thestar.com.my/rss/news/nation', name: 'The Star', lang: 'en' },
-  // Malay
+  { url: 'https://vulcanpost.com/feed/', name: 'Vulcan Post', lang: 'en' },
+  { url: 'https://www.channelnewsasia.com/rssfeeds/8395744', name: 'CNA Malaysia', lang: 'en' },
+  
+  // Malay — verified working
   { url: 'https://www.bharian.com.my/rss', name: 'Berita Harian', lang: 'ms' },
-  { url: 'https://www.hmetro.com.my/rss', name: 'Harian Metro', lang: 'ms' },
-  // Chinese
+  { url: 'https://www.astroawani.com/rss/latest-news', name: 'Astro Awani', lang: 'ms' },
+  
+  // Chinese — verified working  
   { url: 'https://www.sinchew.com.my/feed/', name: 'Sin Chew Daily', lang: 'zh' },
   { url: 'https://www.chinapress.com.my/feed/', name: 'China Press', lang: 'zh' },
-  // Government
-  { url: 'https://www.rmp.gov.my/rss', name: 'PDRM', lang: 'en' },
-  { url: 'https://www.bnm.gov.my/rss', name: 'Bank Negara Malaysia', lang: 'en' },
-  { url: 'https://www.mcmc.gov.my/rss', name: 'MCMC', lang: 'en' },
+  { url: 'https://www.orientaldaily.com.my/feed', name: 'Oriental Daily', lang: 'zh' },
 ];
 
 const SCAM_KEYWORDS = [
   // English
   'scam', 'fraud', 'phishing', 'swindl', 'cheat', 'fake', 'impersonat',
-  'syndicat', 'victim', 'losses', 'duped', 'deceiv',
+  'syndicat', 'victim', 'losses', 'duped', 'deceiv', 'mule', 'money mule',
+  'macau scam', 'love scam', 'job scam', 'investment scam', 'parcel scam',
+  'WhatsApp scam', 'telegram scam', 'online fraud', 'cybercrime',
+  'CCID', 'NSRC', 'Commercial Crime',
+
   // Malay
-  'scam', 'penipuan', 'palsu', 'menipu', 'sindiket', 'mangsa', 'kerugian',
-  'phishing', 'peras ugut', 'ugutan', 'tipuan',
+  'penipuan', 'penipu', 'palsu', 'menipu', 'sindiket', 'mangsa', 'kerugian',
+  'phishing', 'peras ugut', 'tipuan', 'scam', 'fraud', 'wang haram',
+  'akaun mule', 'akaun palsu', 'pelaburan haram', 'cinta scam',
+  'kerja sambilan', 'pekerjaan palsu', 'hadiah palsu', 'bank palsu',
+
   // Chinese
-  '诈骗', '骗局', '欺诈', '钓鱼', '冒充', '假冒', '受害', '损失',
+  '诈骗', '欺诈', '骗局', '钓鱼', '假冒', '受骗', '损失',
+  '网络诈骗', '电话诈骗', '投资诈骗', '爱情诈骗', '工作诈骗',
+  '澳门诈骗', '银行诈骗', '假包裹', '假奖品',
 ];
 
 async function fetchRSS(url: string, limit = 30): Promise<{ title: string; description: string; link: string }[]> {
@@ -107,34 +117,34 @@ async function extractAndTranslate(
       messages: [
         {
           role: 'system',
-          content: `You are a scam intelligence analyst for Malaysia. 
-Your job is to extract SCAM TYPE PATTERNS from news articles — not individual cases.
+          content: `You are a scam intelligence analyst for Malaysia.
+Extract scam patterns from news articles to warn Malaysians.
 
 Rules:
-- Only process if the article describes a reusable scam pattern or tactic
-- Ignore individual victim stories with no new pattern
-- Focus on HOW the scam works, not WHO was victimised
-- Generate 2-sentence summaries in all 4 languages
-- Generate shareable warning text (no URLs, ends with "Search IsThisAScam on Google/Play Store")
+- Process articles about scams, fraud, cybercrime affecting Malaysians
+- Individual victim stories are VALID if they describe how the scam works
+- Extract the scam METHOD and TACTICS even from individual case articles
+- Reject only: unrelated news, political articles, sports, entertainment
+- Generate 2-sentence summaries focusing on HOW the scam works
 
 Return JSON only:
 {
   "is_scam_pattern": true/false,
-  "summary_en": "2-sentence scam pattern description in English",
-  "summary_ms": "2-sentence scam pattern description in Bahasa Malaysia",
-  "summary_zh": "2句话诈骗模式描述（简体中文）",
-  "summary_ta": "2-வரி மோசடி முறை விளக்கம் தமிழில்",
+  "summary_en": "2-sentence description of how this scam works in English",
+  "summary_ms": "2-sentence description in Bahasa Malaysia",
+  "summary_zh": "2句话描述此诈骗手法（中文）",
+  "summary_ta": "2-வரி மோசடி முறை விளக்கம் (தமிழ்)",
   "tactic_tags": ["urgency", "impersonation", etc],
   "target_demographic": "e.g. bank customers, job seekers, elderly",
   "platform": "e.g. WhatsApp, SMS, Telegram, Phone call",
-  "share_text_en": "shareable WhatsApp warning in English, no URLs, ends with IsThisAScam mention",
-  "share_text_ms": "shareable WhatsApp warning in Bahasa Malaysia, no URLs, ends with IsThisAScam mention",
-  "share_text_zh": "shareable WhatsApp warning in Chinese, no URLs, ends with IsThisAScam mention",
-  "share_text_ta": "shareable WhatsApp warning in Tamil, no URLs, ends with IsThisAScam mention"
+  "share_text_en": "⚠️ SCAM ALERT: [warning text]. Protect yourself — check suspicious messages with IsThisAScam on Google Play.",
+  "share_text_ms": "⚠️ AMARAN SCAM: [teks amaran]. Lindungi diri anda — semak mesej mencurigakan dengan IsThisAScam di Google Play.",
+  "share_text_zh": "⚠️ 诈骗警告：[警告内容]。保护自己——在Google Play下载IsThisAScam检查可疑消息。",
+  "share_text_ta": "⚠️ மோசடி எச்சரிக்கை: [எச்சரிக்கை உரை]. உங்களை பாதுகாத்துக்கொள்ளுங்கள் — Google Play-ல் IsThisAScam பதிவிறக்கவும்."
 }
 
-Valid tactic_tags: urgency, impersonation, phishing_link, credential_harvesting, 
-prize_scam, loan_scam, job_scam, romance_scam, investment_scam, fake_qr, 
+Valid tactic_tags: urgency, impersonation, phishing_link, credential_harvesting,
+prize_scam, loan_scam, job_scam, romance_scam, investment_scam, fake_qr,
 data_breach, malware, government_impersonation, bank_impersonation`
         },
         {
