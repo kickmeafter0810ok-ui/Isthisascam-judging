@@ -96,14 +96,11 @@ async function extractAndTranslate(
   sourceLang: string,
   sourceName: string
 ): Promise<{
+  headline_ms: string;
+  headline_zh: string;
+  headline_ta: string;
   summary_en: string;
   summary_ms: string;
-  headline_ms: string;
-  headline_zh: string;
-  headline_ta: string;
-  headline_ms: string;
-  headline_zh: string;
-  headline_ta: string;
   summary_zh: string;
   summary_ta: string;
   tactic_tags: string[];

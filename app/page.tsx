@@ -517,6 +517,13 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
     return item.summary_en;
   };
 
+  const getHeadline = (item: any) => {
+    if (lang === 'ms' && item.headline_ms) return item.headline_ms;
+    if (lang === 'zh-s' && item.headline_zh) return item.headline_zh;
+    if (lang === 'ta' && item.headline_ta) return item.headline_ta;
+    return item.headline;
+  };
+
   const getShareText = (item: any) => {
     if (lang === 'ms') return item.share_text_ms;
     if (lang === 'zh-s') return item.share_text_zh;
@@ -584,7 +591,7 @@ function LearnPage({ lang, t, onBack }: { lang: Lang; t: (k: string) => string; 
                     <span className="text-xs text-gray-400 shrink-0">{item.occurrence_count}x reported</span>
                   )}
                 </div>
-                <p className="text-sm font-semibold text-gray-900 mb-1">{item.headline}</p>
+                <p className="text-sm font-semibold text-gray-900 mb-1">{getHeadline(item)}</p>
                 <p className="text-xs text-gray-600 mb-3">{getSummary(item)}</p>
                 <div className="flex gap-2 text-xs text-gray-400 mb-3">
                   {item.platform && <span>📱 {item.platform}</span>}
