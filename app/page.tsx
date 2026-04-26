@@ -16,6 +16,7 @@ interface Result {
   tactics: string[];
   text: string;
   isImage: boolean;
+  isQRCode?: boolean;
   timestamp: number;
   limitReached?: boolean;
   limitMessage?: string;
@@ -1037,11 +1038,17 @@ const DisclaimerModal = () => (
           </div>
           {result.isImage && result.text && result.text !== '[Screenshot]' && (
             <div className="bg-gray-50 rounded-xl p-4 mb-4">
-              <p className="text-xs font-semibold text-gray-900 uppercase mb-1">{t('extractedURL')}</p>
-              <p className="text-xs text-gray-900 break-all font-mono bg-white p-2 rounded border border-gray-200">{result.text}</p>
-              <p className="text-xs text-red-600 mt-2 font-medium">{t('disclaimerQR')}</p>
-            </div>
-          )}
+               <p className="text-xs font-semibold text-gray-900 uppercase mb-1">
+                {result.isQRCode ? t('extractedURL') : 'Extracted Text'}
+              </p>
+                <p className="text-xs text-gray-900 break-all font-mono bg-white p-2 rounded border border-gray-200">
+                {result.text}
+                </p>
+              {result.isQRCode && (
+      <p className="text-xs text-red-600 mt-2 font-medium">{t('disclaimerQR')}</p>
+    )}
+  </div>
+)}
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
             <p className="text-xs font-semibold text-gray-900 uppercase mb-1">
   {t('aiAnalysis')}
