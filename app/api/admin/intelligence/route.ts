@@ -98,6 +98,12 @@ async function extractAndTranslate(
 ): Promise<{
   summary_en: string;
   summary_ms: string;
+  headline_ms: string;
+  headline_zh: string;
+  headline_ta: string;
+  headline_ms: string;
+  headline_zh: string;
+  headline_ta: string;
   summary_zh: string;
   summary_ta: string;
   tactic_tags: string[];
@@ -133,6 +139,9 @@ Rules:
 Return JSON only:
 {
   "is_scam_pattern": true/false,
+  "headline_ms": "headline translated to Bahasa Malaysia",
+  "headline_zh": "headline translated to Chinese",
+  "headline_ta": "headline translated to Tamil",
   "summary_en": "2-sentence description of how this scam works in English",
   "summary_ms": "2-sentence description in Bahasa Malaysia",
   "summary_zh": "2句话描述此诈骗手法（中文）",
