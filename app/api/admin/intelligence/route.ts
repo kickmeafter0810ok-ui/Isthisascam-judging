@@ -8,19 +8,23 @@ const supabase = createClient(
 );
 
 const RSS_SOURCES = [
-  // English — verified working
-  { url: 'https://www.freemalaysiatoday.com/feed/', name: 'Free Malaysia Today', lang: 'en' },
-  { url: 'https://www.thestar.com.my/rss/News/Nation', name: 'The Star Nation', lang: 'en' },
+  // English — confirmed active feeds
   { url: 'https://www.malaymail.com/feed', name: 'Malay Mail', lang: 'en' },
+  { url: 'https://www.themalaysianinsight.com/feed', name: 'The Malaysian Insight', lang: 'en' },
+  { url: 'https://malaysianow.com/feed', name: 'MalaysiaNow', lang: 'en' },
   { url: 'https://says.com/my/rss', name: 'Says.com', lang: 'en' },
   { url: 'https://vulcanpost.com/feed/', name: 'Vulcan Post', lang: 'en' },
-  { url: 'https://www.channelnewsasia.com/rssfeeds/8395744', name: 'CNA Malaysia', lang: 'en' },
-  
-  // Malay — verified working
+  { url: 'https://www.freemalaysiatoday.com/feed/', name: 'Free Malaysia Today', lang: 'en' },
+  { url: 'https://bernama.com/en/rssfeed.php', name: 'Bernama', lang: 'en' },
+  { url: 'https://www.nst.com.my/rss/news', name: 'NST', lang: 'en' },
+  { url: 'https://theborneopost.com/feed', name: 'Borneo Post', lang: 'en' },
+
+  // Malay — confirmed active feeds
+  { url: 'https://www.utusan.com.my/feed', name: 'Utusan Malaysia', lang: 'ms' },
   { url: 'https://www.bharian.com.my/rss', name: 'Berita Harian', lang: 'ms' },
-  { url: 'https://www.astroawani.com/rss/latest-news', name: 'Astro Awani', lang: 'ms' },
-  
-  // Chinese — verified working  
+  { url: 'https://www.hmetro.com.my/rss', name: 'Harian Metro', lang: 'ms' },
+
+  // Chinese — confirmed active feeds
   { url: 'https://www.sinchew.com.my/feed/', name: 'Sin Chew Daily', lang: 'zh' },
   { url: 'https://www.chinapress.com.my/feed/', name: 'China Press', lang: 'zh' },
   { url: 'https://www.orientaldaily.com.my/feed', name: 'Oriental Daily', lang: 'zh' },
@@ -49,7 +53,11 @@ const SCAM_KEYWORDS = [
 async function fetchRSS(url: string, limit = 30): Promise<{ title: string; description: string; link: string }[]> {
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'IsThisAScam-Bot/1.0 (scam-education-tool)' },
+      headers: { 
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+  'Accept-Language': 'en-US,en;q=0.9,ms;q=0.8',
+},
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return [];
@@ -174,20 +182,24 @@ export async function POST(req: NextRequest) {
   }
 
   const results = {
-    fetched: 0,
-    scamRelated: 0,
-    duplicates: 0,
-    newItems: 0,
-    errors: 0,
-  };
+  fetched: 0,
+  scamRelated: 0,
+  duplicates: 0,
+  newItems: 0,
+  errors: 0,
+  sourceHealth: [] as { name: string; fetched: number; status: 'ok' | 'empty' | 'error' }[],
+};
 
-  for (const source of RSS_SOURCES) {
-    try {
-      const limit = source.name === 'Reddit Malaysia' ? 10 : 30;
-        const items = await fetchRSS(source.url, limit);
-      results.fetched += items.length;
-
-      console.log(`${source.name}: fetched ${items.length} articles`);
+for (const source of RSS_SOURCES) {
+  try {
+    const items = await fetchRSS(source.url, 30);
+    results.fetched += items.length;
+    results.sourceHealth.push({
+      name: source.name,
+      fetched: items.length,
+      status: items.length > 0 ? 'ok' : 'empty'
+    });
+    console.log(`${source.name}: fetched ${items.length} articles`);
       
       for (const item of items) {
         if (!isScamRelated(item.title, item.description)) continue;
@@ -256,8 +268,13 @@ export async function POST(req: NextRequest) {
         }
       }
     } catch {
-      results.errors++;
-    }
+    results.errors++;
+    results.sourceHealth.push({
+      name: source.name,
+      fetched: 0,
+      status: 'error'
+    });
+  }
   }
 
   return NextResponse.json({ success: true, results });

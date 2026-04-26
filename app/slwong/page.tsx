@@ -442,11 +442,27 @@ export default function AdminDashboard() {
           </div>
 
           {intelResults && (
-            <div className="bg-gray-700 rounded-lg p-3 mb-4 text-xs text-gray-300">
-              Last scan: fetched {intelResults.fetched} articles → {intelResults.scamRelated} scam-related →
-              {intelResults.newItems} new patterns → {intelResults.duplicates} duplicates skipped
+  <div className="bg-gray-700 rounded-lg p-3 mb-4 text-xs text-gray-300">
+    <p className="mb-2">
+      Last scan: fetched {intelResults.fetched} articles → {intelResults.scamRelated} scam-related → {intelResults.newItems} new patterns → {intelResults.duplicates} duplicates skipped
+    </p>
+    {intelResults.sourceHealth && (
+      <details>
+        <summary className="cursor-pointer text-gray-400 mb-2">Feed health ({intelResults.sourceHealth.filter((s: any) => s.status === 'ok').length}/{intelResults.sourceHealth.length} working)</summary>
+        <div className="grid grid-cols-2 gap-1 mt-2">
+          {intelResults.sourceHealth.map((s: any) => (
+            <div key={s.name} className="flex items-center gap-1">
+              <span>{s.status === 'ok' ? '✅' : s.status === 'empty' ? '⚠️' : '❌'}</span>
+              <span className={s.status === 'ok' ? 'text-green-400' : s.status === 'empty' ? 'text-yellow-400' : 'text-red-400'}>
+                {s.name}: {s.fetched} articles
+              </span>
             </div>
-          )}
+          ))}
+        </div>
+      </details>
+    )}
+  </div>
+)}
 
           {/* Emerging alerts */}
 {intelItems.filter(i => i.status === 'emerging').length > 0 && (
