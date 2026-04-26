@@ -43,8 +43,28 @@ export async function POST(req: NextRequest) {
     // Auto-flag contradicted verdicts for admin review
     // Only flag when user disagrees with verdict (correctVerdict !== originalVerdict)
     const isContradiction = correctVerdict !== originalVerdict;
-    const isFalseNegative = originalVerdict === 'safe' && correctVerdict === 'scam';
-    const isFalsePositive = originalVerdict === 'scam' && correctVerdict === 'safe';
+    const isContradiction = correctVerdict !== originalVerdict;
+
+// High priority: AI said not-scam, user says scam (dangerous miss)
+const isHighPriority = 
+  (originalVerdict === 'safe' || originalVerdict === 'suspicious') && 
+  correctVerdict === 'scam';
+
+// Medium priority: AI said scam, user says safe/suspicious (possible false alarm)
+const isMediumPriority = 
+  originalVerdict === 'scam' && 
+  (correctVerdict === 'safe' || correctVerdict === 'suspicious');
+
+// Low priority: safe ↔ suspicious disagreements (minor severity)
+const isLowPriority = isContradiction && !isHighPriority && !isMediumPriority;
+
+if (isContradiction) {
+  const priority = isHighPriority ? 'high' : isMediumPriority ? 'medium' : 'low';
+  await supabase.from('feedback')
+    .update({ status: 'pending', priority, auto_flagged: true })
+    .eq('scan_id', scanId)
+    .eq('correct_verdict', correctVerdict);
+}
 
     if (isContradiction) {
       const priority = isFalseNegative ? 'high' : isFalsePositive ? 'medium' : 'low';
