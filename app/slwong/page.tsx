@@ -468,8 +468,8 @@ export default function AdminDashboard() {
   </div>
 )}
 
-          {/* Emerging alerts */}
-
+    {/* Emerging alerts */}
+{intelItems.filter(i => i.status === 'emerging').length > 0 && (
   <div className="mb-4">
     <p className="text-xs font-bold text-red-400 uppercase mb-2">🚨 Emerging</p>
     <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
