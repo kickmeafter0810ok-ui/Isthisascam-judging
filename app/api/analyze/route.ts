@@ -11,6 +11,7 @@ const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 const DAILY_IP_LIMIT = 50; // Safety net only — primary limit is localStorage
 
 const INJECTION_PATTERNS = [
+  // English
   /ignore (previous|all|above) instructions?/gi,
   /forget (previous|all|above|everything)/gi,
   /you are now/gi,
@@ -19,6 +20,22 @@ const INJECTION_PATTERNS = [
   /system prompt/gi,
   /jailbreak/gi,
   /dan mode/gi,
+  /disregard (all|previous|above)/gi,
+  /override (instructions?|system)/gi,
+  // Malay
+  /abaikan arahan/gi,
+  /lupakan arahan/gi,
+  /anda kini adalah/gi,
+  /berpura-pura menjadi/gi,
+  // Chinese
+  /忽略.*指令/gi,
+  /无视.*指示/gi,
+  /你现在是/gi,
+  // Structural injection
+  /\[system\]/gi,
+  /<<SYS>>/gi,
+  /<\|system\|>/gi,
+  /system:\s*you/gi,
 ];
 
 function sanitizeInput(text: string): string {
@@ -150,6 +167,20 @@ async function getExamples(): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
+    // Block requests not originating from the app
+    const origin = req.headers.get('origin') || '';
+    const referer = req.headers.get('referer') || '';
+    const isValidOrigin =
+      origin.includes('isthisascam') ||
+      referer.includes('isthisascam') ||
+      origin.includes('localhost') ||
+      referer.includes('localhost') ||
+      origin === '';  // Mobile app requests have no origin
+
+    if (!isValidOrigin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ||
                req.headers.get('x-real-ip') || 'unknown';
     const country = req.headers.get('x-vercel-ip-country') || 'Unknown';

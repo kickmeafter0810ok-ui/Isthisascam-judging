@@ -6,6 +6,15 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
+function scrubPII(text: string): string {
+  if (!text) return text;
+  return text
+    .replace(/\d{6}-\d{2}-\d{4}/g, '[IC_REDACTED]')
+    .replace(/\b\d{10,16}\b/g, '[ACCOUNT_REDACTED]')
+    .replace(/(\+?60|0)\d{8,9}/g, '[PHONE_REDACTED]')
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL_REDACTED]');
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { scanId, correctVerdict, originalVerdict, originalText, deviceId } = await req.json();
