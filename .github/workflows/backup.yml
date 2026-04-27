@@ -1,0 +1,26 @@
+name: Weekly Database Backup
+on:
+  schedule:
+    - cron: '0 2 * * 0'  # Every Sunday 2am UTC
+  workflow_dispatch:      # Manual trigger anytime
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL client
+        run: sudo apt-get install -y postgresql-client
+
+      - name: Dump database
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          pg_dump "$DB_URL" --no-owner --no-acl > backup_$(date +%Y%m%d).sql
+          gzip backup_$(date +%Y%m%d).sql
+
+      - name: Upload backup as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_number }}-${{ github.run_attempt }}
+          path: backup_*.sql.gz
+          retention-days: 30
