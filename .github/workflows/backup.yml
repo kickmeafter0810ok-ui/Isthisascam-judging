@@ -20,7 +20,7 @@ jobs:
         env:
           DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          pg_dump "$DB_URL" --no-owner --no-acl > backup_$(date +%Y%m%d).sql
+          /usr/lib/postgresql/17/bin/pg_dump "$DB_URL" --no-owner --no-acl > backup_$(date +%Y%m%d).sql
           gzip backup_$(date +%Y%m%d).sql
 
       - name: Upload backup as artifact
