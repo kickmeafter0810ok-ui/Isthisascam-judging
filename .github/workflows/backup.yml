@@ -1,15 +1,20 @@
 name: Weekly Database Backup
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday 2am UTC
-  workflow_dispatch:      # Manual trigger anytime
+    - cron: '0 2 * * 0'
+  workflow_dispatch:
 
 jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: Install PostgreSQL client
-        run: sudo apt-get install -y postgresql-client
+      - name: Install PostgreSQL 17 client
+        run: |
+          sudo apt-get install -y curl ca-certificates
+          curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-17
 
       - name: Dump database
         env:
@@ -21,6 +26,6 @@ jobs:
       - name: Upload backup as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: db-backup-${{ github.run_number }}-${{ github.run_attempt }}
+          name: db-backup-${{ github.run_number }}
           path: backup_*.sql.gz
           retention-days: 30

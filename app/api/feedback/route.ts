@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
 
     console.log('Feedback received:', { scanId, correctVerdict, originalVerdict });
 
-    const { error: feedbackError } = await supabase.from('feedback').insert({
-      scan_id: scanId || null,
-      correct_verdict: correctVerdict,
-      original_verdict: originalVerdict,
-      original_text: originalText,
-      device_id: deviceId,
-    });
+ const { error: feedbackError } = await supabase.from('feedback').insert({
+  scan_id: scanId || null,
+  correct_verdict: correctVerdict,
+  original_verdict: originalVerdict,
+  original_text: scrubPII(originalText),
+  device_id: deviceId,
+});
 
     if (feedbackError) {
       console.error('Feedback insert error:', JSON.stringify(feedbackError));
