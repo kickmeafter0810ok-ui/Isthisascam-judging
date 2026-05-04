@@ -89,6 +89,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackBtn: 'Give Feedback',
     privacyPolicy: 'Privacy Policy',
     rateApp: 'Rate This App',
+    appearance: 'Appearance', darkMode: 'Dark Mode',
     onboardingTitle: 'Welcome to IsThisAScam',
     onboardingCan: '✅ What we can do',
     onboardingCan1: 'Analyse suspicious text messages, emails & WhatsApp messages',
@@ -164,6 +165,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackBtn: 'Beri Maklum Balas',
     privacyPolicy: 'Dasar Privasi',
     rateApp: 'Nilaikan Apl Ini',
+    appearance: 'Penampilan', darkMode: 'Mod Gelap',
     onboardingTitle: 'Selamat Datang ke IsThisAScam',
     onboardingCan: '✅ Apa yang boleh kami lakukan',
     onboardingCan1: 'Analisis mesej teks, emel & WhatsApp yang mencurigakan',
@@ -239,6 +241,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackBtn: '提供反馈',
     privacyPolicy: '隐私政策',
     rateApp: '为此应用评分',
+    appearance: '外观', darkMode: '深色模式',
     onboardingTitle: '欢迎使用 IsThisAScam',
     onboardingCan: '✅ 我们能做什么',
     onboardingCan1: '分析可疑的短信、电邮和WhatsApp消息',
@@ -314,6 +317,7 @@ const T: Record<Lang, Record<string, string>> = {
     feedbackBtn: 'கருத்து தெரிவிக்கவும்',
     privacyPolicy: 'தனியுரிமைக் கொள்கை',
     rateApp: 'இந்த ஆப்பை மதிப்பிடுங்கள்',
+    appearance: 'தோற்றம்', darkMode: 'இருண்ட பயன்முறை',
     onboardingTitle: 'IsThisAScam-க்கு வரவேற்கிறோம்',
     onboardingCan: '✅ நாம் என்ன செய்யலாம்',
     onboardingCan1: 'சந்தேகமான SMS, மின்னஞ்சல் மற்றும் WhatsApp செய்திகளை பகுப்பாய்வு செய்யலாம்',
@@ -373,6 +377,7 @@ const CONSENT_KEY = 'itsascam_consent';
 const DISCLAIMER_KEY = 'itsascam_disclaimer';
 const DEVICE_KEY = 'itsascam_device';
 const ONBOARDING_KEY = 'itsascam_onboarding';
+const DARK_MODE_KEY = 'itsascam_dark';
 
 const loadHistory = (): Result[] => { try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; } };
 const persistHistory = (h: Result[]) => localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0, 50)));
@@ -712,6 +717,7 @@ export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [feedback, setFeedback]         = useState<'pending' | 'given' | null>(null);
   const [showMarkAs, setShowMarkAs]     = useState(false);
+  const [darkMode, setDarkMode]         = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const t = useCallback((k: string) => T[lang][k] ?? T.en[k], [lang]);
 
@@ -724,7 +730,10 @@ export default function App() {
     if (!hasConsent && savedLang) setShowConsent(true);
     const hasDisclaimer = localStorage.getItem(DISCLAIMER_KEY);
     if (!hasDisclaimer && savedLang) setShowDisclaimer(true);
-        setMounted(true);
+    // Sync dark mode React state with DOM class applied by the anti-flash script
+    const savedDark = localStorage.getItem(DARK_MODE_KEY) === 'true';
+    setDarkMode(savedDark);
+    setMounted(true);
   }, []);
 
   // Clear inputs every time scan page is entered
@@ -750,6 +759,14 @@ const selectLang = (l: Lang) => {
     if (!localStorage.getItem(CONSENT_KEY)) setShowConsent(true);
     if (!localStorage.getItem(DISCLAIMER_KEY)) setShowDisclaimer(true);
     setPage('home');
+  };
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    localStorage.setItem(DARK_MODE_KEY, String(next));
+    if (next) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
   };
 
   const handleRateApp = () => {
@@ -1296,6 +1313,27 @@ const DisclaimerModal = () => (
           </div>
         </div>
         
+        <p className="text-xs font-semibold text-gray-900 uppercase mt-6 mb-3">{t('appearance')}</p>
+        <div className="bg-gray-50 rounded-xl p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">{darkMode ? '🌙' : '☀️'}</span>
+            <span className="text-sm font-medium text-gray-900">{t('darkMode')}</span>
+          </div>
+          <button
+            onClick={toggleDarkMode}
+            role="switch"
+            aria-checked={darkMode}
+            aria-label={t('darkMode')}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 ${darkMode ? 'bg-red-500' : 'bg-gray-300'}`}
+          >
+            {/* inline style keeps the thumb white in both modes */}
+            <span
+              style={{ backgroundColor: 'white' }}
+              className={`inline-block h-4 w-4 transform rounded-full shadow transition-transform duration-200 ${darkMode ? 'translate-x-6' : 'translate-x-1'}`}
+            />
+          </button>
+        </div>
+
         <a href="/terms" target="_blank" rel="noopener noreferrer"
   className="w-full mt-6 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
   📄 {t('termsLink')}

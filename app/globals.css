@@ -24,3 +24,69 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ─── Dark Mode Overrides ─────────────────────────────────────────────
+   Applied when the `dark` class is on <html>. Overrides Tailwind's
+   light-theme utilities globally — no need to touch individual components.
+   Specificity: (.dark .utility) beats (.utility) — no !important needed.
+──────────────────────────────────────────────────────────────────────── */
+.dark { color-scheme: dark; }
+
+/* --- Backgrounds ---------------------------------------------------- */
+.dark .bg-white      { background-color: #0f172a; } /* slate-900  */
+.dark .bg-gray-50    { background-color: #1e293b; } /* slate-800  */
+.dark .bg-gray-100   { background-color: #1e293b; }
+.dark .bg-gray-200   { background-color: #334155; } /* slate-700  */
+.dark .bg-red-50     { background-color: #1c0a0a; }
+.dark .bg-red-100    { background-color: #2d1515; }
+.dark .bg-yellow-50  { background-color: #1c1500; }
+.dark .bg-green-50   { background-color: #052e16; }
+.dark .bg-blue-50    { background-color: #0c1a2e; }
+.dark .bg-orange-50  { background-color: #1c0d00; }
+.dark .bg-blue-200   { background-color: #1e3a5f; }
+.dark .bg-orange-200 { background-color: #3d1f00; }
+
+/* --- Text (only flip dark-on-light; leave light-on-dark untouched) -- */
+.dark .text-gray-900   { color: #f1f5f9; } /* slate-100 — WCAG AA ✓ */
+.dark .text-gray-800   { color: #e2e8f0; } /* slate-200              */
+.dark .text-gray-700   { color: #cbd5e1; } /* slate-300              */
+.dark .text-gray-600   { color: #94a3b8; } /* slate-400              */
+.dark .text-gray-500   { color: #94a3b8; } /* slate-400              */
+.dark .text-red-600    { color: #f87171; } /* red-400                */
+.dark .text-red-700    { color: #fca5a5; } /* red-300                */
+.dark .text-red-800    { color: #fca5a5; }
+.dark .text-yellow-600 { color: #fbbf24; } /* yellow-400             */
+.dark .text-yellow-800 { color: #f59e0b; }
+.dark .text-green-600  { color: #34d399; } /* emerald-400            */
+.dark .text-green-700  { color: #6ee7b7; }
+.dark .text-blue-600   { color: #60a5fa; } /* blue-400               */
+.dark .text-blue-800   { color: #93c5fd; }
+
+/* --- Borders -------------------------------------------------------- */
+.dark .border-gray-100  { border-color: #334155; }
+.dark .border-gray-200  { border-color: #334155; }
+.dark .border-gray-300  { border-color: #475569; }
+.dark .border-gray-400  { border-color: #64748b; }
+.dark .border-gray-600  { border-color: #64748b; }
+.dark .border-gray-800  { border-color: #0f172a; }
+.dark .border-red-200   { border-color: #7f1d1d; }
+.dark .border-yellow-200 { border-color: #78350f; }
+.dark .border-green-200  { border-color: #14532d; }
+.dark .border-blue-200   { border-color: #1e3a5f; }
+.dark .border-orange-200 { border-color: #431407; }
+
+/* --- Hover states --------------------------------------------------- */
+.dark .hover\:bg-gray-50:hover    { background-color: #1e293b; }
+.dark .hover\:bg-gray-100:hover   { background-color: #334155; }
+.dark .hover\:bg-yellow-100:hover { background-color: #2d2200; }
+
+/* --- Form inputs & textareas --------------------------------------- */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark textarea,
+.dark select {
+  background-color: #1e293b;
+  color: #f1f5f9;
+  border-color: #334155;
+}
+.dark input::placeholder,
+.dark textarea::placeholder { color: #64748b; }

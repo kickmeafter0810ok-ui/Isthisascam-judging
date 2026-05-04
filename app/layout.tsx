@@ -28,7 +28,16 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    // suppressHydrationWarning: the anti-flash script may add `dark` to <html>
+    // before React hydrates, causing a mismatch that is intentional and safe.
+    <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+      {/* Anti-flash script: runs synchronously before first paint so the user
+          never sees a white flash when they have dark mode enabled.           */}
+      <head>
+        <script dangerouslySetInnerHTML={{ __html:
+          `try{if(localStorage.getItem('itsascam_dark')==='true')document.documentElement.classList.add('dark')}catch(e){}`
+        }} />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
