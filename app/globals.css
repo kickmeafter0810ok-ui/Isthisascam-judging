@@ -32,6 +32,15 @@ body {
 ──────────────────────────────────────────────────────────────────────── */
 .dark { color-scheme: dark; }
 
+/* --- Gradient overrides (background-image beats background-color,
+       so gradient stops must be overridden separately)              --- */
+.dark .from-red-50   { --tw-gradient-from: #1a0a0a; }
+.dark .to-orange-50  { --tw-gradient-to:   #1c0d00; }
+/* Fallback: forcibly replace the rendered gradient image */
+.dark .bg-gradient-to-br.from-red-50 {
+  background-image: linear-gradient(to bottom right, #1a0a0a, #1c0d00);
+}
+
 /* --- Backgrounds ---------------------------------------------------- */
 .dark .bg-white      { background-color: #0f172a; } /* slate-900  */
 .dark .bg-gray-50    { background-color: #1e293b; } /* slate-800  */
