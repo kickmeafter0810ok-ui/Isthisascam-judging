@@ -88,6 +88,7 @@ const T: Record<Lang, Record<string, string>> = {
     termsLink: 'Terms of Use',
     feedbackBtn: 'Give Feedback',
     privacyPolicy: 'Privacy Policy',
+    rateApp: 'Rate This App',
     onboardingTitle: 'Welcome to IsThisAScam',
     onboardingCan: '✅ What we can do',
     onboardingCan1: 'Analyse suspicious text messages, emails & WhatsApp messages',
@@ -162,6 +163,7 @@ const T: Record<Lang, Record<string, string>> = {
     termsLink: 'Terma Penggunaan',
     feedbackBtn: 'Beri Maklum Balas',
     privacyPolicy: 'Dasar Privasi',
+    rateApp: 'Nilaikan Apl Ini',
     onboardingTitle: 'Selamat Datang ke IsThisAScam',
     onboardingCan: '✅ Apa yang boleh kami lakukan',
     onboardingCan1: 'Analisis mesej teks, emel & WhatsApp yang mencurigakan',
@@ -236,6 +238,7 @@ const T: Record<Lang, Record<string, string>> = {
     termsLink: '使用条款',
     feedbackBtn: '提供反馈',
     privacyPolicy: '隐私政策',
+    rateApp: '为此应用评分',
     onboardingTitle: '欢迎使用 IsThisAScam',
     onboardingCan: '✅ 我们能做什么',
     onboardingCan1: '分析可疑的短信、电邮和WhatsApp消息',
@@ -310,6 +313,7 @@ const T: Record<Lang, Record<string, string>> = {
     termsLink: 'பயன்பாட்டு விதிமுறைகள்',
     feedbackBtn: 'கருத்து தெரிவிக்கவும்',
     privacyPolicy: 'தனியுரிமைக் கொள்கை',
+    rateApp: 'இந்த ஆப்பை மதிப்பிடுங்கள்',
     onboardingTitle: 'IsThisAScam-க்கு வரவேற்கிறோம்',
     onboardingCan: '✅ நாம் என்ன செய்யலாம்',
     onboardingCan1: 'சந்தேகமான SMS, மின்னஞ்சல் மற்றும் WhatsApp செய்திகளை பகுப்பாய்வு செய்யலாம்',
@@ -746,6 +750,22 @@ const selectLang = (l: Lang) => {
     if (!localStorage.getItem(CONSENT_KEY)) setShowConsent(true);
     if (!localStorage.getItem(DISCLAIMER_KEY)) setShowDisclaimer(true);
     setPage('home');
+  };
+
+  const handleRateApp = () => {
+    const appId = 'com.jagatech.isthisascam';
+    const marketUrl = `market://details?id=${appId}`;
+    const playStoreUrl = `https://play.google.com/store/apps/details?id=${appId}`;
+    try {
+      const isAndroid = /android/i.test(navigator.userAgent);
+      // On Android, use market:// so the Play Store app opens directly.
+      // The '_system' target tells Capacitor to route via Android Intent.
+      // On web/other platforms, open the Play Store web page instead.
+      window.open(isAndroid ? marketUrl : playStoreUrl, '_system');
+    } catch {
+      // Fallback: open Play Store web URL in a new tab
+      window.open(playStoreUrl, '_blank');
+    }
   };
 
   const handleConsent = () => {
@@ -1284,6 +1304,11 @@ const DisclaimerModal = () => (
           className="w-full mt-3 py-3 border-2 border-gray-400 rounded-xl text-sm text-gray-900 font-medium bg-gray-50 hover:bg-gray-100 flex items-center justify-center">
           🔒 {t('privacyPolicy')}
         </a>
+        <button
+          onClick={handleRateApp}
+          className="w-full mt-3 py-3 border-2 border-yellow-400 rounded-xl text-sm text-gray-900 font-medium bg-yellow-50 hover:bg-yellow-100 flex items-center justify-center transition">
+          ⭐ {t('rateApp')}
+        </button>
       </div>
     </div>
   );
