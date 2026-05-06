@@ -25,6 +25,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* ─── Onboarding slide animation ────────────────────────────────────── */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in { animation: slideIn 0.22s ease-out; }
+
 /* ─── Dark Mode Overrides ─────────────────────────────────────────────
    Applied when the `dark` class is on <html>. Overrides Tailwind's
    light-theme utilities globally — no need to touch individual components.
@@ -34,11 +41,26 @@ body {
 
 /* --- Gradient overrides (background-image beats background-color,
        so gradient stops must be overridden separately)              --- */
-.dark .from-red-50   { --tw-gradient-from: #1a0a0a; }
-.dark .to-orange-50  { --tw-gradient-to:   #1c0d00; }
+.dark .from-red-50    { --tw-gradient-from: #1a0a0a; }
+.dark .to-orange-50   { --tw-gradient-to:   #1c0d00; }
+.dark .from-blue-50   { --tw-gradient-from: #0c1a2e; }
+.dark .to-indigo-50   { --tw-gradient-to:   #0d0f2e; }
+.dark .from-green-50  { --tw-gradient-from: #052e16; }
+.dark .to-emerald-50  { --tw-gradient-to:   #022c22; }
+.dark .from-yellow-50 { --tw-gradient-from: #1c1500; }
+.dark .to-amber-50    { --tw-gradient-to:   #1c0f00; }
 /* Fallback: forcibly replace the rendered gradient image */
 .dark .bg-gradient-to-br.from-red-50 {
   background-image: linear-gradient(to bottom right, #1a0a0a, #1c0d00);
+}
+.dark .bg-gradient-to-br.from-blue-50 {
+  background-image: linear-gradient(to bottom right, #0c1a2e, #0d0f2e);
+}
+.dark .bg-gradient-to-br.from-green-50 {
+  background-image: linear-gradient(to bottom right, #052e16, #022c22);
+}
+.dark .bg-gradient-to-br.from-yellow-50 {
+  background-image: linear-gradient(to bottom right, #1c1500, #1c0f00);
 }
 
 /* --- Backgrounds ---------------------------------------------------- */
@@ -51,6 +73,9 @@ body {
 .dark .bg-yellow-50  { background-color: #1c1500; }
 .dark .bg-green-50   { background-color: #052e16; }
 .dark .bg-blue-50    { background-color: #0c1a2e; }
+.dark .bg-blue-100   { background-color: #0c1a2e; }
+.dark .bg-green-100  { background-color: #052e16; }
+.dark .bg-yellow-100 { background-color: #1c1500; }
 .dark .bg-orange-50  { background-color: #1c0d00; }
 .dark .bg-blue-200   { background-color: #1e3a5f; }
 .dark .bg-orange-200 { background-color: #3d1f00; }

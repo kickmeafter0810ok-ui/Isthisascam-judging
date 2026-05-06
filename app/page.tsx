@@ -10,6 +10,7 @@ import {
 } from '@/lib/constants';
 import { FeedbackPage } from '@/app/components/FeedbackPage';
 import { LearnPage } from '@/app/components/LearnPage';
+import { OnboardingWalkthrough } from '@/app/components/OnboardingWalkthrough';
 
 export default function App() {
   const [page, setPage]                 = useState<Page>('language');
@@ -228,68 +229,6 @@ const selectLang = (l: Lang) => {
     </div>
   );
 
-  const OnboardingModal = () => (
-  <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-end justify-center p-4">
-    <div className="bg-white rounded-2xl w-full max-w-md max-h-[85vh] overflow-y-auto">
-      <div className="p-6">
-        <div className="text-center mb-5">
-          <div className="text-5xl mb-2">🛡️</div>
-          <h2 className="text-xl font-bold text-gray-900">{t('onboardingTitle')}</h2>
-        </div>
-
-        <div className="mb-4">
-          <p className="font-semibold text-green-700 mb-2">{t('onboardingCan')}</p>
-          <ul className="space-y-1.5">
-            {['onboardingCan1','onboardingCan2','onboardingCan3','onboardingCan4'].map(k => (
-              <li key={k} className="flex gap-2 text-sm text-gray-700">
-                <span className="text-green-500 mt-0.5 shrink-0">•</span>
-                <span>{t(k)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mb-4">
-          <p className="font-semibold text-orange-600 mb-2">{t('onboardingCannot')}</p>
-          <ul className="space-y-1.5">
-            {['onboardingCannot1','onboardingCannot2','onboardingCannot3','onboardingCannot4'].map(k => (
-              <li key={k} className="flex gap-2 text-sm text-gray-700">
-                <span className="text-orange-400 mt-0.5 shrink-0">•</span>
-                <span>{t(k)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mb-5">
-          <p className="font-semibold text-blue-700 mb-2">{t('onboardingHow')}</p>
-          <ol className="space-y-1.5">
-            {['onboardingHow1','onboardingHow2','onboardingHow3','onboardingHow4','onboardingHow5','onboardingHow6'].map((k, i) => (
-              <li key={k} className="flex gap-2 text-sm text-gray-700">
-                <span className="text-blue-500 font-bold shrink-0">{i+1}.</span>
-                <span>{t(k)}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <p className="text-xs text-gray-400 text-center mb-4">
-          ⚠️ {t('aiDisclaimer')}
-        </p>
-
-        <button
-          onClick={() => {
-            localStorage.setItem(ONBOARDING_KEY, 'true');
-            setShowOnboarding(false);
-          }}
-          className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 rounded-xl text-base transition">
-          {t('onboardingBtn')}
-        </button>
-      </div>
-    </div>
-  </div>
-);
-
   const ConsentModal = () => (
     <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end justify-center p-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-md">
@@ -320,7 +259,7 @@ const DisclaimerModal = () => (
 
   if (page === 'language') return (
     <>
-     {showOnboarding && <OnboardingModal />}
+     {showOnboarding && <OnboardingWalkthrough t={t} onComplete={() => setShowOnboarding(false)} />}
       {showConsent && <ConsentModal />}
       {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 flex items-center justify-center p-4">
@@ -346,7 +285,7 @@ const DisclaimerModal = () => (
 
   if (page === 'home') return (
     <>
-      {showOnboarding && <OnboardingModal />}
+      {showOnboarding && <OnboardingWalkthrough t={t} onComplete={() => setShowOnboarding(false)} />}
       {showConsent && <ConsentModal />}
       {showDisclaimer && <DisclaimerModal />}
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
