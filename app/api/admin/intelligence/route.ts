@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import crypto from 'crypto';
+import { adminTokenHash } from '../_auth';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -178,7 +179,7 @@ data_breach, malware, government_impersonation, bank_impersonation`
 }
 
 export async function POST(req: NextRequest) {
-  if (req.cookies.get('admin_auth')?.value !== process.env.ADMIN_PASSWORD) {
+  if (req.cookies.get('admin_auth')?.value !== adminTokenHash()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

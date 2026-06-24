@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { adminTokenHash } from '../../_auth';
 
 export async function GET(req: NextRequest) {
-  if (req.cookies.get('admin_auth')?.value !== process.env.ADMIN_PASSWORD) {
+  if (req.cookies.get('admin_auth')?.value !== adminTokenHash()) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

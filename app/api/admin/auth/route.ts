@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { createHash } from 'crypto';
+
+function hashPassword(pw: string) {
+  return createHash('sha256').update(pw).digest('hex');
+}
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,9 +35,10 @@ export async function POST(req: NextRequest) {
     // Clear failed attempts on success
     await supabase.from('admin_attempts').delete().eq('ip', ip);
     const res = NextResponse.json({ success: true });
-    res.cookies.set('admin_auth', process.env.ADMIN_PASSWORD!, {
+    res.cookies.set('admin_auth', hashPassword(process.env.ADMIN_PASSWORD!), {
       httpOnly: true,
       secure: true,
+      sameSite: 'strict',
       maxAge: 60 * 60 * 24
     });
     return res;

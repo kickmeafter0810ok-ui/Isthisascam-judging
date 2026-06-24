@@ -6,8 +6,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
+import { adminTokenHash } from '../_auth';
+
 function authCheck(req: NextRequest) {
-  return req.cookies.get('admin_auth')?.value === process.env.ADMIN_PASSWORD;
+  return req.cookies.get('admin_auth')?.value === adminTokenHash();
 }
 
 export async function GET(req: NextRequest) {

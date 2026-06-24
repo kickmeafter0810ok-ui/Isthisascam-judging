@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { adminTokenHash } from '../_auth';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -23,6 +24,9 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 export async function POST(req: NextRequest) {
+  if (req.cookies.get('admin_auth')?.value !== adminTokenHash()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const { id } = await req.json();
 
@@ -60,6 +64,9 @@ export async function POST(req: NextRequest) {
 
 // Batch embed all approved items missing embeddings
 export async function GET(req: NextRequest) {
+  if (req.cookies.get('admin_auth')?.value !== adminTokenHash()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   try {
     const { data: items, error } = await supabase
       .from('scam_intel')
