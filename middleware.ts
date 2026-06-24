@@ -13,8 +13,12 @@ export function middleware(req: NextRequest) {
 
   // Return generic 404 for any admin API discovery attempts that don't carry
   // a valid session — this prevents route enumeration via API scanning.
-  // (Actual auth enforcement stays inside each route handler.)
-  if (pathname.startsWith('/api/admin/') && !req.cookies.get('admin_auth')) {
+  // Exclude /api/admin/auth so the login endpoint itself remains reachable.
+  if (
+    pathname.startsWith('/api/admin/') &&
+    pathname !== '/api/admin/auth' &&
+    !req.cookies.get('admin_auth')
+  ) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
