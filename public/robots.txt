@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /api/
+Disallow: /_next/static/
+
+User-agent: *
+Allow: /
