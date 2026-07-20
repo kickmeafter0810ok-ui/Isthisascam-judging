@@ -17,7 +17,7 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
           supabase link --project-ref atviwmdqxpgmrabnjnfx
-          supabase db dump --linked -f backup_$(date +%Y%m%d).sql -p "$REDACTED"
+          supabase db dump --linked -f backup_$(date +%Y%m%d).sql -p "REDACTED"
           gzip backup_$(date +%Y%m%d).sql
 
       - name: Upload backup as artifact
