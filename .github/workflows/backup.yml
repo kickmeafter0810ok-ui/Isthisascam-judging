@@ -3,6 +3,7 @@ on:
   schedule:
     - cron: '0 2 * * 0'
   workflow_dispatch:
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -13,38 +14,14 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/supabase-archive-keyring.gpg] https://deb.supabase.com stable main" | sudo tee /etc/apt/sources.list.d/supabase.list
           sudo apt-get update
           sudo apt-get install -y supabase
+
       - name: Export database
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
           supabase db dump --project-ref atviwmdqxpgmrabnjnfx > backup_$(date +%Y%m%d).sql
           gzip backup_$(date +%Y%m%d).sql
-      - name: Upload backup as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: db-backup-${{ github.run_number }}
-          path: backup_*.sql.gz
-          retention-days: 30name: Weekly Database Backup
-on:
-  schedule:
-    - cron: '0 2 * * 0'
-  workflow_dispatch:
-jobs:
-  backup:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install Supabase CLI
-        run: |
-          curl -fsSL https://deb.supabase.com/supabase.gpg | sudo gpg --dearmor -o /usr/share/keyrings/supabase-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/supabase-archive-keyring.gpg] https://deb.supabase.com stable main" | sudo tee /etc/apt/sources.list.d/supabase.list
-          sudo apt-get update
-          sudo apt-get install -y supabase
-      - name: Export database
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-        run: |
-          supabase db dump --project-ref atviwmdqxpgmrabnjnfx > backup_$(date +%Y%m%d).sql
-          gzip backup_$(date +%Y%m%d).sql
+
       - name: Upload backup as artifact
         uses: actions/upload-artifact@v4
         with:
