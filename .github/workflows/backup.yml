@@ -10,8 +10,8 @@ jobs:
     steps:
       - name: Install Supabase CLI
         run: npm install -g supabase
-        
-      - - name: Export database
+
+      - name: Export database
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
