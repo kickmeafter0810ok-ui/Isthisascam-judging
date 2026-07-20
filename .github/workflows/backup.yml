@@ -15,8 +15,8 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          supabase db dump --linked --project-id atviwmdqxpgmrabnjnfx > backup_$(date +%Y%m%d).sql
-          gzip backup_$(date +%Y%m%d).sql
+          supabase --version
+          supabase db dump --help
 
       - name: Upload backup as artifact
         uses: actions/upload-artifact@v4
