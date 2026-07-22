@@ -34,17 +34,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: feedbackError.message }, { status: 500 });
     }
 
-    const { count } = await supabase
+    // Only auto-confirm an example when it's been reported by 3 DISTINCT devices.
+    // Counting raw rows would let one attacker poison training data by submitting
+    // the same text 3 times, so we dedupe by device_id before promoting.
+    const { data: reporters } = await supabase
       .from('feedback')
-      .select('*', { count: 'exact' })
+      .select('device_id')
       .eq('original_text', originalText)
       .eq('correct_verdict', correctVerdict);
 
-    if (count && count >= 3) {
+    const distinctDevices = new Set(
+      (reporters || []).map(r => r.device_id).filter(Boolean)
+    );
+
+    if (distinctDevices.size >= 3) {
       await supabase.from('examples').upsert({
         text: originalText,
         correct_verdict: correctVerdict,
-        explanation: `Community reported: ${count} users marked this as ${correctVerdict}`,
+        explanation: `Community reported: ${distinctDevices.size} users marked this as ${correctVerdict}`,
         confirmed: true,
       }, { onConflict: 'text' });
     }
