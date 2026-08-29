@@ -233,7 +233,7 @@ const systemPrompt = BASE_PROMPT + relevantPatterns + examples;
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userContent },
         ],
-        max_tokens: 500,
+        max_tokens: 2000,
         response_format: { type: 'json_object' },
         temperature: 0.1,
       }),
@@ -245,7 +245,23 @@ const systemPrompt = BASE_PROMPT + relevantPatterns + examples;
       return NextResponse.json({ error: 'Analysis failed. Please try again.' }, { status: 500 });
     }
 
-    const result = JSON.parse(data.choices[0].message.content);
+    // Guard against a response that was truncated by the token ceiling — parsing
+    // a cut-off JSON string throws "Unterminated string in JSON". With max_tokens
+    // raised this should not happen, but fail loudly and cleanly if it ever does.
+    const finishReason = data.choices?.[0]?.finish_reason;
+    if (finishReason === 'length') {
+      console.error('OpenAI response truncated (finish_reason=length). Consider raising max_tokens.');
+      return NextResponse.json({ error: 'Analysis failed. Please try again.' }, { status: 500 });
+    }
+
+    // Strip any accidental markdown code fences before parsing. response_format
+    // json_object should prevent these, but this is cheap insurance.
+    const rawContent = (data.choices?.[0]?.message?.content ?? '')
+      .replace(/^\s*```(?:json)?\s*/i, '')
+      .replace(/\s*```\s*$/i, '')
+      .trim();
+
+    const result = JSON.parse(rawContent);
     const storedText = imageBase64 ? (result.extracted_text || '[Screenshot]') : text;
     const ipKey = `rate_${ip}_${new Date().toISOString().slice(0, 10)}`;
 
