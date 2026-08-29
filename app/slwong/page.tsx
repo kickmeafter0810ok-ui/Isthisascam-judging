@@ -403,7 +403,7 @@ export default function AdminDashboard() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-400 border-b border-gray-700">
-                  <th className="text-left py-2">Time</th>
+                  <th className="text-left py-2">Date &amp; Time</th>
                   <th className="text-left py-2">Verdict</th>
                   <th className="text-left py-2">Confidence</th>
                   <th className="text-left py-2">Language</th>
@@ -413,7 +413,7 @@ export default function AdminDashboard() {
               <tbody>
                 {stats.recentScans?.map((scan: any) => (
                   <tr key={scan.id} className="border-b border-gray-700">
-                    <td className="py-2 text-gray-400">{new Date(scan.created_at).toLocaleTimeString()}</td>
+                    <td className="py-2 text-gray-400 whitespace-nowrap">{new Date(scan.created_at).toLocaleString()}</td>
                     <td className="py-2">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
                         scan.verdict === 'scam' ? 'bg-red-900 text-red-300' :
