@@ -183,7 +183,11 @@ export default function AdminDashboard() {
     </div>
   );
 
-  if (loading || !stats) return (
+  // Only show the full-screen loader on the very first load (stats still null).
+  // On background refreshes (after approve, or the Refresh button) stats is
+  // already populated, so we keep the page mounted — otherwise unmounting resets
+  // the scroll position to the top.
+  if (!stats) return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <p className="text-white">Loading...</p>
     </div>
@@ -203,9 +207,9 @@ export default function AdminDashboard() {
             <h1 className="text-2xl font-bold">🔐 IsThisAScam Dashboard</h1>
             <p className="text-gray-400 text-sm">Real-time analytics & feedback review</p>
           </div>
-          <button onClick={() => { fetchStats(); fetchBrief(); }}
-            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm">
-            🔄 Refresh
+          <button onClick={() => { fetchStats(); fetchBrief(); }} disabled={loading}
+            className="bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-4 py-2 rounded-lg text-sm">
+            {loading ? '⏳ Refreshing...' : '🔄 Refresh'}
           </button>
         </div>
 
