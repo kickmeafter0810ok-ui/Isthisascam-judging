@@ -2,6 +2,17 @@
 
 import { useEffect, useState, useCallback } from 'react';
 
+// Map stored language codes to readable names for the admin panel.
+const LANG_LABELS: Record<string, string> = {
+  'en': 'English',
+  'ms': 'Malay',
+  'zh-s': 'Chinese (Simplified)',
+  'zh-t': 'Chinese (Traditional)',
+  'zh': 'Chinese',
+  'ta': 'Tamil',
+};
+const langLabel = (code: string) => LANG_LABELS[code] || code || 'Unknown';
+
 interface Stats {
   totalScans: number;
   todayScans: number;
@@ -332,7 +343,7 @@ export default function AdminDashboard() {
             <div className="space-y-2">
               {Object.entries(stats.langCount).sort((a, b) => b[1] - a[1]).map(([lang, count]) => (
                 <div key={lang} className="flex justify-between items-center">
-                  <span className="text-sm">{lang}</span>
+                  <span className="text-sm">{langLabel(lang)}</span>
                   <span className="bg-purple-900 text-purple-300 text-xs px-2 py-1 rounded-full">{count}</span>
                 </div>
               ))}
@@ -427,7 +438,7 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td className="py-2">{scan.confidence}%</td>
-                    <td className="py-2">{scan.language}</td>
+                    <td className="py-2">{langLabel(scan.language)}</td>
                     <td className="py-2">{scan.country}</td>
                   </tr>
                 ))}
