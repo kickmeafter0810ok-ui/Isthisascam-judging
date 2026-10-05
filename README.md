@@ -1,3 +1,7 @@
+Preliminary-stage version. Protect, our device-side scam-protection layer, is kept in private development and is available for live demonstration on request.
+
+History sanitised: personal email addresses removed, author identities replaced with the team name, commit dates preserved.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
